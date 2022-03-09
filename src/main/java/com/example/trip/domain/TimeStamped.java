@@ -17,7 +17,7 @@ public abstract class TimeStamped {
     public LocalDateTime createdAt;
 
     @LastModifiedDate
-    public LocalDateTime loggedInAt;
+    public LocalDateTime modifiedAt;
 
 
 }

@@ -12,6 +12,7 @@ import javax.persistence.*;
 public class User extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Id
+    @Column(name = "user_id")
     private Long id;
 
     @Column(unique = true, nullable = false)
