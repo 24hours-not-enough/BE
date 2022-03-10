@@ -15,11 +15,14 @@ public class User extends TimeStamped {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @Column
     private String username;
+
+    @Column
+    private String password;
 
     // 탈퇴 여부
     @Column
@@ -29,23 +32,28 @@ public class User extends TimeStamped {
     private Long kakaoId;
 
     @Column
+    private String googleId;
+
+    @Column
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
     @Column
     private String refreshToken;
 
+    @Embedded
+    private Image image;
+
     @Builder
-    public User(String email, String username, boolean memberstatus, Long kakaoId, Role role, String refreshToken) {
+    public User(String email, String username, String password, boolean memberstatus, Long kakaoId, String googleId, Role role, String refreshToken, Image image) {
         this.email = email;
         this.username = username;
+        this.password = password;
         this.memberstatus = memberstatus;
         this.kakaoId = kakaoId;
+        this.googleId = googleId;
         this.role = role;
         this.refreshToken = refreshToken;
+        this.image = image;
     }
-
-    public void setUsername(String username) { this.username = username; }
-    public void setMemberstatus(boolean memberstatus) { this.memberstatus = memberstatus; }
-
 }
