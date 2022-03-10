@@ -25,4 +25,6 @@ public class Member {
     private Plan plan;
 
     private Boolean room_rep;
+
+    private Boolean accept;
 }
