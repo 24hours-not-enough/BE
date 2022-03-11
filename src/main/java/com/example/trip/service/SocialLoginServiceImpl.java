@@ -28,7 +28,7 @@ import java.util.UUID;
 
 @RequiredArgsConstructor
 @Service
-public class UserService {
+public class SocialLoginServiceImpl implements SocialLoginService {
 
     String kakao_client_id = System.getenv("kakao_client_id");
     String kakao_client_secret = System.getenv("kakao_client_secret");
@@ -67,7 +67,7 @@ public class UserService {
 
     }
 
-    private String getKakaoAccessToken(String code) throws JsonProcessingException {
+    public String getKakaoAccessToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded;charset=utf-8");
@@ -98,7 +98,7 @@ public class UserService {
         return jsonNode.get("access_token").asText();
     }
 
-    private KakaoUserInfoDto getKaKaoUserInfo(String accessToken) throws JsonProcessingException {
+    public KakaoUserInfoDto getKaKaoUserInfo(String accessToken) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         // HTTP Header 생성
         headers.add("Authorization", "Bearer " + accessToken);
@@ -127,7 +127,7 @@ public class UserService {
         return new KakaoUserInfoDto(id, email);
     }
 
-    private void kakaoRegister(KakaoUserInfoDto kakaoUserInfo, SignupRequestDto signupRequestDto) {
+    public void kakaoRegister(KakaoUserInfoDto kakaoUserInfo, SignupRequestDto signupRequestDto) {
         String email = kakaoUserInfo.getEmail();
         Long kakaoId = kakaoUserInfo.getKakaoId();
 
@@ -166,7 +166,7 @@ public class UserService {
         return new GoogleLoginRequestDto(googleUserInfo.getEmail(), googleId);
     }
 
-    private String getGoogleAccessToken(String code) throws JsonProcessingException {
+    public String getGoogleAccessToken(String code) throws JsonProcessingException {
         // HTTP Header 생성
         HttpHeaders headers = new HttpHeaders();
         headers.add("Content-type", "application/x-www-form-urlencoded");
@@ -197,7 +197,7 @@ public class UserService {
         return jsonNode.get("access_token").asText();
     }
 
-    private GoogleUserInfoDto getGoogleUserInfo(String accessToken) throws JsonProcessingException {
+    public GoogleUserInfoDto getGoogleUserInfo(String accessToken) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         // HTTP Header 생성
@@ -225,7 +225,7 @@ public class UserService {
         return new GoogleUserInfoDto(googleId, email);
     }
 
-    private void googleRegister(GoogleUserInfoDto googleUserInfo, SignupRequestDto requestDto) {
+    public void googleRegister(GoogleUserInfoDto googleUserInfo, SignupRequestDto requestDto) {
         String email = googleUserInfo.getEmail();
         String googleId = googleUserInfo.getGoogleId();
 
