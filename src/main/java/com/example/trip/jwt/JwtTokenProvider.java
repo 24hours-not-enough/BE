@@ -29,10 +29,10 @@ public class JwtTokenProvider {
     }
 
     // JWT 토큰 생성
-    public String createToken(String email, Long tokenValidTime) {
+    public String createToken(String socialaccountId, Long tokenValidTime) {
         Date now = new Date();
         Claims claims = Jwts.claims()
-                .setSubject(email)
+                .setSubject(socialaccountId)
                 .setIssuedAt(now); // JWT payload 에 저장되는 정보단위
 
         return Jwts.builder()
