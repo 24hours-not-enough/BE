@@ -7,13 +7,13 @@ import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.List;
-public class PlanRequest {
+public class PlanRequestDto {
 
     @Getter
     @NoArgsConstructor
     @Builder
     @AllArgsConstructor
-    public static class RegistDto{
+    public static class Regist{
         private String title;
 
         private String travel_destination;
@@ -22,7 +22,21 @@ public class PlanRequest {
 
         private LocalDateTime travel_end;
 
-        private List<MemberRequest.joinDto> memberList;
+        private List<MemberRequestDto.joinDto> memberList;
+    }
+
+    @NoArgsConstructor
+    @Getter
+    public static class Modify{
+        private String title;
+
+        private String travel_destination;
+
+        private LocalDateTime travel_start;
+
+        private LocalDateTime travel_end;
+
+        private List<MemberRequestDto.joinDto> memberList;
 
         private Boolean del_tc;
     }

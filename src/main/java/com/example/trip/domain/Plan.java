@@ -1,6 +1,6 @@
 package com.example.trip.domain;
 
-import com.example.trip.dto.request.PlanRequest;
+import com.example.trip.dto.request.PlanRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -8,13 +8,16 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Plan extends TimeStamped{
+public class Plan extends TimeStamped {
 
-    @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "plan_id")
     private Long id;
 
@@ -32,8 +35,11 @@ public class Plan extends TimeStamped{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(mappedBy = "plan")
+    private final List<Member> members = new ArrayList<>();
+
     @Builder
-    public Plan(String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end, Boolean del_tc, User user){
+    public Plan(String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end, Boolean del_tc, User user) {
         this.title = title;
         this.travel_destination = travel_destination;
         this.travel_start = travel_start;
@@ -42,14 +48,30 @@ public class Plan extends TimeStamped{
         this.user = user;
     }
 
-    public static Plan of(User user, PlanRequest.RegistDto dto){
+    public static Plan of(User user, PlanRequestDto.Regist dto) {
         return Plan.builder()
                 .user(user)
                 .title(dto.getTitle())
                 .travel_destination(dto.getTravel_destination())
                 .travel_start(dto.getTravel_start())
                 .travel_end(dto.getTravel_end())
-                .del_tc(dto.getDel_tc())
+                .del_tc(true)
                 .build();
+    }
+
+    public void updatePlan(PlanRequestDto.Modify modify) {
+        if (modify.getTitle() != null) {
+            this.title = modify.getTitle();
+        }
+        if (modify.getTitle() != null) {
+            this.travel_destination = modify.getTravel_destination();
+        }
+        if (modify.getTitle() != null) {
+            this.travel_start = modify.getTravel_start();
+        }
+        if (modify.getTitle() != null) {
+            this.travel_end = modify.getTravel_end();
+        }
+        this.del_tc = modify.getDel_tc() == null;
     }
 }
