@@ -32,12 +32,15 @@ public class Member {
     @ColumnDefault("false")
     private Boolean room_rep;
 
+    private Boolean active;
+
     @Builder
-    public Member(String email, Plan plan, Boolean room_rep, User user){
+    public Member(String email, Plan plan, Boolean room_rep, User user, Boolean active){
         this.email = email;
         this.plan = plan;
         this.room_rep = room_rep;
         this.user = user;
+        this.active = active;
     }
 
     public Member(MemberRequestDto.joinDto joinMember) {
