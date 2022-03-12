@@ -72,7 +72,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         UserDetails userDetails = new UserDetailsImpl(kakaoUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-        System.out.println("userDetails.getUsername()" + userDetails.getUsername());
 
         return new KakaoLoginRequestDto(kakaoUserInfo.getEmail(), kakaoId);
 
@@ -164,11 +163,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     @Transactional
     public GoogleLoginRequestDto googleLogin(String code) throws JsonProcessingException {
         String accessToken = getGoogleAccessToken(code);
-        System.out.println(accessToken);
-
         GoogleUserInfoDto googleUserInfo = getGoogleUserInfo(accessToken);
-        System.out.println("googleUserInfo" + googleUserInfo);
-
         String googleId = googleUserInfo.getGoogleId();
         User googleUser = userRepository.findBySocialaccountId(googleId)
                 .orElse(null);
@@ -182,8 +177,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         UserDetails userDetails = new UserDetailsImpl(googleUser);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
-
-        System.out.println(userDetails.getUsername() + "googlesocialaccountId가 나와야 함");
 
         return new GoogleLoginRequestDto(googleUserInfo.getEmail(), googleId);
     }
@@ -238,8 +231,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         );
 
         String responseBody = response.getBody();
-        System.out.println(responseBody);
-
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode jsonNode = objectMapper.readTree(responseBody);
@@ -273,14 +264,14 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     }
 
     public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto) {
-        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), AccessTokenValidTime);
+        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), AccessTokenValidTime);
 //        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
     public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto) {
-        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), AccessTokenValidTime);
+        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), AccessTokenValidTime);
 //        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
@@ -288,7 +279,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
     @Transactional
     public void registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) {
-//        Optional<User> byId = userRepository.findById(userDetails.getUser().getId());
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         user.get().update(username);
