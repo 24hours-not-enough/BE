@@ -7,8 +7,8 @@ import com.example.trip.dto.request.MemberRequestDto;
 import com.example.trip.dto.request.PlanRequestDto;
 import com.example.trip.dto.response.PlanResponseDto;
 import com.example.trip.repository.MemberRepository;
+import com.example.trip.repository.UserRepository;
 import com.example.trip.repository.plan.PlanRepository;
-import com.example.trip.repository.User2Repository;
 import com.example.trip.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class PlanServiceImpl implements PlanService {
 
-    private final User2Repository userRepository;
+    private final UserRepository userRepository;
 
     private final PlanRepository planRepository;
 
@@ -37,7 +37,6 @@ public class PlanServiceImpl implements PlanService {
         Plan plan = Plan.of(findUser.get(),dto);
         Plan savePlan = planRepository.save(plan);
         Member member = Member.builder()
-                .email(findUser.get().getEmail())
                 .room_rep(true)
                 .plan(savePlan)
                 .user(findUser.get())
@@ -70,20 +69,23 @@ public class PlanServiceImpl implements PlanService {
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
     private void setMember(List<MemberRequestDto.joinDto> memberList, Plan savePlan) {
         memberList.forEach((members) ->{
-            System.out.println("members.getEmail() = " + members.getEmail());
-            Optional<Member> findMember = memberRepository.findByEmail(members.getEmail(),savePlan.getId());
-            Optional<User> findUser = userRepository.findByEmail(members.getEmail());
+            System.out.println("members.getNickName() = " + members.getNickName());
+            Optional<User> findNickName = userRepository.findByNickName(members.getNickName());
+            System.out.println("findNickName = " +findNickName);
+            Optional<Member> findMember = memberRepository.findByNickNameAndPlanId(findNickName.get().getId(),savePlan.getId());
+            System.out.println("findMember = " + findMember);
+            //Optional<User> findUser = userRepository.findByEmail(findMember.get()..getEmail());
             if(!findMember.isPresent()){
-                if(findUser.isPresent()) {
+               // if(findUser.isPresent()) {
                     Member member = Member.builder()
-                            .email(members.getEmail())
-                            .user(findUser.get())
+                          //  .email(members.getEmail())
+                            .user(findNickName.get())
                             .room_rep(false)
                             .plan(savePlan)
                             .active(true)
                             .build();
                     memberRepository.save(member);
-                }
+              //  }
             }
         });
     }

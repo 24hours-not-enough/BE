@@ -41,11 +41,10 @@ public class MemberServiceImpl implements MemberService {
         dto.getMemberList().forEach((members) -> {
             Optional<Plan> findPlan = planRepository.findById(planId);
             Optional<User> findUser = userRepository.findByNickName(members.getNickName());
-            Optional<Member> findMember = memberRepository.findByEmail(findUser.get().getEmail(), planId);
+            Optional<Member> findMember = memberRepository.findByNickNameAndPlanId(findUser.get().getId(), planId);
             if (!findMember.isPresent()) {
                 if (findPlan.isPresent()) {
                     Member member = Member.builder()
-                            .email(findUser.get().getEmail())
                             .user(findUser.get())
                             .room_rep(false)
                             .plan(findPlan.get())

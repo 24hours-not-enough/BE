@@ -19,8 +19,6 @@ public class Member {
     @Column(name = "member_id")
     private Long id;
 
-    private String email;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
     private Plan plan;
@@ -33,20 +31,13 @@ public class Member {
     private Boolean room_rep;
 
     private Boolean active;
-    
-    private Boolean accept;
 
 
     @Builder
-    public Member(String email, Plan plan, Boolean room_rep, User user, Boolean active){
-        this.email = email;
+    public Member(Plan plan, Boolean room_rep, User user, Boolean active){
         this.plan = plan;
         this.room_rep = room_rep;
         this.user = user;
         this.active = active;
-    }
-
-    public Member(MemberRequestDto.joinDto joinMember) {
-        this.email = joinMember.getEmail();
     }
 }

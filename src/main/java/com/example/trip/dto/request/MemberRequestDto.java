@@ -14,7 +14,7 @@ public class MemberRequestDto {
     @Getter
     @NoArgsConstructor
     public static class joinDto{
-        private String email;
+        private String nickName;
     }
 
     @Getter
