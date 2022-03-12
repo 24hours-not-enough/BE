@@ -15,18 +15,21 @@ public class User extends TimeStamped {
     @Column(name = "user_id")
     private Long id;
 
-    @Column(unique = true, nullable = false)
+    @Column(nullable = false)
     private String email;
 
     @Column
     private String username;
+
+    @Column
+    private String password;
 
     // 탈퇴 여부
     @Column
     private boolean memberstatus;
 
     @Column
-    private Long kakaoId;
+    private String socialaccountId;
 
     @Column
     @Enumerated(value = EnumType.STRING)
@@ -35,17 +38,22 @@ public class User extends TimeStamped {
     @Column
     private String refreshToken;
 
+    @Embedded
+    private Image image;
+
     @Builder
-    public User(String email, String username, boolean memberstatus, Long kakaoId, Role role, String refreshToken) {
+    public User(String email, String username, String password, boolean memberstatus, String socialaccountId, Role role, String refreshToken, Image image) {
         this.email = email;
         this.username = username;
+        this.password = password;
         this.memberstatus = memberstatus;
-        this.kakaoId = kakaoId;
+        this.socialaccountId = socialaccountId;
         this.role = role;
         this.refreshToken = refreshToken;
+        this.image = image;
     }
 
-    public void setUsername(String username) { this.username = username; }
-    public void setMemberstatus(boolean memberstatus) { this.memberstatus = memberstatus; }
-
+    public void update(String username) {
+        this.username = username;
+    }
 }
