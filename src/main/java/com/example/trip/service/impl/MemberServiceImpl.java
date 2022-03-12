@@ -37,6 +37,14 @@ public class MemberServiceImpl implements MemberService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public List<MemberResponseDto.invite> findMember(Long planId) {
+        Optional<Plan> findPlanId = planRepository.findById(planId);
+        return memberRepository.findPlanAndMembers(findPlanId.get().getId()).stream()
+                .map(MemberResponseDto.invite::new)
+                .collect(Collectors.toList());
+    }
+
     private void setMember(Long planId, MemberRequestDto.invite dto) {
         dto.getMemberList().forEach((members) -> {
             Optional<Plan> findPlan = planRepository.findById(planId);

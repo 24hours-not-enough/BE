@@ -7,4 +7,6 @@ import java.util.List;
 
 public interface MemberService {
     List<MemberResponseDto.invite> addMember(Long planId, MemberRequestDto.invite dto);
+
+    List<MemberResponseDto.invite> findMember(Long planId);
 }

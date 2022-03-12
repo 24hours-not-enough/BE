@@ -23,4 +23,10 @@ public class MemberController {
         List<MemberResponseDto.invite> invites = memberService.addMember(planId, dto);
         return new ResponseEntity<>(new MemberInviteAll(true,"멤버초대 완료!",invites), HttpStatus.OK);
     }
+
+    @GetMapping("/member/plan/{planId}")
+    public ResponseEntity<MemberInviteAll> MemberList(@PathVariable Long planId) {
+        List<MemberResponseDto.invite> memberList = memberService.findMember(planId);
+        return new ResponseEntity<>(new MemberInviteAll(true,"함께하는 멤버조회 완료!",memberList), HttpStatus.OK);
+    }
 }
