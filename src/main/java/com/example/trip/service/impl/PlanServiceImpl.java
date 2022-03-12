@@ -8,7 +8,7 @@ import com.example.trip.dto.request.PlanRequestDto;
 import com.example.trip.dto.response.PlanResponseDto;
 import com.example.trip.repository.MemberRepository;
 import com.example.trip.repository.plan.PlanRepository;
-import com.example.trip.repository.UserRepository;
+import com.example.trip.repository.User2Repository;
 import com.example.trip.service.PlanService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
@@ -24,7 +24,7 @@ import java.util.stream.Collectors;
 @Transactional(readOnly = true)
 public class PlanServiceImpl implements PlanService {
 
-    private final UserRepository userRepository;
+    private final User2Repository userRepository;
 
     private final PlanRepository planRepository;
 
@@ -41,6 +41,7 @@ public class PlanServiceImpl implements PlanService {
                 .room_rep(true)
                 .plan(savePlan)
                 .user(findUser.get())
+                .active(true)
                 .build();
         memberRepository.save(member);
         setMember(dto.getMemberList(), savePlan);
@@ -61,6 +62,11 @@ public class PlanServiceImpl implements PlanService {
         findPlan.get().updatePlan(modify);
     }
 
+    @Override
+    public PlanResponseDto findPlanOne(Long planId) {
+        return planRepository.findPlanAndMemberOne(planId);
+    }
+
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
     private void setMember(List<MemberRequestDto.joinDto> memberList, Plan savePlan) {
         memberList.forEach((members) ->{
@@ -74,6 +80,7 @@ public class PlanServiceImpl implements PlanService {
                             .user(findUser.get())
                             .room_rep(false)
                             .plan(savePlan)
+                            .active(true)
                             .build();
                     memberRepository.save(member);
                 }

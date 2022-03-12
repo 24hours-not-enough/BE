@@ -13,4 +13,6 @@ public interface PlanService {
     List<PlanResponseDto> findPlan(Pageable pageable);
 
     void modifyPlan(Long planId, PlanRequestDto.Modify modify);
+
+    PlanResponseDto findPlanOne(Long planId);
 }
