@@ -59,6 +59,8 @@ public class PlanServiceImpl implements PlanService {
     public void modifyPlan(Long planId, PlanRequestDto.Modify modify) {
         Optional<Plan> findPlan = planRepository.findById(planId);
         findPlan.get().updatePlan(modify);
+        memberRepository.deleteByPlanId(planId);
+        setMember(modify.getMemberList(),findPlan.get());
     }
 
     @Override
