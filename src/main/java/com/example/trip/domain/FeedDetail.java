@@ -1,14 +1,14 @@
 package com.example.trip.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class FeedDetail extends TimeStamped{
 
     @Id
@@ -25,9 +25,7 @@ public class FeedDetail extends TimeStamped{
     @Lob
     private String memo;
 
-    @Lob
-    private String location;
 
-    @Embedded
-    private Image image;
+
+
 }

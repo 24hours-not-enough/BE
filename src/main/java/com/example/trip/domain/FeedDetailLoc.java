@@ -9,16 +9,18 @@ import javax.persistence.*;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class Feed {
-
+public class FeedDetailLoc {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "feed_id")
+    @Column(name = "feed_detail_loc_id")
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "user_id")
-    private User user;
+    @JoinColumn(name = "feed_detail_id")
+    private FeedDetail feedDetail;
 
-    private String title;
+    @Lob
+    private String location;
+
+    private String comment;
 }
