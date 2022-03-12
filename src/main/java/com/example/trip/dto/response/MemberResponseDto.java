@@ -5,13 +5,36 @@ import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import java.util.List;
+
 @Getter
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponseDto {
-    private String email;
+    private String profileImg;
 
     public MemberResponseDto(Member member) {
-        this.email = member.getUser().getEmail();
+        this.profileImg = member.getUser().getImage().getFile_store_course();
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class invite{
+
+        private String file_store_course;
+
+        private String nickname;
+
+        private Long user_id;
+
+        private Boolean room_rep;
+
+        public invite(Member member) {
+            this.file_store_course = member.getUser().getImage().getFile_store_course();
+            this.nickname = member.getUser().getUsername();
+            this.user_id = member.getId();
+            this.room_rep = member.getRoom_rep();
+        }
     }
 }
