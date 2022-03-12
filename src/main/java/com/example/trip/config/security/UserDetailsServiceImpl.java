@@ -14,8 +14,8 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 
     public UserDetailsServiceImpl(UserRepository userRepository) { this.userRepository = userRepository; }
 
-    public UserDetails loadUserByUsername(String email) throws UsernameNotFoundException {
-        User user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
+    public UserDetails loadUserByUsername(String socialaccountId) throws UsernameNotFoundException {
+        User user = userRepository.findBySocialaccountId(socialaccountId).orElseThrow(() -> new UsernameNotFoundException("존재하지 않는 사용자입니다."));
         return new UserDetailsImpl(user);
     }
 }

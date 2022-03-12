@@ -29,10 +29,7 @@ public class User extends TimeStamped {
     private boolean memberstatus;
 
     @Column
-    private Long kakaoId;
-
-    @Column
-    private String googleId;
+    private String socialaccountId;
 
     @Column
     @Enumerated(value = EnumType.STRING)
@@ -45,15 +42,18 @@ public class User extends TimeStamped {
     private Image image;
 
     @Builder
-    public User(String email, String username, String password, boolean memberstatus, Long kakaoId, String googleId, Role role, String refreshToken, Image image) {
+    public User(String email, String username, String password, boolean memberstatus, String socialaccountId, Role role, String refreshToken, Image image) {
         this.email = email;
         this.username = username;
         this.password = password;
         this.memberstatus = memberstatus;
-        this.kakaoId = kakaoId;
-        this.googleId = googleId;
+        this.socialaccountId = socialaccountId;
         this.role = role;
         this.refreshToken = refreshToken;
         this.image = image;
+    }
+
+    public void update(String username) {
+        this.username = username;
     }
 }

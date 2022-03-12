@@ -25,7 +25,7 @@ public class UserDetailsImpl implements UserDetails {
     }
 
     @Override
-    public String getUsername() { return user.getUsername(); }
+    public String getUsername() { return user.getSocialaccountId(); }
 
     @Override
     public boolean isAccountNonExpired() {

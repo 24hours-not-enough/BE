@@ -8,5 +8,5 @@ import lombok.Getter;
 @Getter
 public class KakaoLoginRequestDto {
     private String email;
-    private Long kakaoId;
+    private String kakaoId;
 }

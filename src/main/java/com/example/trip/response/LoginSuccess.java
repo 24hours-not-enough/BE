@@ -9,5 +9,7 @@ import lombok.Getter;
 public class LoginSuccess {
     private String result;
     private String msg;
-    private LoginResponseDto dto;
+    private boolean isfirst;
+    private String email;
+    private LoginResponseDto tokens;
 }

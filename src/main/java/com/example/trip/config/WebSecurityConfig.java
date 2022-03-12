@@ -33,21 +33,21 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .cors()
                     .and()
                 .sessionManagement()
-                .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .sessionCreationPolicy(SessionCreationPolicy.STATELESS) // JWT 사용 예정, 세션 필요 X
                     .and()
-                .csrf().disable()
-                .formLogin().disable()
-                .httpBasic().disable();
+                .csrf().disable() // rest api는 csrf 보안 필요 X
+                .formLogin().disable() // 스프링 시큐리티 login form 사용 X
+                .httpBasic().disable(); // rest api 이므로 기본 설정 사용 X -> 기본 설정은 비인증 시 로그인폼 화면으로 리다이렉트
 
         http
                 .authorizeRequests()
                 .antMatchers("**").permitAll()
-                .anyRequest().authenticated()
+                .anyRequest().authenticated() // 위 antMatchers 이외에는 모든 api 인증 필요
                     .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling()
-                .authenticationEntryPoint(new CustomAuthenticationEntryPoint())
-                .accessDeniedHandler(new AccessDeniedHandler());
+                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인가 관련
+                .accessDeniedHandler(new AccessDeniedHandler()); // 인증 관련
     }
 }

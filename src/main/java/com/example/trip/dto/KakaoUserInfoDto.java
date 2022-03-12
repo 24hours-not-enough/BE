@@ -6,6 +6,6 @@ import lombok.Getter;
 @Getter
 @AllArgsConstructor
 public class KakaoUserInfoDto {
-    private Long kakaoId;
+    private String kakaoId;
     private String email;
 }
