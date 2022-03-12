@@ -33,6 +33,9 @@ public class Member {
     private Boolean room_rep;
 
     private Boolean active;
+    
+    private Boolean accept;
+
 
     @Builder
     public Member(String email, Plan plan, Boolean room_rep, User user, Boolean active){
