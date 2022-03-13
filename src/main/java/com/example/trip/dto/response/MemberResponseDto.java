@@ -37,4 +37,24 @@ public class MemberResponseDto {
             this.room_rep = member.getRoom_rep();
         }
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class inviteList{
+        private String nickName;
+
+        private String file_store_course;
+
+        private String title;
+
+        private Long planId;
+
+        public inviteList(Member member) {
+            this.nickName = member.getUser().getUsername();
+            this.file_store_course = member.getUser().getImage().getFile_store_course();
+            this.title = member.getPlan().getTitle();
+            this.planId = member.getPlan().getId();
+        }
+    }
 }

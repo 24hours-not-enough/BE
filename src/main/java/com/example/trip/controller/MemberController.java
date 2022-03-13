@@ -1,6 +1,7 @@
 package com.example.trip.controller;
 
 import com.example.trip.advice.MemberInviteAll;
+import com.example.trip.advice.MemberInviteUser;
 import com.example.trip.advice.Success;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.request.MemberRequestDto;
@@ -36,12 +37,18 @@ public class MemberController {
     @DeleteMapping("/member/plan/{planId}/user")
     public ResponseEntity<Success> MemberRemove(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
         memberService.removeMember(planId,userDetails.getUser().getId());
-        return new ResponseEntity<>(new Success(true,"친구 초대 취소 완료!"), HttpStatus.OK);
+        return new ResponseEntity<>(new Success(true,"친구 초대 거절 완료!"), HttpStatus.OK);
     }
 
     @DeleteMapping("/member/plan/{planId}")
     public ResponseEntity<Success> MemberRemoveByRep(@PathVariable Long planId, @RequestBody MemberRequestDto memberRequestDto){
         memberService.removeMemberOne(planId,memberRequestDto);
         return new ResponseEntity<>(new Success(true,"친구 초대 취소 완료!"), HttpStatus.OK);
+    }
+
+    @GetMapping("/member/plan/invite")
+    public ResponseEntity<MemberInviteUser> MemberList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<MemberResponseDto.inviteList> memberInviteList = memberService.findMemberInviteList(userDetails.getUser().getId());
+        return new ResponseEntity<>(new MemberInviteUser(true,"초대 요청 리스트 조회 완료!",memberInviteList), HttpStatus.OK);
     }
 }
