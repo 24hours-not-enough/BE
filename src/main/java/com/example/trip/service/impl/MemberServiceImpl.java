@@ -45,6 +45,18 @@ public class MemberServiceImpl implements MemberService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    public void removeMember(Long planId, Long userId) {
+        memberRepository.deleteByPlanAndUser(planId,userId);
+
+    }
+
+    @Override
+    public void removeMemberOne(Long planId, MemberRequestDto memberRequestDto) {
+        Optional<User> findUserByNickName = userRepository.findByNickName(memberRequestDto.getNickName());
+        memberRepository.deleteByPlanAndUser(planId,findUserByNickName.get().getId());
+    }
+
     private void setMember(Long planId, MemberRequestDto.invite dto) {
         dto.getMemberList().forEach((members) -> {
             Optional<Plan> findPlan = planRepository.findById(planId);

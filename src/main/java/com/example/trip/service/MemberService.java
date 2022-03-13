@@ -9,4 +9,8 @@ public interface MemberService {
     List<MemberResponseDto.invite> addMember(Long planId, MemberRequestDto.invite dto);
 
     List<MemberResponseDto.invite> findMember(Long planId);
+
+    void removeMember(Long planId, Long userId);
+
+    void removeMemberOne(Long planId, MemberRequestDto memberRequestDto);
 }

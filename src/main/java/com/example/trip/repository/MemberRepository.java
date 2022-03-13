@@ -19,4 +19,8 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
     @Modifying
     @Query("delete from Member m where m.plan.id=:planId and m.room_rep = false")
     void deleteByPlanId(Long planId);
+
+    @Modifying
+    @Query("delete from Member m where m.plan.id =:planId and m.user.id=:userId")
+    void deleteByPlanAndUser(@Param("planId") Long planId,@Param("userId") Long userId);
 }
