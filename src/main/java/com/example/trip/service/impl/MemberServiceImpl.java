@@ -64,6 +64,13 @@ public class MemberServiceImpl implements MemberService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public void modifyMemberActive(Long userId, Long planId) {
+        Optional<Member> byUserAndPland = memberRepository.findByUserAndPland(userId, planId);
+        byUserAndPland.get().modifyActive();
+    }
+
     private void setMember(Long planId, MemberRequestDto.invite dto) {
         dto.getMemberList().forEach((members) -> {
             Optional<Plan> findPlan = planRepository.findById(planId);

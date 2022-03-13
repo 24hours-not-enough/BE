@@ -73,6 +73,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
+    @Transactional
     public void removePlanMember(Long id, Long planId) {
         memberRepository.deleteByPlanAndUser(planId,id);
     }

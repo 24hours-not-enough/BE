@@ -15,4 +15,6 @@ public interface MemberService {
     void removeMemberOne(Long planId, MemberRequestDto memberRequestDto);
 
     List<MemberResponseDto.inviteList> findMemberInviteList(Long userId);
+
+    void modifyMemberActive(Long userId, Long planId);
 }

@@ -40,4 +40,8 @@ public class Member {
         this.user = user;
         this.active = active;
     }
+
+    public void modifyActive() {
+        this.active = true;
+    }
 }

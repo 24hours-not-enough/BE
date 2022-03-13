@@ -26,4 +26,7 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m where m.user.id =:userId and m.active=false")
     List<Member> findByUserMemberList(Long userId);
+
+    @Query("select m from Member m where m.user.id = :userId and m.plan.id =:planId")
+    Optional<Member> findByUserAndPland(@Param("userId") Long userId,@Param("planId") Long planId);
 }
