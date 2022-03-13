@@ -15,4 +15,6 @@ public interface PlanService {
     void modifyPlan(Long planId, PlanRequestDto.Modify modify);
 
     PlanResponseDto findPlanOne(Long planId);
+
+    void removePlanMember(Long id, Long planId);
 }

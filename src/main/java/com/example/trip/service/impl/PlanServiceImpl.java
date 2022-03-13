@@ -58,14 +58,23 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public void modifyPlan(Long planId, PlanRequestDto.Modify modify) {
         Optional<Plan> findPlan = planRepository.findById(planId);
-        findPlan.get().updatePlan(modify);
-        memberRepository.deleteByPlanId(planId);
-        setMember(modify.getMemberList(),findPlan.get());
+        if(modify.getDel_tc()!=null){
+            findPlan.get().deletePlan(modify);
+        }else {
+            findPlan.get().updatePlan(modify);
+            memberRepository.deleteByPlanId(planId);
+            setMember(modify.getMemberList(),findPlan.get());
+        }
     }
 
     @Override
     public PlanResponseDto findPlanOne(Long planId) {
         return planRepository.findPlanAndMemberOne(planId);
+    }
+
+    @Override
+    public void removePlanMember(Long id, Long planId) {
+        memberRepository.deleteByPlanAndUser(planId,id);
     }
 
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
@@ -84,7 +93,7 @@ public class PlanServiceImpl implements PlanService {
                             .user(findNickName.get())
                             .room_rep(false)
                             .plan(savePlan)
-                            .active(true)
+                            .active(false)
                             .build();
                     memberRepository.save(member);
               //  }
