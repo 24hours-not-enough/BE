@@ -48,9 +48,12 @@ public class PlanController {
     public ResponseEntity<Success> planModify(@PathVariable Long planId, @RequestBody PlanRequestDto.Modify modify) {
         planService.modifyPlan(planId, modify);
         String msg;
-        if(modify.getDel_tc()!=null){
+        if(!modify.getDel_tc()){
             msg = "계획 삭제 성공!";
-        }else {
+        }else if(modify.getDel_tc()){
+            msg = "계획 복구 성공!";
+        }
+        else {
             msg = "계획 수정 성공!";
         }
         return new ResponseEntity<>(new Success(true, msg), HttpStatus.OK);
