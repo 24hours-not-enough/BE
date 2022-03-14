@@ -18,7 +18,7 @@ public class CalendarDetailsController {
     @PostMapping("/plan/{calendar_id}")
     public ResponseEntity<Success> CalendarDetailsAdd(@PathVariable Long calendar_id, @RequestBody CalendarDetailsDto dto){
         calendarDetailsService.addCalendarDetails(calendar_id,dto);
-        return new ResponseEntity<>(new Success(true,"가고 싶은 곳 추가 완료!"), HttpStatus.OK);
+        return new ResponseEntity<>(new Success(true,"가고 싶은 곳 상세 계획에 추가 완료!"), HttpStatus.OK);
     }
 
 }
