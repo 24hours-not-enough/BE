@@ -27,4 +27,10 @@ public class CalendarDetailsController {
         return new ResponseEntity<>(new Success(true,"상세계획 내용 수정 완료!"), HttpStatus.OK);
     }
 
+    @DeleteMapping("/plan/{planId}/days/{calendarId}")
+    public ResponseEntity<Success> CalendarDetailsRemove(@PathVariable Long planId, @PathVariable Long calendarId){
+        calendarDetailsService.removeCalendarDetails(planId, calendarId);
+        return new ResponseEntity<>(new Success(true,"상세계획 내용 삭제 완료!"), HttpStatus.OK);
+    }
+
 }

@@ -42,6 +42,12 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
         setCalendarDetails(findcalendarId.get(),dto);
     }
 
+    @Override
+    @Transactional
+    public void removeCalendarDetails(Long planId, Long calendarId) {
+        calendarDetailsRepository.deleteByCalendarId(calendarId);
+    }
+
     private void setCalendarDetails(Calendar calendar, CalendarDetailsRequestDto.Modify dto) {
         dto.getDetailsList().forEach((detailsList)->{
             CalendarDetails calendarDetails = CalendarDetails.builder()
