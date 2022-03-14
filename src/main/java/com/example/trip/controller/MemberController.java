@@ -52,7 +52,7 @@ public class MemberController {
         return new ResponseEntity<>(new MemberInviteUser(true,"초대 요청 리스트 조회 완료!",memberInviteList), HttpStatus.OK);
     }
 
-    @PostMapping("/member/plan/{planId}")
+    @PostMapping("/member/plan/{planId}/active")
     public ResponseEntity<Success> MemberInviteActive(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
         memberService.modifyMemberActive(userDetails.getUser().getId(),planId);
         return new ResponseEntity<>(new Success(true,"초대 요청 수락 완료!"),HttpStatus.OK);
