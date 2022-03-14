@@ -1,6 +1,7 @@
 package com.example.trip.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -18,13 +19,13 @@ public class Calendar {
 
     private String days;
 
-    @Column(name = "location_name")
-    private String name;
-
-    @Column(name = "location_memo")
-    private String memo;
-
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
     private Plan plan;
+
+    @Builder
+    public Calendar(String days, Plan plan){
+        this.days = days;
+        this.plan = plan;
+    }
 }
