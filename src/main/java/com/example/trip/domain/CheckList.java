@@ -1,5 +1,6 @@
 package com.example.trip.domain;
 
+import com.example.trip.dto.request.CheckListsRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,5 +32,10 @@ public class CheckList {
         this.check_item = check_item;
         this.is_checked = is_checked;
         this.plan = plan;
+    }
+
+    public void updateCheckList(CheckListsRequestDto dto) {
+        this.check_item = dto.getCheckName();
+        this.is_checked = dto.getIs_checked();
     }
 }

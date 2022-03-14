@@ -33,4 +33,12 @@ public class CheckListServiceImpl implements CheckListService {
                 .build();
         checkListRepository.save(checkList);
     }
+
+    @Override
+    @Transactional
+    public void modifyCheckList(Long checkListsId, CheckListsRequestDto dto) {
+        Optional<CheckList> findCheckList = checkListRepository.findById(checkListsId);
+        findCheckList.get().updateCheckList(dto);
+
+    }
 }

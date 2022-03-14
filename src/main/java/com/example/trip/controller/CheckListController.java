@@ -20,4 +20,11 @@ public class CheckListController {
         checkListService.addCheckList(planId,dto);
         return new ResponseEntity<>(new Success(true,"체크리스트 등록 완료!"), HttpStatus.OK);
     }
+
+
+    @PutMapping("/plan/checkLists/{checkListsId}")
+    public ResponseEntity<Success> CheckListModify(@PathVariable Long checkListsId, @RequestBody CheckListsRequestDto dto){
+        checkListService.modifyCheckList(checkListsId, dto);
+        return new ResponseEntity<>(new Success(true,"체크리스트 수정 완료!"), HttpStatus.OK);
+    }
 }
