@@ -27,4 +27,10 @@ public class CheckListController {
         checkListService.modifyCheckList(checkListsId, dto);
         return new ResponseEntity<>(new Success(true,"체크리스트 수정 완료!"), HttpStatus.OK);
     }
+
+    @DeleteMapping("/plan/checkLists/{checkListsId}")
+    public ResponseEntity<Success> CheckListRemove(@PathVariable Long checkListsId){
+        checkListService.removeCheckList(checkListsId);
+        return new ResponseEntity<>(new Success(true,"체크리스트 삭제 완료!"), HttpStatus.OK);
+    }
 }

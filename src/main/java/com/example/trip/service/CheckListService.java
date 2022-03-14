@@ -6,4 +6,6 @@ public interface CheckListService {
     void addCheckList(Long planId, CheckListsRequestDto dto);
 
     void modifyCheckList(Long checkListsId, CheckListsRequestDto dto);
+
+    void removeCheckList(Long checkListsId);
 }

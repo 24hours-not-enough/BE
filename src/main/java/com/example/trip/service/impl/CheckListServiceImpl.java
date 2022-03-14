@@ -41,4 +41,10 @@ public class CheckListServiceImpl implements CheckListService {
         findCheckList.get().updateCheckList(dto);
 
     }
+
+    @Override
+    @Transactional
+    public void removeCheckList(Long checkListsId) {
+        checkListRepository.deleteById(checkListsId);
+    }
 }
