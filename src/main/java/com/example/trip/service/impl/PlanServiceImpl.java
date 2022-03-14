@@ -58,7 +58,7 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public void modifyPlan(Long planId, PlanRequestDto.Modify modify) {
         Optional<Plan> findPlan = planRepository.findById(planId);
-        if(modify.getDel_tc()!=null){
+        if(modify.getDel_fl()!=null){
             findPlan.get().deletePlan(modify);
         }else {
             findPlan.get().updatePlan(modify);

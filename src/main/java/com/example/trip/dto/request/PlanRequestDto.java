@@ -38,6 +38,6 @@ public class PlanRequestDto {
 
         private List<MemberRequestDto.joinDto> memberList;
 
-        private Boolean del_tc;
+        private Boolean del_fl;
     }
 }
