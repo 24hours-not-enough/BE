@@ -33,4 +33,10 @@ public class PlanLocationServiceImpl implements PlanLocationService {
                 .build();
         planLocationRepository.save(plan);
     }
+
+    @Override
+    @Transactional
+    public void removePlanLocation(Long planLocationId, PlanLocationRequestDto dto) {
+        planLocationRepository.deleteById(planLocationId);
+    }
 }
