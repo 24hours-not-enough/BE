@@ -1,6 +1,7 @@
 package com.example.trip.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -26,4 +27,12 @@ public class PlanLocation {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
     private Plan plan;
+
+    @Builder
+    public PlanLocation(String name, String latitude, String longitude, Plan plan){
+        this.name = name;
+        this.latitude = latitude;
+        this.longitude = longitude;
+        this.plan = plan;
+    }
 }
