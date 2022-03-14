@@ -1,5 +1,6 @@
 package com.example.trip.domain;
 
+import com.example.trip.dto.request.CalendarDetailsRequestDto;
 import lombok.AccessLevel;
 import lombok.Builder;
 import lombok.Getter;
@@ -35,10 +36,12 @@ public class CalendarDetails {
     private Calendar calendar;
 
     @Builder
-    public CalendarDetails(String name, String latitude, String longitude, Calendar calendar){
+    public CalendarDetails(String name, String latitude, String longitude, Calendar calendar, String memo, int order){
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.calendar = calendar;
+        this.memo = memo;
+        this.order = order;
     }
 }
