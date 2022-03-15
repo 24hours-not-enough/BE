@@ -1,6 +1,7 @@
 package com.example.trip.feed;
 
 
+import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.User;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -17,9 +18,10 @@ public class FeedController {
     private final FeedService feedService;
 
     @PostMapping("/feed")
-    public ResponseEntity<FeedResponseDto> registerFeed(@AuthenticationPrincipal User user, FeedRequestDto.FeedRequestRegisterDto feedRegisterDto) {
-        feedService.registerFeed(user, feedRegisterDto);
-        return new ResponseEntity<>(new FeedResponseDto(), HttpStatus.OK);
+    public ResponseEntity<FeedResponseDto.FeedResponseRegisterDto> registerFeed(@AuthenticationPrincipal UserDetailsImpl user, @RequestBody FeedRequestDto.FeedRequestRegisterDto feedRegisterDto) {
+        System.out.println("USER : " +  user.getUser());
+        feedService.registerFeed(user.getUser(), feedRegisterDto);
+        return new ResponseEntity<>(new FeedResponseDto.FeedResponseRegisterDto("success","피드 등록에 성공하였습니다."), HttpStatus.OK);
     }
 
 //    @PutMapping("/feed")
