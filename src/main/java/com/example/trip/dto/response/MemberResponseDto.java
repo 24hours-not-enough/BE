@@ -1,10 +1,17 @@
 package com.example.trip.dto.response;
 
 import com.example.trip.domain.Member;
+import com.example.trip.domain.Plan;
+import com.example.trip.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.ColumnDefault;
 
+import javax.persistence.Column;
+import javax.persistence.FetchType;
+import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import java.util.List;
 
 @Getter
@@ -56,5 +63,16 @@ public class MemberResponseDto {
             this.title = member.getPlan().getTitle();
             this.planId = member.getPlan().getId();
         }
+    }
+
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Getter
+    public static class AllMember{
+        private Long member_id;
+
+        private Boolean room_rep;
+
+        private Boolean active;
     }
 }

@@ -39,7 +39,10 @@ public class Plan extends TimeStamped {
     private final List<Member> members = new ArrayList<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Calendar> calendars = new ArrayList<>();
+    private final List<Calendar> calendars = new ArrayList<>();
+
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    private final List<CheckList> checkLists = new ArrayList<>();
 
     @Builder
     public Plan(String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end, Boolean del_tc, User user) {

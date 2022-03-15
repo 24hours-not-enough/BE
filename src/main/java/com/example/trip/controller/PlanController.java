@@ -1,9 +1,6 @@
 package com.example.trip.controller;
 
-import com.example.trip.advice.GetAllPlan;
-import com.example.trip.advice.GetPlan;
-import com.example.trip.advice.GetPlanOne;
-import com.example.trip.advice.Success;
+import com.example.trip.advice.*;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
@@ -75,6 +72,12 @@ public class PlanController {
     public ResponseEntity<Success> planMemberRemove(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
         planService.removePlanMember(userDetails.getUser().getId(),planId);
         return new ResponseEntity<>(new Success(true, "계획 나가기 성공!"), HttpStatus.OK);
+    }
+
+    @GetMapping("/plan/{planId}/planDetails")
+    public ResponseEntity<GetAllPlanDetails> MemberAndPlanAllList(@PathVariable Long planId){
+        List<PlanResponseDto.DetailAll> planAllAndMember = planService.findPlanAllAndMember(planId);
+        return new ResponseEntity<>(new GetAllPlanDetails(true, "계획 상세 전체조회 성공",planAllAndMember), HttpStatus.OK);
     }
 
     @PostConstruct

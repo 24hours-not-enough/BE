@@ -1,5 +1,6 @@
 package com.example.trip.service.impl;
 
+import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.Member;
 import com.example.trip.domain.Plan;
 import com.example.trip.domain.User;
@@ -82,6 +83,14 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public void removePlan(Long planId) {
         planRepository.deleteById(planId);
+    }
+
+    @Override
+    public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId) {
+        return planRepository.findPlanDetails(planId)
+                .stream()
+                .map(PlanResponseDto.DetailAll::new)
+                .collect(Collectors.toList());
     }
 
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함

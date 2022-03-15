@@ -1,13 +1,15 @@
 package com.example.trip.dto.response;
 
-import com.example.trip.domain.Plan;
+import com.example.trip.domain.*;
 import com.example.trip.dto.request.MemberRequestDto;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -72,6 +74,47 @@ public class PlanResponseDto {
             this.title= plan.getTitle();
             this.del_tc=plan.getDel_tc();
             this.travel_destination=plan.getTravel_destination();
+        }
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class DetailAll{
+        private Long plan_id;
+
+        private String title;
+
+        private String travel_destination;
+
+        private LocalDateTime travel_start;
+
+        private LocalDateTime travel_end;
+
+        private Boolean del_tc;
+
+        private List<MemberResponseDto> members;
+
+        private List<CalendarResponseDto> calendars;
+
+        private List<CheckListResponseDto> checkLists;
+
+        public DetailAll(Plan plan) {
+            this.plan_id = plan.getId();
+            this.title = plan.getTitle();
+            this.travel_destination = plan.getTravel_destination();
+            this.travel_start = plan.getTravel_start();
+            this.travel_end = plan.getTravel_end();
+            this.del_tc = plan.getDel_tc();
+            this.members = plan.getMembers().stream()
+                    .map(MemberResponseDto::new)
+                    .collect(Collectors.toList());
+            this.calendars = plan.getCalendars().stream()
+                    .map(CalendarResponseDto::new)
+                    .collect(Collectors.toList());
+            this.checkLists = plan.getCheckLists().stream()
+                    .map(CheckListResponseDto::new)
+                    .collect(Collectors.toList());
         }
     }
 }

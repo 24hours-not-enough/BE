@@ -1,5 +1,6 @@
 package com.example.trip.service;
 
+import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.request.PlanRequestDto;
 import com.example.trip.dto.response.PlanResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -19,4 +20,6 @@ public interface PlanService {
     void removePlanMember(Long id, Long planId);
 
     void removePlan(Long planId);
+
+    List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId);
 }
