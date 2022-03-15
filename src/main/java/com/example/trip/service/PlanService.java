@@ -17,4 +17,6 @@ public interface PlanService {
     PlanResponseDto findPlanOne(Long planId);
 
     void removePlanMember(Long id, Long planId);
+
+    void removePlan(Long planId);
 }

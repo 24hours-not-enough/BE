@@ -65,6 +65,12 @@ public class PlanController {
         return new ResponseEntity<>(new GetPlanOne(true, "계획 단건 조회 성공!",planOne), HttpStatus.OK);
     }
 
+    @DeleteMapping("/plan/{planId}")
+    public ResponseEntity<Success> planModify(@PathVariable Long planId) {
+        planService.removePlan(planId);
+        return new ResponseEntity<>(new Success(true, "계획 영구 삭제 성공!"), HttpStatus.OK);
+    }
+
     @DeleteMapping("/plan/{planId}/member")
     public ResponseEntity<Success> planMemberRemove(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
         planService.removePlanMember(userDetails.getUser().getId(),planId);

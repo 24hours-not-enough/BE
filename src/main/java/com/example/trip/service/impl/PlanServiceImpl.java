@@ -78,6 +78,12 @@ public class PlanServiceImpl implements PlanService {
         memberRepository.deleteByPlanAndUser(planId,id);
     }
 
+    @Override
+    @Transactional
+    public void removePlan(Long planId) {
+        planRepository.deleteById(planId);
+    }
+
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
     private void setMember(List<MemberRequestDto.joinDto> memberList, Plan savePlan) {
         memberList.forEach((members) ->{
