@@ -6,6 +6,8 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,6 +24,9 @@ public class Calendar {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
     private Plan plan;
+
+    @OneToMany(mappedBy = "calendar")
+    private List<CalendarDetails> calendarDetails = new ArrayList<>();
 
     @Builder
     public Calendar(String days, Plan plan){
