@@ -1,15 +1,17 @@
 package com.example.trip.domain;
 
 import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class Feed {
+public class Feed extends TimeStamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,4 +23,10 @@ public class Feed {
     private User user;
 
     private String title;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime travelStart;
+
+    @DateTimeFormat(pattern = "yyyy-MM-dd")
+    private LocalDateTime travelEnd;
 }

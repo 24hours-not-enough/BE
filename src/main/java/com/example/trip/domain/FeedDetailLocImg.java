@@ -6,6 +6,7 @@ import javax.persistence.*;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
@@ -19,6 +20,5 @@ public class FeedDetailLocImg {
     @JoinColumn(name = "feed_detail_loc_id")
     private FeedDetailLoc feedDetailLoc;
 
-    @Embedded
-    private Image image;
+    private String imgUrl;
 }

@@ -3,13 +3,15 @@ package com.example.trip.domain;
 import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class FeedDetail extends TimeStamped{
+public class FeedDetail{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,7 +22,10 @@ public class FeedDetail extends TimeStamped{
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
-    private String content;
+    @OneToMany
+    private List<FeedDetailLoc> feedDetailLoc;
+
+    private String day;
 
     @Lob
     private String memo;
