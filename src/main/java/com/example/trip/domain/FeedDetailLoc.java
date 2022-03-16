@@ -25,6 +25,9 @@ public class FeedDetailLoc {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
     private List<FeedDetailLocImg> feedDetailLocImg;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
+    private List<Likes> likes;
+
     @Lob
     private String location;
 

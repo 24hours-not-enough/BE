@@ -21,6 +21,6 @@ public class Likes {
     private User user;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feed_id")
-    private Feed feed;
+    @JoinColumn(name = "feed_detail_loc_id")
+    private FeedDetailLoc feedDetailLoc;
 }
