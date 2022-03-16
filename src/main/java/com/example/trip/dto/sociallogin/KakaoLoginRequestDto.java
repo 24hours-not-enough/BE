@@ -1,11 +1,12 @@
-package com.example.trip.dto;
+package com.example.trip.dto.sociallogin;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class GoogleLoginRequestDto {
+public class KakaoLoginRequestDto {
     private String email;
-    private String googleId;
+    private String kakaoId;
 }

@@ -1,4 +1,4 @@
-package com.example.trip.dto;
+package com.example.trip.dto.sociallogin;
 
 import lombok.Getter;
 import org.springframework.web.multipart.MultipartFile;
