@@ -18,6 +18,7 @@ public class FeedService {
     private final FeedDetailRepository feedDetailRepository;
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
+    private final LikeRepository likeRepository;
 
     public List<Feed> findAll(){
 
@@ -58,19 +59,45 @@ public class FeedService {
                         .map(FeedDetailLoc::getFeedDetailLocImg)
                         .collect(Collectors.toList());
 
-
-
         feedDetailLocImgs.forEach(x -> feedDetailLocImgRepository.saveAll(x));
         
     }
 
-//    @Transactional
-//    public void modifyFeed(){
-//        Feed feed = feedRepository.findById();
-//        feed.update();
-//    }
+    @Transactional
+    public void modifyFeed(Long feedId, FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto){
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("ID가 존재하지 않습니다. "));
+
+        //feed Detail 수정
+        feedRequestModifyDto.getFeedDetail().stream()
+                .forEach(x -> x.setFeed(feed));
+
+        //feed DetailLoc 수정
+        feedRequestModifyDto.getFeedDetail().stream().
+                forEach(x -> x.getFeedDetailLoc().forEach(y -> y.setFeedDetail(x)));
+
+        //feed DetailLocImg 수정
+        feedRequestModifyDto.getFeedDetail().stream().
+                forEach(x -> x.getFeedDetailLoc().forEach(y -> y.getFeedDetailLocImg().forEach(z -> z.setFeedDetailLoc(y))));
+
+        feed.update(feedRequestModifyDto);
+    }
 
     public void deleteFeed(Long feedId){
         feedRepository.deleteById(feedId);
+    }
+
+    public void likeFeed(Long feedDetailLocId, User user){
+        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId).orElseThrow(() -> new NullPointerException("해당 값이 없습니다."));
+        Likes like = Likes.builder()
+                .feedDetailLoc(feedDetailLoc)
+                .user(user)
+                .build();
+
+        likeRepository.save(like);
+    }
+
+
+    public void unlikeFeed(Long feedId, User user){
+        likeRepository.deleteLikeFeed(feedId, user.getId());
     }
 }
