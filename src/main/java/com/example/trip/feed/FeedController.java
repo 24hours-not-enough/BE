@@ -52,12 +52,30 @@ public class FeedController {
                 .build(), HttpStatus.OK);
     }
 
-    @PostMapping("/feed/{feedDetailLocId}/unlike")
+    @DeleteMapping("/feed/{feedDetailLocId}/unlike")
     public ResponseEntity<FeedResponseDto> unlikeFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         feedService.unlikeFeed(feedDetailLocId, userDetails.getUser());
         return new ResponseEntity<>(FeedResponseDto.builder()
                 .result("success")
                 .msg("피드 좋아요 취소에 성공하였습니다.")
+                .build(), HttpStatus.OK);
+    }
+
+    @PostMapping("/feed/{feedDetailLocId}/bookmark")
+    public ResponseEntity<FeedResponseDto> bookmarkFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        feedService.bookmarkFeed(feedDetailLocId, userDetails.getUser());
+        return new ResponseEntity<>(FeedResponseDto.builder()
+                .result("success")
+                .msg("피드 북마크 등록에 성공하였습니다.")
+                .build(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/feed/{feedDetailLocId}/unbookmark")
+    public ResponseEntity<FeedResponseDto> unbookmarkFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        feedService.unbookmarkFeed(feedDetailLocId, userDetails.getUser());
+        return new ResponseEntity<>(FeedResponseDto.builder()
+                .result("success")
+                .msg("피드 북마크 취소에 성공하였습니다.")
                 .build(), HttpStatus.OK);
     }
 }

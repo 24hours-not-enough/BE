@@ -19,6 +19,7 @@ public class FeedService {
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
     private final LikeRepository likeRepository;
+    private final BookMarkRepository bookMarkRepository;
 
     public List<Feed> findAll(){
 
@@ -99,5 +100,20 @@ public class FeedService {
 
     public void unlikeFeed(Long feedId, User user){
         likeRepository.deleteLikeFeed(feedId, user.getId());
+    }
+
+    public void bookmarkFeed(Long feedDetailLocId, User user){
+        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId).orElseThrow(() -> new NullPointerException("해당 값이 없습니다."));
+        BookMark bookmark = BookMark.builder()
+                .feedDetailLoc(feedDetailLoc)
+                .user(user)
+                .build();
+
+        bookMarkRepository.save(bookmark);
+    }
+
+
+    public void unbookmarkFeed(Long feedDetailLocId, User user){
+        bookMarkRepository.deleteBookmarkFeed(feedDetailLocId, user.getId());
     }
 }
