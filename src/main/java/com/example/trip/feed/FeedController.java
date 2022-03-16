@@ -78,4 +78,31 @@ public class FeedController {
                 .msg("피드 북마크 취소에 성공하였습니다.")
                 .build(), HttpStatus.OK);
     }
+
+    @PostMapping("/feed/comment/{feedDetailLocId}")
+    public ResponseEntity<FeedResponseDto> registerFeedComment(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long feedDetailLocId, @RequestBody FeedRequestDto.FeedRequestCommentRegisterDto feedRequestCommentRegisterDto) {
+        feedService.registerFeedComment(userDetails.getUser(), feedDetailLocId, feedRequestCommentRegisterDto);
+        return new ResponseEntity<>(FeedResponseDto.builder()
+                .result("success")
+                .msg("댓글 등록 성공하였습니다.")
+                .build(), HttpStatus.OK);
+    }
+
+    @PutMapping("/feed/comment/{commentId}")
+    public ResponseEntity<FeedResponseDto> modifyFeedComment(@PathVariable Long commentId, @RequestBody FeedRequestDto.FeedRequestCommentModifyDto feedRequestCommentModifyDto) {
+        feedService.modifyFeedComment(commentId, feedRequestCommentModifyDto);
+        return new ResponseEntity<>(FeedResponseDto.builder()
+                .result("success")
+                .msg("댓글 수정 성공하였습니다.")
+                .build(), HttpStatus.OK);
+    }
+
+    @DeleteMapping("/feed/comment/{commentId}")
+    public ResponseEntity<FeedResponseDto> deleteFeedComment(@PathVariable Long commentId) {
+        feedService.deleteFeedComment(commentId);
+        return new ResponseEntity<>(FeedResponseDto.builder()
+                .result("success")
+                .msg("댓글 삭제 성공하였습니다.")
+                .build(), HttpStatus.OK);
+    }
 }

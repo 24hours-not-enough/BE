@@ -20,6 +20,7 @@ public class FeedService {
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
     private final LikeRepository likeRepository;
     private final BookMarkRepository bookMarkRepository;
+    private final CommentRepository commentRepository;
 
     public List<Feed> findAll(){
 
@@ -111,9 +112,29 @@ public class FeedService {
 
         bookMarkRepository.save(bookmark);
     }
-
-
     public void unbookmarkFeed(Long feedDetailLocId, User user){
         bookMarkRepository.deleteBookmarkFeed(feedDetailLocId, user.getId());
+    }
+
+    public void registerFeedComment(User user, Long feedDetailLocId, FeedRequestDto.FeedRequestCommentRegisterDto feedRequestCommentRegisterDto){
+        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId).orElseThrow(() -> new NullPointerException("해당 값이 없습니다."));
+        FeedComment feedComment = FeedComment.builder()
+                .feedDetailLoc(feedDetailLoc)
+                .user(user)
+                .content(feedRequestCommentRegisterDto.getContent())
+                .build();
+        commentRepository.save(feedComment);
+
+    }
+
+    @Transactional
+    public void modifyFeedComment(Long commentId, FeedRequestDto.FeedRequestCommentModifyDto feedRequestCommentModifyDto){
+        FeedComment feedComment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("해당 값이 없습니다."));
+        feedComment.update(feedRequestCommentModifyDto);
+
+    }
+
+    public void deleteFeedComment(Long commentId){
+        commentRepository.deleteById(commentId);
     }
 }

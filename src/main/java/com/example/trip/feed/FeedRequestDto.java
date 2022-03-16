@@ -39,4 +39,16 @@ public class FeedRequestDto {
 
     }
 
+    @Getter
+    public static class FeedRequestCommentRegisterDto{
+        private String content;
+
+    }
+
+    @Getter
+    public static class FeedRequestCommentModifyDto{
+        private String content;
+
+    }
+
 }

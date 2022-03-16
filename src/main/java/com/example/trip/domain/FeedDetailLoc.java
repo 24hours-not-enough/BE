@@ -28,6 +28,12 @@ public class FeedDetailLoc {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
     private List<Likes> likes;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
+    private List<BookMark> bookMarks;
+
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
+    private List<FeedComment> feedComments;
+
     @Lob
     private String location;
 
