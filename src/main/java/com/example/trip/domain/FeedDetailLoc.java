@@ -22,7 +22,7 @@ public class FeedDetailLoc {
     @JoinColumn(name = "feed_detail_id")
     private FeedDetail feedDetail;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
     private List<FeedDetailLocImg> feedDetailLocImg;
 
     @Lob

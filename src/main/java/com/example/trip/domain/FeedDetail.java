@@ -22,7 +22,7 @@ public class FeedDetail{
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
-    @OneToMany
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetail")
     private List<FeedDetailLoc> feedDetailLoc;
 
     private String day;

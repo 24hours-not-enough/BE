@@ -1,10 +1,10 @@
 package com.example.trip.domain;
 
+import com.example.trip.feed.FeedRequestDto;
 import lombok.*;
-import org.springframework.format.annotation.DateTimeFormat;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
@@ -22,11 +22,21 @@ public class Feed extends TimeStamped{
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feed")
+    private List<FeedDetail> feedDetail;
+
     private String title;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime travelStart;
 
-    @DateTimeFormat(pattern = "yyyy-MM-dd")
     private LocalDateTime travelEnd;
+
+    //피드 관련 수정
+    public void update(FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto){
+        // 피드 수정
+        this.title = feedRequestModifyDto.getTitle();
+        this.travelStart = feedRequestModifyDto.getTravelStart();
+        this.travelEnd = feedRequestModifyDto.getTravelEnd();
+        this.feedDetail = feedRequestModifyDto.getFeedDetail();
+    }
 }
