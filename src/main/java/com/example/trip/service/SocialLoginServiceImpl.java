@@ -5,6 +5,7 @@ import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
 import com.example.trip.domain.User;
 import com.example.trip.dto.*;
+import com.example.trip.dto.sociallogin.*;
 import com.example.trip.exceptionhandling.CustomException;
 import com.example.trip.jwt.JwtTokenProvider;
 import com.example.trip.repository.UserRepository;
@@ -30,6 +31,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -40,14 +42,15 @@ import static com.example.trip.exceptionhandling.ErrorCode.USER_NOT_FOUND;
 @RequiredArgsConstructor
 @Service
 public class SocialLoginServiceImpl implements SocialLoginService {
-    String kakao_client_id = System.getenv("kakao_client_id");
-    String kakao_client_secret = System.getenv("kakao_client_secret");
-    String google_client_id = System.getenv("google_client_id");
-    String google_client_secret = System.getenv("google_client_secret");
+//    String kakao_client_id = System.getenv("kakao_client_id");
+//    String kakao_client_secret = System.getenv("kakao_client_secret");
+//    String google_client_id = System.getenv("google_client_id");
+//    String google_client_secret = System.getenv("google_client_secret");
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final S3UploaderServiceImpl s3UploaderService;
 
     private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
 //    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
@@ -85,10 +88,10 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", kakao_client_id);
+        body.add("client_id", "475380fc6628bba0bcc29d7cd03fcb9f");
         body.add("redirect_uri", "http://localhost:8080/api/kakaologin");
         body.add("code", code);
-        body.add("client_secret", kakao_client_secret);
+        body.add("client_secret", "BTy1jiZDZ8FZ3Cxs7hD2220JwV0kcSY7");
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
@@ -189,8 +192,8 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("code", code);
-        body.add("client_id", google_client_id);
-        body.add("client_secret", google_client_secret);
+        body.add("client_id", "622819746918-vhdg3e6cn8kmivrmnam764ujof7a49rk.apps.googleusercontent.com");
+        body.add("client_secret", "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");
         body.add("redirect_uri", "http://localhost:8080/api/googlelogin");
         body.add("grant_type", "authorization_code");
 
@@ -278,10 +281,13 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     }
 
     @Transactional
-    public void registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) {
+    public UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         user.get().update(username);
+        s3UploaderService.upload(file);
+        String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+        return new UserBasicInfoResponseDto(username, pororoImg);
     }
 
     public boolean checkKakaoIsFirstLogin(KakaoLoginRequestDto loginRequestDto) {
@@ -308,5 +314,46 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         if (userRepository.existsByUsername(username)) {
             throw new CustomException(ALREADY_EXIST_USERNAME);
         }
+    }
+
+    public UserBasicInfoResponseDto sendKakaoUserBasicInfo(KakaoLoginRequestDto loginRequestDto) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        if (checkKakaoIsFirstLogin(loginRequestDto)) {
+            return new UserBasicInfoResponseDto(null, null);
+        } else {
+            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
         }
     }
+
+    public UserBasicInfoResponseDto sendGoogleUserBasicInfo(GoogleLoginRequestDto loginRequestDto) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        if (checkGoogleIsFirstLogin(loginRequestDto)) {
+            return new UserBasicInfoResponseDto(null, null);
+        } else {
+            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+        }
+    }
+
+    public UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND));
+        String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+        return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+    }
+
+    public SearchUserInviteResponseDto searchUserInvite(String username) {
+        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        User foundUser = user.get();
+        return new SearchUserInviteResponseDto(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
+    }
+
+
+}
