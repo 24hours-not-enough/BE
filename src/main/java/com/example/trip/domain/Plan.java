@@ -10,6 +10,7 @@ import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Getter
@@ -30,6 +31,8 @@ public class Plan extends TimeStamped {
     private LocalDateTime travel_end;
 
     private Boolean del_tc;
+
+    private String uuid;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
@@ -62,6 +65,7 @@ public class Plan extends TimeStamped {
                 .travel_start(dto.getTravel_start())
                 .travel_end(dto.getTravel_end())
                 .del_tc(true)
+                .uuid(UUID.randomUUID().toString())
                 .build();
     }
 
@@ -77,6 +81,8 @@ public class Plan extends TimeStamped {
         }
         if (modify.getTitle() != null) {
             this.travel_end = modify.getTravel_end();
+        }else {
+            this.del_tc = modify.getDel_fl();
         }
     }
 

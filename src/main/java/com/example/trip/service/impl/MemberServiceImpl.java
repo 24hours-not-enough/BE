@@ -84,6 +84,23 @@ public class MemberServiceImpl implements MemberService {
         byUserAndPland.get().modifyActive();
     }
 
+    @Override
+    @Transactional
+    public void addMemberByUuid(Long userId, String roomId) {
+        Optional<Plan> findPlan = Optional.ofNullable(planRepository.findByUuid(roomId).orElseThrow(PlanNotFoundException::new));
+        Optional<User> findUser = userRepository.findById(userId);
+        Optional<Member> byUserAndPland = memberRepository.findByUserAndPland(userId, findPlan.get().getId());
+        if(!byUserAndPland.isPresent()) {
+            Member member = Member.builder()
+                    .user(findUser.get())
+                    .room_rep(false)
+                    .plan(findPlan.get())
+                    .active(true)
+                    .build();
+            memberRepository.save(member);
+        }
+    }
+
     private void setMember(Long planId, MemberRequestDto.invite dto) {
         dto.getMemberList().forEach((members) -> {
             Optional<Plan> findPlan = planRepository.findById(planId);

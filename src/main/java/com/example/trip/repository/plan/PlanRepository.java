@@ -7,6 +7,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface PlanRepository extends JpaRepository<Plan, Long>, PlanRepositoryCustom {
     @Query("select distinct p from Plan p, Member  m left join fetch p.user left join fetch p.members where m.active =true and m.user.id=:userId order by p.travel_start asc ")
@@ -17,4 +18,7 @@ public interface PlanRepository extends JpaRepository<Plan, Long>, PlanRepositor
 
     @Query("select distinct p from Plan p left join fetch p.members left join fetch p.user where p.id=:planId")
     List<Plan> findPlanDetails(@Param("planId") Long planId);
+
+    @Query("select p from Plan p where p.uuid =:roomId")
+    Optional<Plan> findByUuid(String roomId);
 }

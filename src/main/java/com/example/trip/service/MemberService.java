@@ -17,4 +17,6 @@ public interface MemberService {
     List<MemberResponseDto.inviteList> findMemberInviteList(Long userId, Long planId);
 
     void modifyMemberActive(Long userId, Long planId);
+
+    void addMemberByUuid(Long userId, String roomId);
 }
