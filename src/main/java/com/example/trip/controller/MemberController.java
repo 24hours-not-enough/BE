@@ -52,8 +52,9 @@ public class MemberController {
         return new ResponseEntity<>(new MemberInviteUser(true,"초대 요청 리스트 조회 완료!",memberInviteList), HttpStatus.OK);
     }
 
-    @PostMapping("/member/plan/{roomId}")
+    @PostMapping("/member/plan/room/{roomId}")
     public ResponseEntity<Success> MemberUriInvite(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable String roomId){
+        System.out.println("roomId = " +roomId);
         memberService.addMemberByUuid(userDetails.getUser().getId(), roomId);
         return new ResponseEntity<>(new Success(true,"초대받은 계획 참여 완료!"), HttpStatus.OK);
     }
