@@ -46,7 +46,7 @@ public class SwaggerConfig {
     }
 
     private ApiKey apiKey() {
-        return new ApiKey("JWT", "Authorization", "header");
+        return new ApiKey("JWT", "X-AUTH-TOKEN", "header");
     }
 
     private SecurityContext securityContext() {
@@ -63,6 +63,6 @@ public class SwaggerConfig {
         AuthorizationScope authorizationScope = new AuthorizationScope("global", "accessEverything");
         AuthorizationScope[] authorizationScopes = new AuthorizationScope[1];
         authorizationScopes[0] = authorizationScope;
-        return Arrays.asList(new SecurityReference("X-AUTH-TOKEN", authorizationScopes));
+        return Arrays.asList(new SecurityReference("JWT", authorizationScopes));
     }
 }
