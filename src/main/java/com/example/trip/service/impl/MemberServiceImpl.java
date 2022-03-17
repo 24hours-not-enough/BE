@@ -1,5 +1,7 @@
 package com.example.trip.service.impl;
 
+import com.example.trip.advice.exception.AuthPlanNotFoundException;
+import com.example.trip.advice.exception.PlanNotFoundException;
 import com.example.trip.domain.Member;
 import com.example.trip.domain.Plan;
 import com.example.trip.domain.User;
@@ -30,7 +32,9 @@ public class MemberServiceImpl implements MemberService {
 
     @Override
     @Transactional
-    public List<MemberResponseDto.invite> addMember(Long planId, MemberRequestDto.invite dto) {
+    public List<MemberResponseDto.invite> addMember(Long userId, Long planId, MemberRequestDto.invite dto) {
+        authMemberValidation(userId, planId);
+        planValidation(planId);
         setMember(planId, dto);
         return memberRepository.findPlanAndMembers(planId).stream()
                 .map(MemberResponseDto.invite::new)
@@ -38,7 +42,9 @@ public class MemberServiceImpl implements MemberService {
     }
 
     @Override
-    public List<MemberResponseDto.invite> findMember(Long planId) {
+    public List<MemberResponseDto.invite> findMember(Long userId, Long planId) {
+        planValidation(planId);
+        memberAndPlanValidation(userId, planId);
         Optional<Plan> findPlanId = planRepository.findById(planId);
         return memberRepository.findPlanAndMembers(findPlanId.get().getId()).stream()
                 .map(MemberResponseDto.invite::new)
@@ -48,17 +54,23 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void removeMember(Long planId, Long userId) {
+        planValidation(planId);
+        memberAndPlanValidation(userId, planId);
         memberRepository.deleteByPlanAndUser(planId,userId);
     }
 
     @Override
-    public void removeMemberOne(Long planId, MemberRequestDto memberRequestDto) {
+    public void removeMemberOne(Long userId, Long planId, MemberRequestDto memberRequestDto) {
+        planValidation(planId);
+        authMemberValidation(userId,planId);
         Optional<User> findUserByNickName = userRepository.findByNickName(memberRequestDto.getNickName());
         memberRepository.deleteByPlanAndUser(planId,findUserByNickName.get().getId());
     }
 
     @Override
-    public List<MemberResponseDto.inviteList> findMemberInviteList(Long userId) {
+    public List<MemberResponseDto.inviteList> findMemberInviteList(Long userId, Long planId) {
+        planValidation(planId);
+        authMemberValidation(userId,planId);
         return memberRepository.findByUserMemberList(userId).stream()
                 .map(MemberResponseDto.inviteList::new)
                 .collect(Collectors.toList());
@@ -67,7 +79,8 @@ public class MemberServiceImpl implements MemberService {
     @Override
     @Transactional
     public void modifyMemberActive(Long userId, Long planId) {
-        Optional<Member> byUserAndPland = memberRepository.findByUserAndPland(userId, planId);
+        planValidation(planId);
+        Optional<Member> byUserAndPland = Optional.ofNullable(memberRepository.findByUserAndPland(userId, planId).orElseThrow(AuthPlanNotFoundException::new));
         byUserAndPland.get().modifyActive();
     }
 
@@ -88,5 +101,17 @@ public class MemberServiceImpl implements MemberService {
                 }
             }
         });
+    }
+
+    private void memberAndPlanValidation(Long userId, Long planId) {
+        memberRepository.findByUserAndPland(userId, planId).orElseThrow(AuthPlanNotFoundException::new);
+    }
+
+    private void planValidation(Long planId) {
+        planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
+    }
+
+    private void authMemberValidation(Long userId, Long planId) {
+        memberRepository.findByAuthMemberAndPlan(userId, planId).orElseThrow(AuthPlanNotFoundException::new);
     }
 }

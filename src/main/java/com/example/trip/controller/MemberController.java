@@ -23,14 +23,14 @@ public class MemberController {
     private final MemberService memberService;
 
     @PostMapping("/member/plan/{planId}")
-    public ResponseEntity<MemberInviteAll> planMemberOne(@PathVariable Long planId, @RequestBody MemberRequestDto.invite dto) {
-        List<MemberResponseDto.invite> invites = memberService.addMember(planId, dto);
+    public ResponseEntity<MemberInviteAll> planMemberOne(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId, @RequestBody MemberRequestDto.invite dto) {
+        List<MemberResponseDto.invite> invites = memberService.addMember(userDetails.getUser().getId(),planId, dto);
         return new ResponseEntity<>(new MemberInviteAll(true,"멤버초대 완료!",invites), HttpStatus.OK);
     }
 
     @GetMapping("/member/plan/{planId}")
-    public ResponseEntity<MemberInviteAll> MemberList(@PathVariable Long planId) {
-        List<MemberResponseDto.invite> memberList = memberService.findMember(planId);
+    public ResponseEntity<MemberInviteAll> MemberList(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long planId) {
+        List<MemberResponseDto.invite> memberList = memberService.findMember(userDetails.getUser().getId(),planId);
         return new ResponseEntity<>(new MemberInviteAll(true,"함께하는 멤버조회 완료!",memberList), HttpStatus.OK);
     }
 
@@ -41,14 +41,14 @@ public class MemberController {
     }
 
     @DeleteMapping("/member/plan/{planId}")
-    public ResponseEntity<Success> MemberRemoveByRep(@PathVariable Long planId, @RequestBody MemberRequestDto memberRequestDto){
-        memberService.removeMemberOne(planId,memberRequestDto);
+    public ResponseEntity<Success> MemberRemoveByRep(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long planId, @RequestBody MemberRequestDto memberRequestDto){
+        memberService.removeMemberOne(userDetails.getUser().getId(), planId,memberRequestDto);
         return new ResponseEntity<>(new Success(true,"친구 초대 취소 완료!"), HttpStatus.OK);
     }
 
-    @GetMapping("/member/plan/invite")
-    public ResponseEntity<MemberInviteUser> MemberList(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        List<MemberResponseDto.inviteList> memberInviteList = memberService.findMemberInviteList(userDetails.getUser().getId());
+    @GetMapping("/member/plan/{planId}/invite")
+    public ResponseEntity<MemberInviteUser> MemberInviteList(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {
+        List<MemberResponseDto.inviteList> memberInviteList = memberService.findMemberInviteList(userDetails.getUser().getId(),planId);
         return new ResponseEntity<>(new MemberInviteUser(true,"초대 요청 리스트 조회 완료!",memberInviteList), HttpStatus.OK);
     }
 
