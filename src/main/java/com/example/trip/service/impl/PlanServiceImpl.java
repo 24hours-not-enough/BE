@@ -1,6 +1,8 @@
 package com.example.trip.service.impl;
 
-import com.example.trip.config.security.UserDetailsImpl;
+import com.example.trip.advice.exception.AuthPlanNotFoundException;
+import com.example.trip.advice.exception.PlanNotFoundException;
+import com.example.trip.advice.exception.UserNotFoundException;
 import com.example.trip.domain.Member;
 import com.example.trip.domain.Plan;
 import com.example.trip.domain.User;
@@ -33,8 +35,8 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public Long addPlan(PlanRequestDto.Regist dto) {
-        Optional<User> findUser = userRepository.findById(1L);
+    public Long addPlan(Long user_id, PlanRequestDto.Regist dto) {
+        Optional<User> findUser = userRepository.findById(user_id);
         Plan plan = Plan.of(findUser.get(),dto);
         Plan savePlan = planRepository.save(plan);
         Member member = Member.builder()
@@ -49,44 +51,53 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<PlanResponseDto> findPlan(Pageable pageable) {
-        return planRepository.findPlanAndMembers().stream()
+    public List<PlanResponseDto> findPlan(Long userId, Pageable pageable) {
+        return planRepository.findPlanAndMembers(userId).stream()
                 .map(PlanResponseDto::new)
                 .collect(Collectors.toList());
     }
 
     @Override
     @Transactional
-    public void modifyPlan(Long planId, PlanRequestDto.Modify modify) {
-        Optional<Plan> findPlan = planRepository.findById(planId);
-        if(modify.getDel_fl()!=null){
-            findPlan.get().deletePlan(modify);
-        }else {
+    public void modifyPlan(Long user_id, Long planId, PlanRequestDto.Modify modify) {
+        Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
+        authPlanValidation(planId,user_id);
+        if(modify.getDel_fl()==null){
             findPlan.get().updatePlan(modify);
             memberRepository.deleteByPlanId(planId);
             setMember(modify.getMemberList(),findPlan.get());
+        }else{
+            findPlan.get().updatePlan(modify);
         }
     }
 
     @Override
-    public PlanResponseDto findPlanOne(Long planId) {
+    public PlanResponseDto findPlanOne(Long planId, Long userId) {
+        planValidation(planId);
+        authPlanValidation(planId,userId);
         return planRepository.findPlanAndMemberOne(planId);
     }
 
     @Override
     @Transactional
-    public void removePlanMember(Long id, Long planId) {
-        memberRepository.deleteByPlanAndUser(planId,id);
+    public void removePlanMember(Long userId, Long planId) {
+        planValidation(planId);
+        authPlanValidation(planId,userId);
+        memberRepository.deleteByPlanAndUser(planId,userId);
     }
 
     @Override
     @Transactional
-    public void removePlan(Long planId) {
+    public void removePlan(Long planId, Long userId) {
+        planValidation(planId);
+        authPlanValidation(planId,userId);
         planRepository.deleteById(planId);
     }
 
     @Override
-    public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId) {
+    public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId, Long userId) {
+        planValidation(planId);
+        authPlanValidation(planId,userId);
         return planRepository.findPlanDetails(planId)
                 .stream()
                 .map(PlanResponseDto.DetailAll::new)
@@ -96,24 +107,29 @@ public class PlanServiceImpl implements PlanService {
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
     private void setMember(List<MemberRequestDto.joinDto> memberList, Plan savePlan) {
         memberList.forEach((members) ->{
-            System.out.println("members.getNickName() = " + members.getNickName());
-            Optional<User> findNickName = userRepository.findByNickName(members.getNickName());
-            System.out.println("findNickName = " +findNickName);
+            Optional<User> findNickName = Optional.ofNullable(userRepository.findByNickName(members.getNickName()).orElseThrow(UserNotFoundException::new));
             Optional<Member> findMember = memberRepository.findByNickNameAndPlanId(findNickName.get().getId(),savePlan.getId());
-            System.out.println("findMember = " + findMember);
             //Optional<User> findUser = userRepository.findByEmail(findMember.get()..getEmail());
             if(!findMember.isPresent()){
                // if(findUser.isPresent()) {
                     Member member = Member.builder()
-                          //  .email(members.getEmail())
+                            //  .email(members.getEmail())
                             .user(findNickName.get())
                             .room_rep(false)
                             .plan(savePlan)
                             .active(false)
                             .build();
                     memberRepository.save(member);
-              //  }
             }
         });
+    }
+
+
+    private void authPlanValidation(Long planId, Long userId) {
+        memberRepository.findByUserAndPland(userId,planId).orElseThrow(AuthPlanNotFoundException::new);
+    }
+
+    private void planValidation(Long planId) {
+        planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
     }
 }

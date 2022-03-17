@@ -1,6 +1,5 @@
 package com.example.trip.service;
 
-import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.request.PlanRequestDto;
 import com.example.trip.dto.response.PlanResponseDto;
 import org.springframework.data.domain.Pageable;
@@ -9,17 +8,17 @@ import java.util.List;
 
 public interface PlanService {
 
-    Long addPlan(PlanRequestDto.Regist dto);
+    Long addPlan(Long user_id, PlanRequestDto.Regist dto);
 
-    List<PlanResponseDto> findPlan(Pageable pageable);
+    List<PlanResponseDto> findPlan(Long userId, Pageable pageable);
 
-    void modifyPlan(Long planId, PlanRequestDto.Modify modify);
+    void modifyPlan(Long user_id, Long planId, PlanRequestDto.Modify modify);
 
-    PlanResponseDto findPlanOne(Long planId);
+    PlanResponseDto findPlanOne(Long planId, Long userId);
 
     void removePlanMember(Long id, Long planId);
 
-    void removePlan(Long planId);
+    void removePlan(Long planId, Long userId);
 
-    List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId);
+    List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId, Long userId);
 }
