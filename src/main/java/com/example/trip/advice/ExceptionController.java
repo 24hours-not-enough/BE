@@ -37,9 +37,9 @@ public class ExceptionController {
     public ResponseEntity<Fail> CheckListNotFoundException(CheckListNotFoundException e) {
         return new ResponseEntity<>(new Fail("존재하지 않는 체크리스트 입니다."), HttpStatus.OK);
     }
-//
-//    @ExceptionHandler(UserNotFoundException.class)
-//    public ResponseEntity<Fail> UserNotFoundException(UserNotFoundException e) {
-//        return new ResponseEntity<>(new Fail("존재하지 않는 사용자입니다."), HttpStatus.OK);
-//    }
+
+    @ExceptionHandler(UserNotFoundException.class)
+    public ResponseEntity<Fail> UserNotFoundException(UserNotFoundException e) {
+        return new ResponseEntity<>(new Fail("닉네임이 존재하지 않습니다."), HttpStatus.OK);
+    }
 }
