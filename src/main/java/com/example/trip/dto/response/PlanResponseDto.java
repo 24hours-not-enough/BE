@@ -93,6 +93,8 @@ public class PlanResponseDto {
 
         private Boolean del_tc;
 
+        private String room_id;
+
         private List<MemberResponseDto> members;
 
         private List<CalendarResponseDto> calendars;
@@ -106,6 +108,7 @@ public class PlanResponseDto {
             this.travel_start = plan.getTravel_start();
             this.travel_end = plan.getTravel_end();
             this.del_tc = plan.getDel_tc();
+            this.room_id = plan.getUuid();
             this.members = plan.getMembers().stream()
                     .map(MemberResponseDto::new)
                     .collect(Collectors.toList());

@@ -48,13 +48,14 @@ public class Plan extends TimeStamped {
     private final List<CheckList> checkLists = new ArrayList<>();
 
     @Builder
-    public Plan(String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end, Boolean del_tc, User user) {
+    public Plan(String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end, Boolean del_tc, User user, String uuid) {
         this.title = title;
         this.travel_destination = travel_destination;
         this.travel_start = travel_start;
         this.travel_end = travel_end;
         this.del_tc = del_tc;
         this.user = user;
+        this.uuid = uuid;
     }
 
     public static Plan of(User user, PlanRequestDto.Regist dto) {
