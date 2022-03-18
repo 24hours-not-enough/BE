@@ -5,12 +5,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.Embeddable;
+import javax.persistence.Lob;
 
 @NoArgsConstructor
 @Embeddable
 @Getter
 public class Image {
 
+    @Lob
     private String file_store_course;
 
     private String store_file_name;
