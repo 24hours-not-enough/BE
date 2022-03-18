@@ -26,11 +26,4 @@ public class FeedDetail{
     private List<FeedDetailLoc> feedDetailLoc;
 
     private String day;
-
-    @Lob
-    private String memo;
-
-
-
-
 }

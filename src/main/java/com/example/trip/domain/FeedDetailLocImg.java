@@ -19,6 +19,8 @@ public class FeedDetailLocImg {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_detail_loc_id")
     private FeedDetailLoc feedDetailLoc;
+  
+    private String fileName;
 
     private String imgUrl;
 }
