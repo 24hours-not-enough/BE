@@ -10,6 +10,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.List;
+
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/api")
@@ -18,7 +20,7 @@ public class CheckListController {
     private final CheckListService checkListService;
 
     @PostMapping("/plan/{planId}/checkLists")
-    public ResponseEntity<Success> CheckListAdd(@PathVariable Long planId, @RequestBody CheckListsRequestDto dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+    public ResponseEntity<Success> CheckListAdd(@PathVariable Long planId, @RequestBody List<CheckListsRequestDto> dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         checkListService.addCheckList(planId,dto,userDetails.getUser().getId());
         return new ResponseEntity<>(new Success(true,"체크리스트 등록 완료!"), HttpStatus.OK);
     }
