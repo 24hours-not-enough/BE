@@ -11,7 +11,6 @@ import java.util.List;
 public class FeedDetailResponseDto {
     private Long feeddetailId;
     private String day;
-    private String memo;
     private List<FeedDetailLocResponseDto> feeddetailloc;
 
 }
