@@ -2,10 +2,11 @@ package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.*;
-import com.example.trip.dto.sociallogin.CheckUsernameDto;
-import com.example.trip.dto.sociallogin.GoogleLoginRequestDto;
-import com.example.trip.dto.sociallogin.KakaoLoginRequestDto;
+import com.example.trip.dto.CheckUsernameDto;
+import com.example.trip.dto.GoogleLoginRequestDto;
+import com.example.trip.dto.KakaoLoginRequestDto;
 import com.example.trip.response.*;
+import com.example.trip.service.RedisServiceImpl;
 import com.example.trip.service.SocialLoginServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
 @RequiredArgsConstructor
@@ -23,26 +26,27 @@ import java.io.IOException;
 public class UserController {
 
     private final SocialLoginServiceImpl socialLoginServiceImpl;
+    private final RedisServiceImpl redisServiceImpl;
 
     // 카카오 로그인
     @GetMapping("/api/kakaologin")
-    public ResponseEntity<LoginSuccess> kakaoLogin(@RequestParam String code) throws JsonProcessingException {
+    public ResponseEntity<LoginSuccess> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         KakaoLoginRequestDto loginRequestDto = socialLoginServiceImpl.kakaoLogin(code);
         return new ResponseEntity<>(new LoginSuccess("success", "카카오 로그인 성공",
                 socialLoginServiceImpl.checkKakaoIsFirstLogin(loginRequestDto),
                 loginRequestDto.getEmail(),
-                socialLoginServiceImpl.issueKakaoJwtToken(loginRequestDto),
+                socialLoginServiceImpl.issueKakaoJwtToken(loginRequestDto, response),
                 socialLoginServiceImpl.sendKakaoUserBasicInfo(loginRequestDto)), HttpStatus.OK);
     }
 
     // 구글 로그인
     @GetMapping("/api/googlelogin")
-    public ResponseEntity<LoginSuccess> googleLogin(@RequestParam String code) throws JsonProcessingException {
+    public ResponseEntity<LoginSuccess> googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         GoogleLoginRequestDto loginRequestDto = socialLoginServiceImpl.googleLogin(code);
         return new ResponseEntity<>(new LoginSuccess("success", "구글 로그인 성공",
                 socialLoginServiceImpl.checkGoogleIsFirstLogin(loginRequestDto),
                 loginRequestDto.getEmail(),
-                socialLoginServiceImpl.issueGoogleJwtToken(loginRequestDto),
+                socialLoginServiceImpl.issueGoogleJwtToken(loginRequestDto, response),
                 socialLoginServiceImpl.sendGoogleUserBasicInfo(loginRequestDto)), HttpStatus.OK);
     }
 
@@ -72,4 +76,18 @@ public class UserController {
         SearchUserInviteResponseDto searchUserInviteResponseDto = socialLoginServiceImpl.searchUserInvite(nickname);
         return new ResponseEntity<>(new SearchUserInviteSuccess("success", "검색한 해당 사용자가 존재합니다.", searchUserInviteResponseDto), HttpStatus.OK);
     }
+
+    // 로그아웃
+    @GetMapping("/api/logout")
+    public ResponseEntity logout(HttpServletRequest request) {
+        redisServiceImpl.delValues(request.getHeader("refreshToken"));
+        return ResponseEntity.ok().body("로그아웃 성공!");
+    }
+
+    // 회원탈퇴
+    @PostMapping("/api/withdrawal")
+    public ResponseEntity<DeleteAccountSuccess> deleteAccount() {
+        return new ResponseEntity<>(new DeleteAccountSuccess("success", "회원 탈퇴되었습니다."), HttpStatus.OK);
+    }
+
 }
