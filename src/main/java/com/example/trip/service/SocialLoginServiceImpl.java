@@ -5,7 +5,6 @@ import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
 import com.example.trip.domain.User;
 import com.example.trip.dto.*;
-import com.example.trip.dto.sociallogin.*;
 import com.example.trip.exceptionhandling.CustomException;
 import com.example.trip.jwt.JwtTokenProvider;
 import com.example.trip.repository.UserRepository;
@@ -31,6 +30,7 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
@@ -42,18 +42,23 @@ import static com.example.trip.exceptionhandling.ErrorCode.USER_NOT_FOUND;
 @RequiredArgsConstructor
 @Service
 public class SocialLoginServiceImpl implements SocialLoginService {
-//    String kakao_client_id = System.getenv("kakao_client_id");
-//    String kakao_client_secret = System.getenv("kakao_client_secret");
-//    String google_client_id = System.getenv("google_client_id");
-//    String google_client_secret = System.getenv("google_client_secret");
+    String kakao_client_id = System.getenv("kakao_client_id");
+    String kakao_client_secret = System.getenv("kakao_client_secret");
+    String google_client_id = System.getenv("google_client_id");
+    String google_client_secret = System.getenv("google_client_secret");
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
     private final S3UploaderServiceImpl s3UploaderService;
-
-    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
+    private final RedisServiceImpl redisServiceImpl;
+//
+//    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
 //    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
+
+
+    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
+    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public KakaoLoginRequestDto kakaoLogin(String code) throws JsonProcessingException {
@@ -88,10 +93,10 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
-        body.add("client_id", "475380fc6628bba0bcc29d7cd03fcb9f");
+        body.add("client_id", kakao_client_id);
         body.add("redirect_uri", "http://localhost:8080/api/kakaologin");
         body.add("code", code);
-        body.add("client_secret", "BTy1jiZDZ8FZ3Cxs7hD2220JwV0kcSY7");
+        body.add("client_secret", kakao_client_secret);
 
         // HTTP 요청 보내기
         HttpEntity<MultiValueMap<String, String>> kakaoTokenRequest = new HttpEntity<>(body, headers);
@@ -132,7 +137,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-//        Long id = jsonNode.get("id").asLong();
         String kakaoId = "KAKAO_" + jsonNode.get("id").asText();
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
@@ -192,8 +196,8 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         // HTTP Body 생성
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("code", code);
-        body.add("client_id", "622819746918-vhdg3e6cn8kmivrmnam764ujof7a49rk.apps.googleusercontent.com");
-        body.add("client_secret", "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");
+        body.add("client_id", google_client_id);
+        body.add("client_secret", google_client_secret);
         body.add("redirect_uri", "http://localhost:8080/api/googlelogin");
         body.add("grant_type", "authorization_code");
 
@@ -266,22 +270,29 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         return user;
     }
 
-    public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto) {
+    public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), AccessTokenValidTime);
-//        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
+        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), RefreshTokenValidTime);
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
+        redisServiceImpl.setValues(refreshToken, loginRequestDto.getKakaoId());
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
-    public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto) {
+    public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), AccessTokenValidTime);
-//        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
+        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), RefreshTokenValidTime);
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
+        redisServiceImpl.setValues(refreshToken, loginRequestDto.getGoogleId());
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
     @Transactional
     public UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
+        System.out.println("snsaccountId" + userDetails.getUsername());
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         user.get().update(username);

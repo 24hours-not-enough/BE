@@ -23,4 +23,6 @@ public interface UserRepository extends JpaRepository<User, Long> {
     @Query("update User u set u.refreshToken = :refreshToken where u.email = :email")
     void updateRefreshToken(@Param(value = "email") String email, @Param(value = "refreshToken") String refreshToken);
 
+    boolean existsByRefreshToken(String refreshtoken);
+
 }
