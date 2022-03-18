@@ -1,6 +1,7 @@
 package com.example.trip.service.impl;
 
 import com.example.trip.advice.exception.AuthPlanNotFoundException;
+import com.example.trip.advice.exception.CheckListModifyException;
 import com.example.trip.advice.exception.CheckListNotFoundException;
 import com.example.trip.advice.exception.PlanNotFoundException;
 import com.example.trip.domain.CheckList;
@@ -34,6 +35,12 @@ public class CheckListServiceImpl implements CheckListService {
     public void addCheckList(Long planId, List<CheckListsRequestDto> dto, Long userId) {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
         memberRepository.findByUserAndPlanActive(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
+        List<CheckList> byPlanId = checkListRepository.findByPlanId(planId);
+        byPlanId.forEach((checkList -> {
+            if(checkList.getIs_locked()){
+                throw new CheckListModifyException();
+            }
+        }));
         checkListRepository.deleteByPlanId(planId);
         setCheckList(findPlan.get(),dto);
 
@@ -44,7 +51,7 @@ public class CheckListServiceImpl implements CheckListService {
             CheckList checklist = CheckList.builder()
                     .check_item(checkList.getCheckName())
                     .is_checked(checkList.getIs_checked())
-                    .is_locked(checkList.getIs_locked())
+                    .is_locked(false)
                     .plan(plan)
                     .build();
             checkListRepository.save(checklist);
@@ -69,6 +76,13 @@ public class CheckListServiceImpl implements CheckListService {
         userAndPlanValidation(planId,userId);
         checkListValidation(checkListsId);
         checkListRepository.deleteById(checkListsId);
+    }
+
+    @Override
+    @Transactional
+    public void addCheckListLock(Long planId, Long id) {
+        List<CheckList> findPlan = checkListRepository.findByPlanId(planId);
+        findPlan.forEach((CheckList::updateCheckListLock));
     }
 
     private void planValidation(Long planId) {

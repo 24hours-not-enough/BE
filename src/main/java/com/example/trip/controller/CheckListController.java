@@ -37,4 +37,10 @@ public class CheckListController {
         checkListService.removeCheckList(checkListsId, planId, userDetails.getUser().getId());
         return new ResponseEntity<>(new Success(true,"체크리스트 삭제 완료!"), HttpStatus.OK);
     }
+
+    @PutMapping("/plan/{planId}/checkLists")
+    public ResponseEntity<Success> CheckListLock(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        checkListService.addCheckListLock(planId, userDetails.getUser().getId());
+        return new ResponseEntity<>(new Success(true,"체크리스트 잠금 완료!"), HttpStatus.OK);
+    }
 }

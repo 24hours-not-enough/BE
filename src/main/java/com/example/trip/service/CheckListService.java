@@ -10,4 +10,6 @@ public interface CheckListService {
     void modifyCheckList(Long checkListsId, CheckListsRequestDto dto, Long planId, Long userId);
 
     void removeCheckList(Long checkListsId, Long planId, Long userId);
+
+    void addCheckListLock(Long planId, Long id);
 }
