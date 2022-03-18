@@ -1,14 +1,15 @@
 package com.example.trip.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.example.trip.feed.FeedRequestDto;
+import lombok.*;
 
 import javax.persistence.*;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
+@Builder
+@AllArgsConstructor
 public class FeedComment extends TimeStamped{
 
     @Id
@@ -17,8 +18,17 @@ public class FeedComment extends TimeStamped{
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feed_id")
-    private Feed feed;
+    @JoinColumn(name = "feed_detail_loc_id")
+    private FeedDetailLoc feedDetailLoc;
 
     private String content;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
+    public void update(FeedRequestDto.FeedRequestCommentModifyDto feedRequestCommentModifyDto){
+        this.content = feedRequestCommentModifyDto.getContent();
+
+    }
 }
