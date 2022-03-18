@@ -1,7 +1,6 @@
 package com.example.trip.service;
 
 import com.example.trip.domain.*;
-import com.example.trip.dto.FeedDetailLocDto;
 import com.example.trip.dto.FeedRequestDto;
 import com.example.trip.repository.LikeRepository;
 import com.example.trip.repository.*;
@@ -10,7 +9,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 import java.util.Map;
@@ -33,7 +31,7 @@ private final AwsS3Service awsS3Service;
     }
 
     @Transactional
-    public List<FeedDetailLoc> registerFeed(User user, FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto){
+    public List<Long> registerFeed(User user, FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto){
         // feed 저장
         Feed feed = Feed.builder()
                 .user(user)
@@ -71,7 +69,7 @@ private final AwsS3Service awsS3Service;
         feedDetailLocImgs.forEach(x -> feedDetailLocImgRepository.saveAll(x));
 
 
-        List<FeedDetailLoc> newFeedDetailLocs = feedDetailLocRepository.findByFeedId(newFeed.getId());
+        List<Long> newFeedDetailLocs = feedDetailLocRepository.findByFeedId(newFeed.getId());
         return newFeedDetailLocs;
     }
 

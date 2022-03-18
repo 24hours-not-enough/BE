@@ -1,6 +1,6 @@
 package com.example.trip.domain;
 
-import com.example.trip.feed.FeedRequestDto;
+import com.example.trip.dto.FeedRequestDto;
 import lombok.*;
 import javax.persistence.*;
 import java.time.LocalDateTime;

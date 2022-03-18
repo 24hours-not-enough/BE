@@ -40,4 +40,9 @@ public class FeedDetailLoc {
     private String comment;
 
     private String city;
+
+    public FeedDetailLoc(Long id, String city){
+        this.id = id;
+        this.city = city;
+    }
 }

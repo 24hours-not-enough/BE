@@ -20,5 +20,7 @@ public class FeedDetailLocImg {
     @JoinColumn(name = "feed_detail_loc_id")
     private FeedDetailLoc feedDetailLoc;
 
+    private String fileName;
+
     private String imgUrl;
 }

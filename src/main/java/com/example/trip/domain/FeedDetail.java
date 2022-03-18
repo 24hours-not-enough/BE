@@ -27,10 +27,4 @@ public class FeedDetail{
 
     private String day;
 
-    @Lob
-    private String memo;
-
-
-
-
 }
