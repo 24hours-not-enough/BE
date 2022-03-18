@@ -1,35 +1,36 @@
 package com.example.trip.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PlanDetail extends TimeStamped{
+public class Calendar {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "plan_detail_id")
+    @Column(name = "calendar_id")
     private Long id;
+
+    private String days;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
-    private String title;
+    @OneToMany(mappedBy = "calendar")
+    private List<CalendarDetails> calendarDetails = new ArrayList<>();
 
-    @Lob
-    private String location;
-
-    @Lob
-    private String memo;
-
-    private String content;
-
-    @Embedded
-    private Image image;
+    @Builder
+    public Calendar(String days, Plan plan){
+        this.days = days;
+        this.plan = plan;
+    }
 }

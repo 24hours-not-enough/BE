@@ -30,6 +30,8 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,9 +50,15 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
-
-    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
+    private final S3UploaderServiceImpl s3UploaderService;
+    private final RedisServiceImpl redisServiceImpl;
+//
+//    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
 //    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
+
+
+    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
+    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public KakaoLoginRequestDto kakaoLogin(String code) throws JsonProcessingException {
@@ -129,7 +137,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-//        Long id = jsonNode.get("id").asLong();
         String kakaoId = "KAKAO_" + jsonNode.get("id").asText();
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
@@ -263,25 +270,35 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         return user;
     }
 
-    public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto) {
+    public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), AccessTokenValidTime);
-//        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
+        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), RefreshTokenValidTime);
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
+        redisServiceImpl.setValues(refreshToken, loginRequestDto.getKakaoId());
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
-    public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto) {
+    public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), AccessTokenValidTime);
-//        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
+        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), RefreshTokenValidTime);
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
+        redisServiceImpl.setValues(refreshToken, loginRequestDto.getGoogleId());
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
     @Transactional
-    public void registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) {
+    public UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
+        System.out.println("snsaccountId" + userDetails.getUsername());
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         user.get().update(username);
+        s3UploaderService.upload(file);
+        String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+        return new UserBasicInfoResponseDto(username, pororoImg);
     }
 
     public boolean checkKakaoIsFirstLogin(KakaoLoginRequestDto loginRequestDto) {
@@ -308,5 +325,46 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         if (userRepository.existsByUsername(username)) {
             throw new CustomException(ALREADY_EXIST_USERNAME);
         }
+    }
+
+    public UserBasicInfoResponseDto sendKakaoUserBasicInfo(KakaoLoginRequestDto loginRequestDto) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        if (checkKakaoIsFirstLogin(loginRequestDto)) {
+            return new UserBasicInfoResponseDto(null, null);
+        } else {
+            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
         }
     }
+
+    public UserBasicInfoResponseDto sendGoogleUserBasicInfo(GoogleLoginRequestDto loginRequestDto) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        if (checkGoogleIsFirstLogin(loginRequestDto)) {
+            return new UserBasicInfoResponseDto(null, null);
+        } else {
+            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+        }
+    }
+
+    public UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND));
+        String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
+        return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+    }
+
+    public SearchUserInviteResponseDto searchUserInvite(String username) {
+        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        User foundUser = user.get();
+        return new SearchUserInviteResponseDto(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
+    }
+
+
+}
