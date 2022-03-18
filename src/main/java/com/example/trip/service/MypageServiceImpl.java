@@ -8,10 +8,8 @@ import com.example.trip.feed.FeedDetailLocImgRepository;
 import com.example.trip.feed.FeedDetailLocRepository;
 import com.example.trip.feed.FeedRepository;
 import com.example.trip.feed.FeedResponseDto;
+import com.example.trip.repository.*;
 import com.example.trip.repository.BookmarkRepository;
-import com.example.trip.repository.FeedCommentRepository;
-import com.example.trip.repository.LikesRepository;
-import com.example.trip.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
@@ -29,7 +27,7 @@ public class MypageServiceImpl implements MypageService {
     private final LikesRepository likesRepository;
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
-    private final BookmarkRepository bookmarkRepository;
+    private final BookMarkRepository bookmarkRepository;
     private final FeedCommentRepository feedCommentRepository;
 
     public List<FeedResponseDto.AllMyTrips> showAllMyFeeds(@AuthenticationPrincipal UserDetailsImpl userDetails) {

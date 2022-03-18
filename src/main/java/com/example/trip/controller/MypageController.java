@@ -2,7 +2,6 @@ package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.*;
-import com.example.trip.feed.FeedResponseDto;
 import com.example.trip.response.*;
 import com.example.trip.service.MypageServiceImpl;
 import lombok.RequiredArgsConstructor;

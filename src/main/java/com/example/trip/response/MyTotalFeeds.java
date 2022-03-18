@@ -1,6 +1,6 @@
 package com.example.trip.response;
 
-import com.example.trip.feed.FeedResponseDto;
+import com.example.trip.dto.FeedResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

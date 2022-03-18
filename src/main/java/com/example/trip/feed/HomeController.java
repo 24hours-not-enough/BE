@@ -1,6 +1,6 @@
 package com.example.trip.feed;
 
-import com.example.trip.redis.ChatSendDto;
+import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
