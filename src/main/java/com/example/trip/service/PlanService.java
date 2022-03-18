@@ -20,5 +20,5 @@ public interface PlanService {
 
     void removePlan(Long planId, Long userId);
 
-    List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId, Long userId);
+    List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId, Long planId);
 }

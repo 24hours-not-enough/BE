@@ -34,4 +34,14 @@ public class CalendarDetailsRequestDto {
     public static class Modify{
         List<CalendarDetailsRequestDto> detailsList;
     }
+
+    @Getter
+    @NoArgsConstructor
+    public static class AddAll{
+        private Long calendar_id;
+
+        private String days;
+
+        private List<CalendarDetailsRequestDto> calendarDetails;
+    }
 }

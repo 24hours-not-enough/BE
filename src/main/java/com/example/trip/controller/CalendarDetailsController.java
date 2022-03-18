@@ -44,4 +44,10 @@ public class CalendarDetailsController {
         List<CalendarResponseDto> calendarDetails = calendarDetailsService.findCalendarDetails(planId, calendarId, userDetails.getUser().getId());
         return new ResponseEntity<>(new GetAllCalendarDetails(true,"상세계획 내용 조회 완료!",calendarDetails), HttpStatus.OK);
     }
+
+    @PostMapping("/plan/{planId}/days/calendar")
+    public ResponseEntity<Success> CalendarDetailsAddAll(@PathVariable Long planId, @RequestBody List<CalendarDetailsRequestDto.AddAll> dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        calendarDetailsService.addCalendarDetailsAll(planId, dto, userDetails.getUser().getId());
+        return new ResponseEntity<>(new Success(true,"상세계획 내용 전체등록 완료!"), HttpStatus.OK);
+    }
 }

@@ -13,4 +13,6 @@ public interface CalendarDetailsService {
     void removeCalendarDetails(Long planId, Long calendarId, Long userId);
 
     List<CalendarResponseDto> findCalendarDetails(Long planId, Long calendarId, Long userId);
+
+    void addCalendarDetailsAll(Long planId, List<CalendarDetailsRequestDto.AddAll> dto, Long id);
 }

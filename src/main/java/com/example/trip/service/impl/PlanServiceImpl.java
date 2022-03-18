@@ -95,7 +95,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long planId, Long userId) {
+    public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId, Long planId) {
         planValidation(planId);
         authPlanValidation(planId,userId);
         return planRepository.findPlanDetails(planId)

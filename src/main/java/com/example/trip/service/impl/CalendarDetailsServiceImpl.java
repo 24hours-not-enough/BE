@@ -80,6 +80,32 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
                 .collect(Collectors.toList());
     }
 
+    @Override
+    @Transactional
+    public void addCalendarDetailsAll(Long planId, List<CalendarDetailsRequestDto.AddAll> dto, Long userId) {
+        planValidation(planId);
+        userAndPlanValidation(planId,userId);
+        setCalendarDetailsList(dto);
+    }
+
+    private void setCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
+        dto.forEach((details)->{
+            Optional<Calendar> findCalendar = calendarRepository.findById(details.getCalendar_id());
+            calendarDetailsRepository.deleteByCalendarId(details.getCalendar_id());
+            details.getCalendarDetails().forEach((detailsList)->{
+                CalendarDetails calendarDetails = CalendarDetails.builder()
+                        .calendar(findCalendar.get())
+                        .name(detailsList.getLocation())
+                        .latitude(detailsList.getLatitude())
+                        .longitude(detailsList.getLongitude())
+                        .memo(detailsList.getLocationMemo())
+                        .order(detailsList.getSort())
+                        .build();
+                calendarDetailsRepository.save(calendarDetails);
+            });
+        });
+    }
+
     private void setCalendarDetails(Calendar calendar, CalendarDetailsRequestDto.Modify dto) {
         dto.getDetailsList().forEach((detailsList)->{
             CalendarDetails calendarDetails = CalendarDetails.builder()
