@@ -7,6 +7,9 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
 public interface SocialLoginService {
 
     KakaoLoginRequestDto kakaoLogin(String code) throws JsonProcessingException;
@@ -25,15 +28,23 @@ public interface SocialLoginService {
 
     User googleRegister(GoogleUserInfoDto googleUserInfo);
 
-    LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto);
+    LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto, HttpServletResponse response);
 
-    LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto);
+    LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto, HttpServletResponse response);
 
-    void registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file);
+    UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException;
 
     boolean checkKakaoIsFirstLogin(KakaoLoginRequestDto loginRequestDto);
 
     boolean checkGoogleIsFirstLogin(GoogleLoginRequestDto loginRequestDto);
 
     void checkUsername(String username);
+
+    UserBasicInfoResponseDto sendKakaoUserBasicInfo(KakaoLoginRequestDto loginRequestDto);
+
+    UserBasicInfoResponseDto sendGoogleUserBasicInfo(GoogleLoginRequestDto loginRequestDto);
+
+    UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails);
+
+    SearchUserInviteResponseDto searchUserInvite(String username);
 }

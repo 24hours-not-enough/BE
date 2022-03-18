@@ -1,13 +1,13 @@
 package com.example.trip.response;
 
-import com.example.trip.dto.UserBasicInfoResponseDto;
+import com.example.trip.dto.FeedDetailLocCommentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class RegisterUserInfoSuccess {
+public class ReadOneFeed {
     private String result;
     private String msg;
-    private UserBasicInfoResponseDto userbasicinfo;
+    private FeedDetailLocCommentResponseDto feeddata;
 }

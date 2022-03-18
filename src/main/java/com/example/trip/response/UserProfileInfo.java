@@ -6,8 +6,6 @@ import lombok.Getter;
 
 @AllArgsConstructor
 @Getter
-public class RegisterUserInfoSuccess {
-    private String result;
-    private String msg;
+public class UserProfileInfo {
     private UserBasicInfoResponseDto userbasicinfo;
 }

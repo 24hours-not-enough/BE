@@ -1,15 +1,19 @@
 package com.example.trip.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import com.example.trip.feed.FeedRequestDto;
+import lombok.*;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.persistence.*;
+import java.time.LocalDateTime;
+import java.util.List;
 
 @Entity
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class Feed {
+@Builder
+@AllArgsConstructor
+public class Feed extends TimeStamped{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,5 +24,21 @@ public class Feed {
     @JoinColumn(name = "user_id")
     private User user;
 
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feed")
+    private List<FeedDetail> feedDetail;
+
     private String title;
+
+    private LocalDateTime travelStart;
+
+    private LocalDateTime travelEnd;
+
+    //피드 관련 수정
+    public void update(FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto){
+        // 피드 수정
+        this.title = feedRequestModifyDto.getTitle();
+        this.travelStart = feedRequestModifyDto.getTravelStart();
+        this.travelEnd = feedRequestModifyDto.getTravelEnd();
+        this.feedDetail = feedRequestModifyDto.getFeedDetail();
+    }
 }
