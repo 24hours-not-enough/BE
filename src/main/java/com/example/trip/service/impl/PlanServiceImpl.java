@@ -106,7 +106,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
-    private void setMember(List<MemberRequestDto.joinDto> memberList, Plan savePlan) {
+    private void setMember(List<MemberRequestDto.join> memberList, Plan savePlan) {
         memberList.forEach((members) ->{
             Optional<User> findNickName = Optional.ofNullable(userRepository.findByNickName(members.getNickName()).orElseThrow(UserNotFoundException::new));
             Optional<Member> findMember = memberRepository.findByNickNameAndPlanId(findNickName.get().getId(),savePlan.getId());

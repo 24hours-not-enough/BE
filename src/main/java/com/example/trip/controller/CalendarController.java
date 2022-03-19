@@ -21,4 +21,10 @@ public class CalendarController {
         calendarService.addDays(planId, userDetails.getUser().getId());
         return new ResponseEntity<>(new Success(true,"일차 추가 완료!"), HttpStatus.OK);
     }
+
+    @PutMapping("/plan/{planId}/days")
+    public ResponseEntity<Success> CalendarLocked(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
+        calendarService.addCalendarLock(planId, userDetails.getUser().getId());
+        return new ResponseEntity<>(new Success(true,"상세계획 내용 잠금 완료!"), HttpStatus.OK);
+    }
 }

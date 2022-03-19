@@ -30,9 +30,9 @@ public class PlanController {
     private final UserRepository userRepository;
 
     @PostMapping("/plan")
-    public ResponseEntity<GetPlan> planAdd(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PlanRequestDto.Regist registDto) {
+    public ResponseEntity<GetPlan> planAdd(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PlanRequestDto.Regist Regist) {
         System.out.println("userDetails = " + userDetails.getUser().getId());
-        Long planId = planService.addPlan(userDetails.getUser().getId(),registDto);
+        Long planId = planService.addPlan(userDetails.getUser().getId(),Regist);
         return new ResponseEntity<>(new GetPlan(true, "계획 등록 성공!", planId), HttpStatus.OK);
     }
 

@@ -55,7 +55,7 @@ public class PlanResponseDto {
     @NoArgsConstructor
     @Builder
     @AllArgsConstructor
-    public static class RegistDto{
+    public static class Regist{
 
         private Long plan_id;
         private String title;
@@ -66,11 +66,11 @@ public class PlanResponseDto {
 
         private LocalDateTime travel_end;
 
-        private List<MemberRequestDto.joinDto> memberList;
+        private List<MemberRequestDto.join> memberList;
 
         private Boolean del_tc;
 
-        public RegistDto(Plan plan) {
+        public Regist(Plan plan) {
             this.title= plan.getTitle();
             this.del_tc=plan.getDel_tc();
             this.travel_destination=plan.getTravel_destination();
