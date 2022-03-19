@@ -2,6 +2,7 @@ package com.example.trip.dto.request;
 
 import com.example.trip.domain.FeedDetail;
 import com.fasterxml.jackson.annotation.JsonFormat;
+import com.sun.istack.NotNull;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
@@ -13,6 +14,7 @@ public class FeedRequestDto {
 
     @Getter
         public static class FeedRequestRegisterDto{
+            @NotNull
             private String title;
 
 //        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
