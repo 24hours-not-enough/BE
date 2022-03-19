@@ -17,4 +17,8 @@ public interface MypageService {
     List<LikesResponseDto.SortByCity> sortLikesFeed(UserDetailsImpl userDetails);
 
     FeedResponseDto.ReadOneTrip readOneTrip(UserDetailsImpl userDetails, Long feedId);
+
+    void changeProfile(UserDetailsImpl userDetails, UserBasicInfoResponseDto dto);
+
+//    MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails);
 }
