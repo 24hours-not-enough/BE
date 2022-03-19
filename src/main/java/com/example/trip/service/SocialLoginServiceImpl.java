@@ -52,13 +52,13 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final PasswordEncoder passwordEncoder;
     private final S3UploaderServiceImpl s3UploaderService;
     private final RedisServiceImpl redisServiceImpl;
-//
-//    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
-//    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
+
+    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
+    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
 
-    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
-    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
+//    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
+//    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public KakaoLoginRequestDto kakaoLogin(String code) throws JsonProcessingException {
@@ -152,7 +152,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String encodedPassword = passwordEncoder.encode(password);
 
         // Image는 Embedded라서 null값이 들어갈 수 없다. 따라서 임의의 값 생성 후 저장
-        Image image = new Image("1", "1", "1", 1);
+        Image image = new Image("1");
 
         Role role = Role.USER;
         User user = User.builder()
@@ -255,7 +255,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String password = UUID.randomUUID().toString();
         String encodedPassword = passwordEncoder.encode(password);
 
-        Image image = new Image("1", "1", "1", 1);
+        Image image = new Image("1");
 
         Role role = Role.USER;
         User user = User.builder()
@@ -364,6 +364,13 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         );
         User foundUser = user.get();
         return new SearchUserInviteResponseDto(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
+    }
+
+    public void deleteAccount(UserDetailsImpl userDetails) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        user.get().deleteAccount(user.get().getSocialaccountId());
     }
 
 

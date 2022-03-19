@@ -32,6 +32,15 @@ public class RedisConfig {
     }
 
     @Bean
+    public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
+        RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
+        redisTemplate.setConnectionFactory(connectionFactory);
+        redisTemplate.setKeySerializer(new StringRedisSerializer());
+        redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
+        return redisTemplate;
+    }
+
+    @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
         // 아래 두 라인을 작성하지 않으면, key값이 \xac\xed\x00\x05t\x00\x03sol 이렇게 조회된다.
@@ -40,6 +49,7 @@ public class RedisConfig {
         redisTemplate.setConnectionFactory(redisConnectionFactory());
         return redisTemplate;
     }
+<<<<<<< HEAD
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -48,4 +58,15 @@ public class RedisConfig {
         redisTemplate.setValueSerializer(new Jackson2JsonRedisSerializer<>(String.class));
         return redisTemplate;
     }
+=======
+
+    @Bean
+    public RedisMessageListenerContainer redisMessageListener(RedisConnectionFactory connectionFactory) {
+        RedisMessageListenerContainer container = new RedisMessageListenerContainer();
+        container.setConnectionFactory(connectionFactory);
+        return container;
+    }
+
+
+>>>>>>> dev
 }
