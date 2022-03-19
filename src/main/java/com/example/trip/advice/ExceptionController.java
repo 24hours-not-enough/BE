@@ -42,4 +42,19 @@ public class ExceptionController {
     public ResponseEntity<Fail> UserNotFoundException(UserNotFoundException e) {
         return new ResponseEntity<>(new Fail("닉네임이 존재하지 않습니다."), HttpStatus.OK);
     }
+
+    @ExceptionHandler(CalendarModifyException.class)
+    public ResponseEntity<Fail> CalendarModifyException(CalendarModifyException e) {
+        return new ResponseEntity<>(new Fail("수정중인 일정입니다."), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(CheckListModifyException.class)
+    public ResponseEntity<Fail> CheckListModifyException(CheckListModifyException e) {
+        return new ResponseEntity<>(new Fail("수정중인 체크리스트입니다."), HttpStatus.OK);
+    }
+
+    @ExceptionHandler(Exception.class)
+    public ResponseEntity<Fail> defaultException(Exception e) {
+        return new ResponseEntity<>(new Fail("알수없는 오류입니다. 관리자 문의 부탁드립니다."), HttpStatus.OK);
+    }
 }
