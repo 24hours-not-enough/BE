@@ -1,6 +1,8 @@
 package com.example.trip.domain;
 
+import com.example.trip.dto.request.CheckListsRequestDto;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -23,5 +25,17 @@ public class CheckList {
     @Column(nullable = false)
     private String check_item;
 
-    private boolean is_checked;
+    private Boolean is_checked;
+
+    @Builder
+    public CheckList(String check_item, Boolean is_checked, Plan plan){
+        this.check_item = check_item;
+        this.is_checked = is_checked;
+        this.plan = plan;
+    }
+
+    public void updateCheckList(CheckListsRequestDto dto) {
+        this.check_item = dto.getCheckName();
+        this.is_checked = dto.getIs_checked();
+    }
 }
