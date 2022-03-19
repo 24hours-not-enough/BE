@@ -86,8 +86,8 @@ public class UserController {
 
     // 회원탈퇴
     @PostMapping("/api/withdrawal")
-    public ResponseEntity<DeleteAccountSuccess> deleteAccount() {
+    public ResponseEntity<DeleteAccountSuccess> deleteAccount(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        socialLoginServiceImpl.deleteAccount(userDetails);
         return new ResponseEntity<>(new DeleteAccountSuccess("success", "회원 탈퇴되었습니다."), HttpStatus.OK);
     }
-
 }

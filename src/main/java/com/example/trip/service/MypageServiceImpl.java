@@ -4,14 +4,9 @@ import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.*;
 import com.example.trip.dto.*;
 import com.example.trip.exceptionhandling.CustomException;
-import com.example.trip.feed.FeedDetailLocImgRepository;
-import com.example.trip.feed.FeedDetailLocRepository;
-import com.example.trip.feed.FeedRepository;
-import com.example.trip.feed.FeedResponseDto;
-import com.example.trip.repository.BookmarkRepository;
-import com.example.trip.repository.FeedCommentRepository;
-import com.example.trip.repository.LikesRepository;
-import com.example.trip.repository.UserRepository;
+import com.example.trip.repository.*;
+import com.example.trip.repository.BookMarkRepository;
+import com.example.trip.repository.plan.PlanRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
@@ -26,11 +21,11 @@ public class MypageServiceImpl implements MypageService {
 
     private final UserRepository userRepository;
     private final FeedRepository feedRepository;
-    private final LikesRepository likesRepository;
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
-    private final BookmarkRepository bookmarkRepository;
+    private final BookMarkRepository bookmarkRepository;
     private final FeedCommentRepository feedCommentRepository;
+    private final PlanRepository planRepository;
 
     public List<FeedResponseDto.AllMyTrips> showAllMyFeeds(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -81,7 +76,7 @@ public class MypageServiceImpl implements MypageService {
                 FeedDetailLocResponseDto feedDetailLocResponseDto = new FeedDetailLocResponseDto(feedDetailLoc.getLocation(), feedDetailLoc.getCity(), feedDetailLoc.getComment(), imgUrls);
                 feedDetailLocList.add(feedDetailLocResponseDto);
             }
-            FeedDetailResponseDto dto = new FeedDetailResponseDto(feedDetail.getId(), feedDetail.getDay(), feedDetail.getMemo(), feedDetailLocList);
+            FeedDetailResponseDto dto = new FeedDetailResponseDto(feedDetail.getId(), feedDetail.getDay(), feedDetailLocList);
             FeedDetailList.add(dto);
         }
 
@@ -124,5 +119,14 @@ public class MypageServiceImpl implements MypageService {
         return likesFeedList;
     }
 
+//    public MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails) {
+//        Optional<Plan> plan = planRepository.findById(planId);
+//        Plan foundPlan = plan.get();
+//        return new MypageResponseDto.GetPlan(foundPlan);
+//    }
 
+    public void changeProfile(UserDetailsImpl userDetails, UserBasicInfoResponseDto dto) {
+        Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
+        user.get().update(dto.getUsername());
+    }
 }

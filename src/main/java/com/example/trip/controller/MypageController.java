@@ -1,8 +1,8 @@
 package com.example.trip.controller;
 
+import com.example.trip.advice.Success;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.*;
-import com.example.trip.feed.FeedResponseDto;
 import com.example.trip.response.*;
 import com.example.trip.service.MypageServiceImpl;
 import lombok.RequiredArgsConstructor;
@@ -12,6 +12,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PutMapping;
 
 import java.util.List;
 
@@ -56,5 +57,22 @@ public class MypageController {
         List<LikesResponseDto.SortByCity> likesListByCity = mypageService.sortLikesFeed(userDetails);
         return new ResponseEntity<>(new SortLikesFeed("success", "좋아요한 게시물 분류입니다.", likesListByCity), HttpStatus.OK);
     }
+
+    // 기록 작성 시 계획 불러오기
+//    @GetMapping("/api/feed/{planId}")
+//    public ResponseEntity getPlan(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        mypageService.getPlan(planId, userDetails);
+//        return ResponseEntity.ok().body("계획 내용 불러오기 성공");
+//    }
+
+
+
+    // 마이페이지 수정
+    @PutMapping("/api/mypage")
+    public ResponseEntity<Success> changeProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, UserBasicInfoResponseDto dto) {
+        mypageService.changeProfile(userDetails, dto);
+        return new ResponseEntity<>(new Success(true, "마이페이지 수정 완료입니다."), HttpStatus.OK);
+    }
+
 
 }

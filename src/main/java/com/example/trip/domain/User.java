@@ -57,4 +57,9 @@ public class User extends TimeStamped {
     public void update(String username) {
         this.username = username;
     }
+
+    public void deleteAccount(String socialaccountId) {
+        this.socialaccountId = socialaccountId;
+        this.memberstatus = false;
+    }
 }

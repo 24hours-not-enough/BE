@@ -88,6 +88,8 @@ public class JwtTokenProvider {
             return !claims.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             return false;
+        } catch (JwtException e) {
+            throw new RuntimeException("유효하지 않은 토큰입니다.");
         }
     }
 
@@ -104,6 +106,14 @@ public class JwtTokenProvider {
     // refresh token 존재유무 확인
     public boolean existsRefreshToken(String refreshtoken) {
         return redisServiceImpl.getValues(refreshtoken) != null;
+    }
+
+    public void notExistAccessToken() {
+        throw new RuntimeException("엑세스 토큰이 없습니다.");
+    }
+
+    public void notExistRefreshToken() {
+        throw new RuntimeException("리프레시 토큰이 없습니다.");
     }
 
 //    public boolean existsRefreshToken(String refreshtoken) {

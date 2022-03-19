@@ -47,4 +47,6 @@ public interface SocialLoginService {
     UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails);
 
     SearchUserInviteResponseDto searchUserInvite(String username);
+
+    void deleteAccount(UserDetailsImpl userDetails);
 }
