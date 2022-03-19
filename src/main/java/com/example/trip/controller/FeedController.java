@@ -13,6 +13,7 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.validation.Valid;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ public class FeedController {
     @PostMapping("/feed")
     public ResponseEntity<FeedResponseDto> registerFeed(
             @AuthenticationPrincipal UserDetailsImpl user,
-            @RequestBody FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
+            @Valid @RequestBody FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
         List<Long> feedDetailLocs = feedService.registerFeed(user.getUser(), feedRequestRegisterDto);
         System.out.println("여행 날짜"+feedRequestRegisterDto.getTravelStart());
         return new ResponseEntity<>(FeedResponseDto.builder()

@@ -6,6 +6,7 @@ import com.sun.istack.NotNull;
 import lombok.Getter;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -14,7 +15,7 @@ public class FeedRequestDto {
 
     @Getter
         public static class FeedRequestRegisterDto{
-            @NotNull
+            @NotBlank
             private String title;
 
 //        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
