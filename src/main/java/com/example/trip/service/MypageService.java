@@ -10,15 +10,15 @@ import java.util.List;
 
 public interface MypageService {
 
-    List<FeedResponseDto.AllMyTrips> showAllMyFeeds(@AuthenticationPrincipal UserDetailsImpl userDetails);
+    List<FeedResponseDto.AllMyTrips> showAllMyFeeds(Long userId);
 
-//    List<BookmarkResponseDto> getBookmarkPlaces(UserDetailsImpl userDetails);
+    List<BookmarkResponseDto> getBookmarkPlaces(Long userId);
 
-    FeedDetailLocCommentResponseDto readOneFeed(Long feeddetaillocId);
+    FeedDetailLocResponseDto.ReadOneFeed readOneFeed(Long feeddetaillocId);
 
     List<LikesResponseDto.SortByCity> sortLikesFeed(UserDetailsImpl userDetails);
 
-    FeedResponseDto.ReadOneTrip readOneTrip(UserDetailsImpl userDetails, Long feedId);
+    FeedResponseDto.ReadOneTrip readOneTrip(Long userId, Long feedId);
 
     UserBasicInfoResponseDto changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException;
 

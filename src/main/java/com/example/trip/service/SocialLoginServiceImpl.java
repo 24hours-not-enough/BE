@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -334,8 +335,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         if (checkKakaoIsFirstLogin(loginRequestDto)) {
             return new UserBasicInfoResponseDto(null, null);
         } else {
-            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
-            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
@@ -346,12 +346,12 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         if (checkGoogleIsFirstLogin(loginRequestDto)) {
             return new UserBasicInfoResponseDto(null, null);
         } else {
-            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
-            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
     // 마이페이지 유저 + 이미지 정보 전달 -> 캐싱작업 필요
+    @Cacheable(value = "userprofile")
     public UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
