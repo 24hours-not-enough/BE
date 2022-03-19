@@ -28,20 +28,19 @@ public class CalendarDetails {
 
     private String longitude;
 
-    @Column(name = "orders")
-    private int order;
+    private int sort;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "calendar_id")
     private Calendar calendar;
 
     @Builder
-    public CalendarDetails(String name, String latitude, String longitude, Calendar calendar, String memo, int order){
+    public CalendarDetails(String name, String latitude, String longitude, Calendar calendar, String memo, int sort){
         this.name = name;
         this.latitude = latitude;
         this.longitude = longitude;
         this.calendar = calendar;
         this.memo = memo;
-        this.order = order;
+        this.sort = sort;
     }
 }
