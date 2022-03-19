@@ -27,15 +27,22 @@ public class CheckList {
 
     private Boolean is_checked;
 
+    private Boolean is_locked;
+
     @Builder
-    public CheckList(String check_item, Boolean is_checked, Plan plan){
+    public CheckList(String check_item, Boolean is_checked, Plan plan, Boolean is_locked){
         this.check_item = check_item;
         this.is_checked = is_checked;
         this.plan = plan;
+        this.is_locked =is_locked;
     }
 
     public void updateCheckList(CheckListsRequestDto dto) {
         this.check_item = dto.getCheckName();
         this.is_checked = dto.getIs_checked();
+    }
+
+    public void updateCheckListLock() {
+        this.is_locked = true;
     }
 }

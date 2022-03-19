@@ -61,6 +61,7 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public void modifyPlan(Long user_id, Long planId, PlanRequestDto.Modify modify) {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
+        authMemberValidation(user_id,planId);
         authPlanValidation(planId,user_id);
         if(modify.getDel_fl()==null){
             findPlan.get().updatePlan(modify);
@@ -131,5 +132,9 @@ public class PlanServiceImpl implements PlanService {
 
     private void planValidation(Long planId) {
         planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
+    }
+
+    private void authMemberValidation(Long userId, Long planId) {
+        memberRepository.findByAuthMemberAndPlan(userId, planId).orElseThrow(AuthPlanNotFoundException::new);
     }
 }
