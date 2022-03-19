@@ -1,12 +1,7 @@
 package com.example.trip.domain;
 
 
-
-<<<<<<< HEAD
-=======
-
->>>>>>> dev
-import com.example.trip.dto.FeedRequestDto;
+import com.example.trip.dto.request.FeedRequestDto;
 import lombok.*;
 
 import javax.persistence.*;

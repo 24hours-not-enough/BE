@@ -5,10 +5,6 @@ import com.example.trip.domain.FeedDetailLocImg;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-<<<<<<< HEAD
-=======
-import org.springframework.data.repository.query.Param;
->>>>>>> dev
 
 import java.util.List;
 

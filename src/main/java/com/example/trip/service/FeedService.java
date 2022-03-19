@@ -1,7 +1,7 @@
 package com.example.trip.service;
 
 import com.example.trip.domain.*;
-import com.example.trip.dto.FeedRequestDto;
+import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.repository.LikeRepository;
 import com.example.trip.repository.*;
 import lombok.RequiredArgsConstructor;

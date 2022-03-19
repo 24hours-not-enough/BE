@@ -5,11 +5,8 @@ import com.example.trip.domain.*;
 import com.example.trip.dto.*;
 import com.example.trip.exceptionhandling.CustomException;
 import com.example.trip.repository.*;
-<<<<<<< HEAD
-=======
 import com.example.trip.repository.BookMarkRepository;
 import com.example.trip.repository.plan.PlanRepository;
->>>>>>> dev
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;

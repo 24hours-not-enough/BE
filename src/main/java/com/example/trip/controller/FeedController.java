@@ -2,13 +2,11 @@ package com.example.trip.controller;
 
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.domain.FeedDetailLoc;
-import com.example.trip.dto.FeedRequestDto;
+import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.dto.FeedResponseDto;
 import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
