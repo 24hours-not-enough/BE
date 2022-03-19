@@ -30,6 +30,18 @@ public class ExceptionController {
         return new ResponseEntity<>(new Fail("입력 값이 존재하지 않습니다."), HttpStatus.OK);
     }
 
+    // 피드 권한 체크
+    @ExceptionHandler(AuthFeedNotFoundException.class)
+    public ResponseEntity<Fail> AuthFeedNotFoundException(AuthFeedNotFoundException e) {
+        return new ResponseEntity<>(new Fail("피드 수정, 삭제는 본인만 할 수 있습니다."), HttpStatus.OK);
+    }
+
+    // 피드 댓글 권한 체크
+    @ExceptionHandler(AuthFeedCommentNotFoundException.class)
+    public ResponseEntity<Fail> AuthFeedCommentNotFoundException(AuthFeedCommentNotFoundException e) {
+        return new ResponseEntity<>(new Fail("피드 댓글 수정, 삭제는 본인만 할 수 있습니다."), HttpStatus.OK);
+    }
+
     @ExceptionHandler(PlanNotFoundException.class)
     public ResponseEntity<Fail> PlanNotFoundException(PlanNotFoundException e) {
         return new ResponseEntity<>(new Fail("존재하지 않는 계획입니다."), HttpStatus.OK);
