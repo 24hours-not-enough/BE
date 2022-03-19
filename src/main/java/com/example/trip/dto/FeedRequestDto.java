@@ -3,7 +3,6 @@ package com.example.trip.dto;
 import com.example.trip.domain.FeedDetail;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.Getter;
-import org.intellij.lang.annotations.Pattern;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;

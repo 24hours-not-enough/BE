@@ -12,6 +12,7 @@ import java.util.List;
 public class FeedResponseDto {
     private String result;
     private String msg;
+    private Object data;
 
     @AllArgsConstructor
     @Getter
