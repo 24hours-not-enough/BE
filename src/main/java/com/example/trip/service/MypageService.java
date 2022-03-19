@@ -3,7 +3,9 @@ package com.example.trip.service;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.*;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 public interface MypageService {
@@ -18,7 +20,7 @@ public interface MypageService {
 
     FeedResponseDto.ReadOneTrip readOneTrip(UserDetailsImpl userDetails, Long feedId);
 
-    void changeProfile(UserDetailsImpl userDetails, UserBasicInfoResponseDto dto);
+    UserBasicInfoResponseDto changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException;
 
-//    MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails);
+    MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails);
 }

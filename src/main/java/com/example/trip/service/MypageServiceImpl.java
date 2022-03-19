@@ -8,9 +8,13 @@ import com.example.trip.repository.*;
 import com.example.trip.repository.BookMarkRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.*;
 
 import static com.example.trip.exceptionhandling.ErrorCode.USER_NOT_FOUND;
@@ -26,7 +30,9 @@ public class MypageServiceImpl implements MypageService {
     private final BookMarkRepository bookmarkRepository;
     private final FeedCommentRepository feedCommentRepository;
     private final PlanRepository planRepository;
+    private final S3UploaderServiceImpl s3UploaderService;
 
+    // 나의 전체 여행 기록 목록 보기 -> cache 필요
     public List<FeedResponseDto.AllMyTrips> showAllMyFeeds(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
         User foundUser = user.get();
@@ -44,6 +50,7 @@ public class MypageServiceImpl implements MypageService {
         return array;
     }
 
+    // 캐시 작업 X
     public List<BookmarkResponseDto> getBookmarkPlaces(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
         List<BookMark> bookMarks = bookmarkRepository.FindBookmarkByUserId(user.get().getId());
@@ -58,6 +65,7 @@ public class MypageServiceImpl implements MypageService {
         return arrayList;
     }
 
+    // 여행 기록 1개 전체 보기 (조회) -> cache 작업 필요
     public FeedResponseDto.ReadOneTrip readOneTrip(UserDetailsImpl userDetails, Long feedId) {
         Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
         Feed feed = feedRepository.FindFeedByUserId(user.get().getId(), feedId);
@@ -83,6 +91,8 @@ public class MypageServiceImpl implements MypageService {
         return new FeedResponseDto.ReadOneTrip(feed.getId(), feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), FeedDetailList);
     }
 
+    // feed 1개 읽기(조회) -> cache 작업 필요
+    @Cacheable(value = "feed", key = "#feeddetaillocId")
     public FeedDetailLocCommentResponseDto readOneFeed(Long feeddetaillocId) {
         Optional<FeedDetailLoc> byId = feedDetailLocRepository.findById(feeddetaillocId);
         FeedDetailLoc locationData = byId.get();
@@ -97,6 +107,7 @@ public class MypageServiceImpl implements MypageService {
 
     }
 
+    // 캐시 작업 X
     public List<LikesResponseDto.SortByCity> sortLikesFeed(UserDetailsImpl userDetails) {
         Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
         List<FeedDetailLoc> totalCityList = feedDetailLocRepository.FindAllCityList(user.get().getId());
@@ -119,14 +130,20 @@ public class MypageServiceImpl implements MypageService {
         return likesFeedList;
     }
 
-//    public MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails) {
-//        Optional<Plan> plan = planRepository.findById(planId);
-//        Plan foundPlan = plan.get();
-//        return new MypageResponseDto.GetPlan(foundPlan);
-//    }
+    // longitude + latitude 값 제거해서 return 하는 방법?
+    public MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails) {
+        Optional<Plan> plan = planRepository.findById(planId);
+        Plan foundPlan = plan.get();
+        return new MypageResponseDto.GetPlan(foundPlan);
+    }
 
-    public void changeProfile(UserDetailsImpl userDetails, UserBasicInfoResponseDto dto) {
+    // 마이페이지 프로필 수정(완료)
+    @Transactional
+    public UserBasicInfoResponseDto changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
         Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
-        user.get().update(dto.getUsername());
+        Map<String, String> nameUrl = s3UploaderService.upload(file);
+        s3UploaderService.deleteFile(user.get().getImage().getFilename());
+        user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
+        return new UserBasicInfoResponseDto(username, nameUrl.get(file.getOriginalFilename()));
     }
 }

@@ -13,7 +13,10 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
+import org.springframework.web.bind.annotation.RequestPart;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @Controller
@@ -58,20 +61,22 @@ public class MypageController {
         return new ResponseEntity<>(new SortLikesFeed("success", "좋아요한 게시물 분류입니다.", likesListByCity), HttpStatus.OK);
     }
 
-    // 기록 작성 시 계획 불러오기
-//    @GetMapping("/api/feed/{planId}")
-//    public ResponseEntity getPlan(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        mypageService.getPlan(planId, userDetails);
-//        return ResponseEntity.ok().body("계획 내용 불러오기 성공");
-//    }
+//     기록 작성 시 계획 불러오기
+    @GetMapping("/api/feed/plan/{planId}")
+    public ResponseEntity<FindOnePlan> getPlan(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        MypageResponseDto.GetPlan plan = mypageService.getPlan(planId, userDetails);
+        return new ResponseEntity<>(new FindOnePlan("success", "계획을 기록 작성 페이지에 불러왔습니다.", plan), HttpStatus.OK);
+    }
 
 
 
     // 마이페이지 수정
     @PutMapping("/api/mypage")
-    public ResponseEntity<Success> changeProfile(@AuthenticationPrincipal UserDetailsImpl userDetails, UserBasicInfoResponseDto dto) {
-        mypageService.changeProfile(userDetails, dto);
-        return new ResponseEntity<>(new Success(true, "마이페이지 수정 완료입니다."), HttpStatus.OK);
+    public ResponseEntity<RegisterUserInfoSuccess> changeProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                 @RequestPart String username,
+                                                 @RequestPart MultipartFile file) throws IOException {
+        UserBasicInfoResponseDto info = mypageService.changeProfile(userDetails, username, file);
+        return new ResponseEntity<>(new RegisterUserInfoSuccess("success", "마이페이지 수정 완료입니다.", info), HttpStatus.OK);
     }
 
 
