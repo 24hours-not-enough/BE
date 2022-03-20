@@ -73,7 +73,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public PlanResponseDto findPlanOne(Long planId, Long userId) {
+    public PlanResponseDto findPlanOne(Long userId, Long planId) {
         planValidation(planId);
         authPlanValidation(planId,userId);
         return planRepository.findPlanAndMemberOne(planId);
