@@ -1,16 +1,19 @@
 server:
-  port: 80
+  port: 8080
 
 
 spring:
+  redis:
+    host: localhost
+    port: 6379
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     # DB Source
-    url: jdbc:mysql://localhost:3306/Triplan?useSSL=false&allowPublicKeyRetrieval=true
+    url: jdbc:mysql://localhost:3306/Triplan?useSSL=false&allowPublicKeyRetrieval=true&serverTimezone=UTC
     # DB username
-    username:
+    username: root
     # DB password
-    password:
+    password: 12345678
 
   jpa:
     hibernate:
@@ -19,6 +22,25 @@ spring:
       hibernate:
         format_sql: true
         default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.MySQL8Dialect
 
 logging.level:
   org.hibernate.SQL: debug
+
+
+cloud:
+  aws:
+    credentials:
+      accessKey:
+        AKIA4CK6HAUXIV6TF7O3
+      secretKey:
+        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
+    s3:
+      bucket:
+        triplan-bucket-0314
+    region:
+      static:
+        ap-northeast-2
+      stack:
+        auto: false
+

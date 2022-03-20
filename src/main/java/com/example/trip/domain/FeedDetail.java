@@ -1,15 +1,17 @@
 package com.example.trip.domain;
 
-import lombok.AccessLevel;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 import javax.persistence.*;
+import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class FeedDetail extends TimeStamped{
+@Builder
+@AllArgsConstructor
+public class FeedDetail{
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -20,14 +22,8 @@ public class FeedDetail extends TimeStamped{
     @JoinColumn(name = "feed_id")
     private Feed feed;
 
-    private String content;
+    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetail")
+    private List<FeedDetailLoc> feedDetailLoc;
 
-    @Lob
-    private String memo;
-
-    @Lob
-    private String location;
-
-    @Embedded
-    private Image image;
+    private String day;
 }

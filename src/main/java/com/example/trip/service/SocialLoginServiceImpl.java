@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -30,6 +31,9 @@ import org.springframework.util.MultiValueMap;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -48,9 +52,15 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
     private final PasswordEncoder passwordEncoder;
+    private final S3UploaderServiceImpl s3UploaderService;
+    private final RedisServiceImpl redisServiceImpl;
 
     private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
-//    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
+    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
+
+
+//    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
+//    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public KakaoLoginRequestDto kakaoLogin(String code) throws JsonProcessingException {
@@ -129,7 +139,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         ObjectMapper objectMapper = new ObjectMapper();
 
         JsonNode jsonNode = objectMapper.readTree(responseBody);
-//        Long id = jsonNode.get("id").asLong();
         String kakaoId = "KAKAO_" + jsonNode.get("id").asText();
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
@@ -145,7 +154,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String encodedPassword = passwordEncoder.encode(password);
 
         // Image는 Embedded라서 null값이 들어갈 수 없다. 따라서 임의의 값 생성 후 저장
-        Image image = new Image("1", "1", "1", 1);
+        Image image = new Image("url", "filename");
 
         Role role = Role.USER;
         User user = User.builder()
@@ -248,7 +257,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String password = UUID.randomUUID().toString();
         String encodedPassword = passwordEncoder.encode(password);
 
-        Image image = new Image("1", "1", "1", 1);
+        Image image = new Image("url", "filename");
 
         Role role = Role.USER;
         User user = User.builder()
@@ -263,25 +272,34 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         return user;
     }
 
-    public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto) {
+    public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), AccessTokenValidTime);
-//        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
+        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), RefreshTokenValidTime);
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
+        redisServiceImpl.setValues(refreshToken, loginRequestDto.getKakaoId());
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
-    public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto) {
+    public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), AccessTokenValidTime);
-//        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getEmail(), RefreshTokenValidTime);
+        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), RefreshTokenValidTime);
+        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
+        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
+        redisServiceImpl.setValues(refreshToken, loginRequestDto.getGoogleId());
 //        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
     @Transactional
-    public void registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) {
+    public UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
+        System.out.println("snsaccountId" + userDetails.getUsername());
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
-        user.get().update(username);
+        Map<String, String> nameUrl = s3UploaderService.upload(file);
+        user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
+        return new UserBasicInfoResponseDto(username, nameUrl.get(file.getOriginalFilename()));
     }
 
     public boolean checkKakaoIsFirstLogin(KakaoLoginRequestDto loginRequestDto) {
@@ -308,5 +326,53 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         if (userRepository.existsByUsername(username)) {
             throw new CustomException(ALREADY_EXIST_USERNAME);
         }
+    }
+
+    public UserBasicInfoResponseDto sendKakaoUserBasicInfo(KakaoLoginRequestDto loginRequestDto) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        if (checkKakaoIsFirstLogin(loginRequestDto)) {
+            return new UserBasicInfoResponseDto(null, null);
+        } else {
+            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
+
+    public UserBasicInfoResponseDto sendGoogleUserBasicInfo(GoogleLoginRequestDto loginRequestDto) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        if (checkGoogleIsFirstLogin(loginRequestDto)) {
+            return new UserBasicInfoResponseDto(null, null);
+        } else {
+            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
+        }
+    }
+
+    // 마이페이지 유저 + 이미지 정보 전달 -> 캐싱작업 필요
+    @Cacheable(value = "userprofile")
+    public UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND));
+        String imgUrl = user.get().getImage().getFile_store_course();
+        return new UserBasicInfoResponseDto(user.get().getUsername(), imgUrl);
+    }
+
+    public SearchUserInviteResponseDto searchUserInvite(String username) {
+        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        User foundUser = user.get();
+        return new SearchUserInviteResponseDto(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
+    }
+    @Transactional
+    public void deleteAccount(UserDetailsImpl userDetails) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+                () -> new CustomException(USER_NOT_FOUND)
+        );
+        user.get().deleteAccount();
+    }
+
+
+}

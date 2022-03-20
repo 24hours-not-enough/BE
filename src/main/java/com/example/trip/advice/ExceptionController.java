@@ -2,16 +2,33 @@ package com.example.trip.advice;
 
 import com.example.trip.advice.Fail;
 import com.example.trip.advice.exception.*;
+import javassist.tools.web.BadHttpRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.client.HttpClientErrorException;
 
 
 @RequiredArgsConstructor
 @RestControllerAdvice
+@ControllerAdvice
 public class ExceptionController {
+    // 빈 문자열 (trim 적용) 체크
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public ResponseEntity<Fail> MethodArgumentNotValidException(MethodArgumentNotValidException e) {
+        return new ResponseEntity<>(new Fail("입력값이 빈 문자열입니다."), HttpStatus.OK);
+    }
+
+    // null 값인 경우 체크
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<Fail> BadRequestException(HttpMessageNotReadableException e) {
+        return new ResponseEntity<>(new Fail("입력 값이 존재하지 않습니다."), HttpStatus.OK);
+    }
 
     @ExceptionHandler(PlanNotFoundException.class)
     public ResponseEntity<Fail> PlanNotFoundException(PlanNotFoundException e) {

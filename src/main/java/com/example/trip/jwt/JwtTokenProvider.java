@@ -3,6 +3,8 @@ package com.example.trip.jwt;
 
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.config.security.UserDetailsServiceImpl;
+import com.example.trip.repository.UserRepository;
+import com.example.trip.service.RedisServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -11,6 +13,7 @@ import org.springframework.stereotype.Component;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import java.util.Base64;
 import java.util.Date;
 
@@ -20,6 +23,8 @@ public class JwtTokenProvider {
     private String secretKey = "rabbitandturtle";
 
     private final UserDetailsServiceImpl userDetailsService;
+    private final UserRepository userRepository;
+    private final RedisServiceImpl redisServiceImpl;
 
     // 객체 초기화, secretKey를 Base64로 인코딩
     // @PostConstruct는 의존성 주입이 이루어진 후 초기화를 수행하는 메서드
@@ -61,15 +66,57 @@ public class JwtTokenProvider {
         return request.getHeader("X-AUTH-TOKEN");
     }
 
+    // Request의 Header에서 AccessToken 값을 가져옵니다. "authorization" : "token'
+    public String resolveAccessToken(HttpServletRequest request) {
+        if(request.getHeader("authorization") != null )
+            return request.getHeader("authorization").substring(7); // .substring(7) 삭제 -> 영향 X 확인
+        return null;
+    }
+    // Request의 Header에서 RefreshToken 값을 가져옵니다. "authorization" : "token'
+    public String resolveRefreshToken(HttpServletRequest request) {
+        if(request.getHeader("refreshToken") != null )
+            return request.getHeader("refreshToken").substring(7);
+        return null;
+    }
+
     // 토큰의 유효성 + 만료일자 확인
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
+            System.out.println(claims.getBody().getExpiration());
+            System.out.println(claims.getBody().getSubject());
             return !claims.getBody().getExpiration().before(new Date());
         } catch (ExpiredJwtException e) {
             return false;
         } catch (JwtException e) {
-            return false;
+            throw new RuntimeException("유효하지 않은 토큰입니다.");
         }
     }
+
+    // 어세스 토큰 헤더 설정
+    public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
+        response.setHeader("authorization", "bearer "+ accessToken);
+    }
+
+    // 리프레시 토큰 헤더 설정
+    public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
+        response.setHeader("refreshToken", "bearer "+ refreshToken);
+    }
+
+    // refresh token 존재유무 확인
+    public boolean existsRefreshToken(String refreshtoken) {
+        return redisServiceImpl.getValues(refreshtoken) != null;
+    }
+
+    public void notExistAccessToken() {
+        throw new RuntimeException("엑세스 토큰이 없습니다.");
+    }
+
+    public void notExistRefreshToken() {
+        throw new RuntimeException("리프레시 토큰이 없습니다.");
+    }
+
+//    public boolean existsRefreshToken(String refreshtoken) {
+//        return redisService.getValues(refreshtoken) != null;
+//    }
 }

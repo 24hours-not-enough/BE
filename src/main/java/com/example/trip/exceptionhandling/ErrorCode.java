@@ -10,6 +10,7 @@ public enum ErrorCode {
     // 400 BAD_REQUEST : 잘못된 요청
 
     // 401 UNAUTHORIZED
+    USER_NOT_LOGIN(HttpStatus.UNAUTHORIZED, "로그인이 필요한 서비스입니다."),
 
     // 404 NOT FOUND
     USER_NOT_FOUND(HttpStatus.NOT_FOUND, "존재하지 않는 사용자입니다."),
