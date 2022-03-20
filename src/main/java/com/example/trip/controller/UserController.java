@@ -65,6 +65,7 @@ public class UserController {
         return new ResponseEntity<>(new CheckUsernameSuccess("success", "사용할 수 있는 닉네임입니다."), HttpStatus.OK);
     }
 
+    // 유저 정보 전달
     @GetMapping("/user/userprofileinfo")
     public ResponseEntity<UserProfileInfo> sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserBasicInfoResponseDto userBasicInfo = socialLoginServiceImpl.sendUserProfileInfo(userDetails);

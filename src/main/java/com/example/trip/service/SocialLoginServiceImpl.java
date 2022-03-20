@@ -12,6 +12,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -32,6 +33,7 @@ import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
@@ -152,7 +154,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String encodedPassword = passwordEncoder.encode(password);
 
         // Image는 Embedded라서 null값이 들어갈 수 없다. 따라서 임의의 값 생성 후 저장
-        Image image = new Image("1");
+        Image image = new Image("url", "filename");
 
         Role role = Role.USER;
         User user = User.builder()
@@ -255,7 +257,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String password = UUID.randomUUID().toString();
         String encodedPassword = passwordEncoder.encode(password);
 
-        Image image = new Image("1");
+        Image image = new Image("url", "filename");
 
         Role role = Role.USER;
         User user = User.builder()
@@ -295,10 +297,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         System.out.println("snsaccountId" + userDetails.getUsername());
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
-        user.get().update(username);
-        s3UploaderService.upload(file);
-        String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
-        return new UserBasicInfoResponseDto(username, pororoImg);
+        Map<String, String> nameUrl = s3UploaderService.upload(file);
+        user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
+        return new UserBasicInfoResponseDto(username, nameUrl.get(file.getOriginalFilename()));
     }
 
     public boolean checkKakaoIsFirstLogin(KakaoLoginRequestDto loginRequestDto) {
@@ -334,8 +335,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         if (checkKakaoIsFirstLogin(loginRequestDto)) {
             return new UserBasicInfoResponseDto(null, null);
         } else {
-            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
-            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
@@ -346,16 +346,17 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         if (checkGoogleIsFirstLogin(loginRequestDto)) {
             return new UserBasicInfoResponseDto(null, null);
         } else {
-            String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
-            return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
+    // 마이페이지 유저 + 이미지 정보 전달 -> 캐싱작업 필요
+    @Cacheable(value = "userprofile")
     public UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
-        String pororoImg = "https://w1.pngwing.com/pngs/646/840/png-transparent-gun-south-korea-penguin-child-infant-toy-goods-animation.png";
-        return new UserBasicInfoResponseDto(user.get().getUsername(), pororoImg);
+        String imgUrl = user.get().getImage().getFile_store_course();
+        return new UserBasicInfoResponseDto(user.get().getUsername(), imgUrl);
     }
 
     public SearchUserInviteResponseDto searchUserInvite(String username) {
@@ -365,12 +366,12 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         User foundUser = user.get();
         return new SearchUserInviteResponseDto(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
     }
-
+    @Transactional
     public void deleteAccount(UserDetailsImpl userDetails) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
-        user.get().deleteAccount(user.get().getSocialaccountId());
+        user.get().deleteAccount();
     }
 
 

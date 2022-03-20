@@ -2,9 +2,9 @@ package com.example.trip.repository;
 
 import com.example.trip.domain.FeedDetail;
 import com.example.trip.domain.FeedDetailLocImg;
+import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 

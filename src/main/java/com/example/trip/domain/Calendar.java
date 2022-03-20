@@ -21,6 +21,8 @@ public class Calendar {
 
     private String days;
 
+    private Boolean is_locked;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "plan_id")
     private Plan plan;
@@ -29,8 +31,17 @@ public class Calendar {
     private List<CalendarDetails> calendarDetails = new ArrayList<>();
 
     @Builder
-    public Calendar(String days, Plan plan){
+    public Calendar(String days, Plan plan, Boolean is_locked){
         this.days = days;
         this.plan = plan;
+        this.is_locked = is_locked;
+    }
+
+    public void updateCalendarLock() {
+        this.is_locked = true;
+    }
+
+    public void updateCalendarUnlock() {
+        this.is_locked = false;
     }
 }

@@ -22,7 +22,7 @@ public class PlanRequestDto {
 
         private LocalDateTime travel_end;
 
-        private List<MemberRequestDto.joinDto> memberList;
+        private List<MemberRequestDto.join> memberList;
     }
 
     @NoArgsConstructor
@@ -36,7 +36,7 @@ public class PlanRequestDto {
 
         private LocalDateTime travel_end;
 
-        private List<MemberRequestDto.joinDto> memberList;
+        private List<MemberRequestDto.join> memberList;
 
         private Boolean del_fl;
     }
