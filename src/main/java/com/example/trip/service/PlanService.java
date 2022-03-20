@@ -14,11 +14,11 @@ public interface PlanService {
 
     void modifyPlan(Long user_id, Long planId, PlanRequestDto.Modify modify);
 
-    PlanResponseDto findPlanOne(Long planId, Long userId);
+    PlanResponseDto findPlanOne(Long userId, Long planId);
 
     void removePlanMember(Long id, Long planId);
 
-    void removePlan(Long planId, Long userId);
+    void removePlan(Long userId, Long planId);
 
     List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId, Long planId);
 }
