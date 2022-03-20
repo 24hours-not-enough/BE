@@ -6,6 +6,10 @@ brances:
   only:
     - main   # master 브랜치에 push 가 되었을 때 Travis CI 반응
 
+# 빌드 전에 gradlew의 권한을 추가한다.
+before_install:
+  - chmod +x gradlew
+
 cache:
   directories:
     - '$HOME/.m2/repository'
