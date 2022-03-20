@@ -9,6 +9,7 @@ import com.example.trip.dto.request.PlanRequestDto;
 import com.example.trip.dto.response.PlanResponseDto;
 import com.example.trip.repository.UserRepository;
 import com.example.trip.service.PlanService;
+import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -29,21 +30,31 @@ public class PlanController {
 
     private final UserRepository userRepository;
 
+    @ApiOperation(value = "계획 등록", notes = "로그인 사용자만 가능")
     @PostMapping("/plan")
-    public ResponseEntity<GetPlan> planAdd(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PlanRequestDto.Regist Regist) {
-        System.out.println("userDetails = " + userDetails.getUser().getId());
+    public ResponseEntity<PlanResponseDto.Response> planAdd(@AuthenticationPrincipal UserDetailsImpl userDetails, @RequestBody PlanRequestDto.Regist Regist) {
         Long planId = planService.addPlan(userDetails.getUser().getId(),Regist);
-        return new ResponseEntity<>(new GetPlan(true, "계획 등록 성공!", planId), HttpStatus.OK);
+        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+                .result("success")
+                .msg("계획 등록 성공!")
+                .data(planId)
+                .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "나의 여행계획 전체조회", notes = "로그인 사용자만 가능")
     @GetMapping("/plan")
-    public ResponseEntity<GetAllPlan> planList(@AuthenticationPrincipal UserDetailsImpl userDetails, @PageableDefault(size = 5) Pageable pageable) {
+    public ResponseEntity<PlanResponseDto.Response> planList(@AuthenticationPrincipal UserDetailsImpl userDetails, @PageableDefault(size = 5) Pageable pageable) {
         List<PlanResponseDto> plan = planService.findPlan(userDetails.getUser().getId(), pageable);
-        return new ResponseEntity<>(new GetAllPlan(true, "나의 여행계획 전체 조회입니다.", plan), HttpStatus.OK);
+        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+                .result("success")
+                .msg("나의 여행계획 전체 조회입니다.")
+                .data(plan)
+                .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "여행 계획 수정, 복구, 삭제", notes = "계획을 등록한 사람만 가능")
     @PutMapping("/plan/{planId}")
-    public ResponseEntity<Success> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId, @RequestBody PlanRequestDto.Modify modify) {
+    public ResponseEntity<PlanResponseDto.Response> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId, @RequestBody PlanRequestDto.Modify modify) {
         planService.modifyPlan(userDetails.getUser().getId(), planId, modify);
         String msg;
         if(modify.getTitle()!=null){
@@ -55,30 +66,51 @@ public class PlanController {
             msg = "계획 삭제 성공!";
         }
 
-        return new ResponseEntity<>(new Success(true, msg), HttpStatus.OK);
+        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+                .result("success")
+                .msg(msg)
+                .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "나의 여행계획 단건 조회", notes = "로그인 사용자만 가능")
     @GetMapping("/plan/{planId}")
-    public ResponseEntity<GetPlanOne> planOne(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {
+    public ResponseEntity<PlanResponseDto.Response> planOne(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {
         PlanResponseDto planOne = planService.findPlanOne(userDetails.getUser().getId(), planId);
-        return new ResponseEntity<>(new GetPlanOne(true, "계획 단건 조회 성공!",planOne), HttpStatus.OK);
+        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+                .result("success")
+                .msg("계획 단건 조회 성공!")
+                .data(planOne)
+                .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "나의 여행계획 영구 삭제", notes = "로그인 사용자만 가능")
     @DeleteMapping("/plan/{planId}")
-    public ResponseEntity<Success> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {
+    public ResponseEntity<PlanResponseDto.Response> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {
         planService.removePlan(userDetails.getUser().getId(), planId);
-        return new ResponseEntity<>(new Success(true, "계획 영구 삭제 성공!"), HttpStatus.OK);
+        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+                .result("success")
+                .msg("계획 영구 삭제 성공!")
+                .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "나의 여행계획 나가기", notes = "로그인 사용자만 가능")
     @DeleteMapping("/plan/{planId}/member")
-    public ResponseEntity<Success> planMemberRemove(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
+    public ResponseEntity<PlanResponseDto.Response> planMemberRemove(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
         planService.removePlanMember(userDetails.getUser().getId(),planId);
-        return new ResponseEntity<>(new Success(true, "계획 나가기 성공!"), HttpStatus.OK);
+        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+                .result("success")
+                .msg("계획 나가기 성공!")
+                .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "나의 여행계획 전체조회", notes = "로그인 사용자만 가능")
     @GetMapping("/plan/{planId}/planDetails")
-    public ResponseEntity<GetAllPlanDetails> MemberAndPlanAllList(@AuthenticationPrincipal UserDetailsImpl userDetails,@PathVariable Long planId){
+    public ResponseEntity<PlanResponseDto.Response> MemberAndPlanAllList(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
         List<PlanResponseDto.DetailAll> planAllAndMember = planService.findPlanAllAndMember(userDetails.getUser().getId(), planId);
-        return new ResponseEntity<>(new GetAllPlanDetails(true, "계획 상세 전체조회 성공",planAllAndMember), HttpStatus.OK);
+        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+                .result("success")
+                .msg("계획 상세 전체조회 성공")
+                .data(planAllAndMember)
+                .build(),HttpStatus.OK);
     }
 }
