@@ -54,7 +54,7 @@ public class PlanController {
 
     @ApiOperation(value = "여행 계획 수정, 복구, 삭제", notes = "계획을 등록한 사람만 가능")
     @PutMapping("/plan/{planId}")
-    public ResponseEntity<PlanResponseDto.Response> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId, @RequestBody PlanRequestDto.Modify modify) {
+    public ResponseEntity<PlanResponseDto.ResponseNodata> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId, @RequestBody PlanRequestDto.Modify modify) {
         planService.modifyPlan(userDetails.getUser().getId(), planId, modify);
         String msg;
         if(modify.getTitle()!=null){
@@ -66,7 +66,7 @@ public class PlanController {
             msg = "계획 삭제 성공!";
         }
 
-        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
                 .result("success")
                 .msg(msg)
                 .build(),HttpStatus.OK);
@@ -85,9 +85,9 @@ public class PlanController {
 
     @ApiOperation(value = "나의 여행계획 영구 삭제", notes = "로그인 사용자만 가능")
     @DeleteMapping("/plan/{planId}")
-    public ResponseEntity<PlanResponseDto.Response> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {
+    public ResponseEntity<PlanResponseDto.ResponseNodata> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {
         planService.removePlan(userDetails.getUser().getId(), planId);
-        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
                 .result("success")
                 .msg("계획 영구 삭제 성공!")
                 .build(),HttpStatus.OK);
@@ -95,9 +95,9 @@ public class PlanController {
 
     @ApiOperation(value = "나의 여행계획 나가기", notes = "로그인 사용자만 가능")
     @DeleteMapping("/plan/{planId}/member")
-    public ResponseEntity<PlanResponseDto.Response> planMemberRemove(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
+    public ResponseEntity<PlanResponseDto.ResponseNodata> planMemberRemove(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
         planService.removePlanMember(userDetails.getUser().getId(),planId);
-        return new ResponseEntity<>(PlanResponseDto.Response.builder()
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
                 .result("success")
                 .msg("계획 나가기 성공!")
                 .build(),HttpStatus.OK);

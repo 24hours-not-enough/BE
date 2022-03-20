@@ -4,7 +4,7 @@ jdk:
 
 brances:
   only:
-    - main   # master 브랜치에 push 가 되었을 때 Travis CI 반응
+    - main   # main 브랜치에 push 가 되었을 때 Travis CI 반응
 
 # 빌드 전에 gradlew의 권한을 추가한다.
 before_install:
@@ -31,7 +31,7 @@ deploy:
 
     secret_access_key: $AWS_SECRET_KEY     # Travis CI 에서 IAM 사용자 비밀 엑세스 키
 
-    bucket: aws-gyun-s3        # S3 Bucket 이름
+    bucket: hanghaefinal    # S3 Bucket 이름
     region: ap-northeast-2
     skip_cleanup: true
     acl: private               # zip 파일 공개 여부
