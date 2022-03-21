@@ -27,4 +27,22 @@ public class CalendarResponseDto {
                 .map(CalendarDetailsResponseDto::new)
                 .collect(Collectors.toList());
     }
+
+    @AllArgsConstructor
+    @Getter
+    public static class Plan {
+        private Long calendar_id;
+
+        private String days;
+
+        private List<CalendarDetailsResponseDto.Plan> calendarDetails;
+
+        public Plan(Calendar calendar) {
+            this.calendar_id = calendar.getId();
+            this.days = calendar.getDays();
+            this.calendarDetails = calendar.getCalendarDetails().stream()
+                    .map(CalendarDetailsResponseDto.Plan::new)
+                    .collect(Collectors.toList());
+        }
+    }
 }

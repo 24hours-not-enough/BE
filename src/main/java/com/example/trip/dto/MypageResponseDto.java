@@ -18,7 +18,7 @@ public class MypageResponseDto {
         private String title;
         private LocalDateTime travel_start;
         private LocalDateTime travel_end;
-        private List<CalendarResponseDto> calendars;
+        private List<CalendarResponseDto.Plan> calendars;
 
         public GetPlan(Plan plan) {
             this.planId = plan.getId();
@@ -26,7 +26,7 @@ public class MypageResponseDto {
             this.travel_start = plan.getTravel_start();
             this.travel_end = plan.getTravel_end();
             this.calendars = plan.getCalendars().stream()
-                    .map(CalendarResponseDto::new).collect(Collectors.toList());
+                    .map(CalendarResponseDto.Plan::new).collect(Collectors.toList());
         }
     }
 }

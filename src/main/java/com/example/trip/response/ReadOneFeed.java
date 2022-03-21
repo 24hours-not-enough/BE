@@ -1,6 +1,7 @@
 package com.example.trip.response;
 
 import com.example.trip.dto.FeedDetailLocCommentResponseDto;
+import com.example.trip.dto.FeedDetailLocResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -9,5 +10,5 @@ import lombok.Getter;
 public class ReadOneFeed {
     private String result;
     private String msg;
-    private FeedDetailLocCommentResponseDto feeddata;
+    private FeedDetailLocResponseDto.ReadOneFeed feeddata;
 }

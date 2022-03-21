@@ -21,4 +21,7 @@ public interface PlanRepository extends JpaRepository<Plan, Long>, PlanRepositor
 
     @Query("select p from Plan p where p.uuid =:roomId")
     Optional<Plan> findByUuid(String roomId);
+
+    @Query("select p from Plan p left join fetch p.user left join fetch p.members m where p.id = :planId and m.active=true and m.user.id =:userId")
+    Optional<Plan> findByPlanAndUser(Long planId, Long userId);
 }
