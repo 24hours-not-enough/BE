@@ -19,9 +19,9 @@ script:
   - "./gradlew clean build"   # jar 만들기
 
 before_deploy:
-  - zip -r SpringBoot_Nginx *
-  - mkdir -p deploy # zip에 포함시킬 파일들을 담을 디렉토리 생성
-  - mv SpringBoot_Nginx.zip deploy/SpringBoot_Nginx.zip # deploy로 zip파일(원하는 이름으로) 이동
+  - zip -r BE *
+  - mkdir -p deploy
+  - mv BE.zip deploy/BE.zip
 
 deploy:
   - provider: s3
@@ -44,7 +44,7 @@ deploy:
     secret_access_key: $AWS_SECRET_KEY    # Travis CI 에서 IAM 사용자 비밀 엑세스 키
 
     bucket: hanghaefinal         # S3 Bucket 이름
-    key: SpringBoot_Nginx.zip   # 위에서 만든 zip 파일 이름 !! (꼭 맞춰서 적어야함)
+    key: BE.zip   # 위에서 만든 zip 파일 이름 !! (꼭 맞춰서 적어야함)
     bundle_type: zip
     application: 1code-Deploy          # CodeDeploy 애플리케이션 이름
 
@@ -52,6 +52,8 @@ deploy:
 
     region: ap-northeast-2
     wait-until-deployed: true
+    on:
+      all_branches: true
 
 notification:  # 이메일 알림
   email:
