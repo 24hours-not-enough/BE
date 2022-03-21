@@ -22,5 +22,5 @@ public interface MypageService {
 
     UserBasicInfoResponseDto changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException;
 
-    MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails);
+    MypageResponseDto.GetPlan getPlan(Long planId, Long userId);
 }
