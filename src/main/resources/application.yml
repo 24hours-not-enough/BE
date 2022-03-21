@@ -1,6 +1,35 @@
-server:
-  port: 8080
+---
+spring:
+  profiles:
+    group:
+      "real1": "real1_port"
+---
 
+spring:
+  config:
+    activate:
+      on-profile: "real1_port"
+
+server:
+  port: 8081
+
+---
+
+spring:
+  profiles:
+    group:
+      "real2": "real2_port"
+---
+
+spring:
+  config:
+    activate:
+      on-profile: "real2_port"
+
+server:
+  port: 8082
+
+---
 
 spring:
   redis:
@@ -13,11 +42,11 @@ spring:
     # DB username
     username: root
     # DB password
-    password: 12345678
+    password: ${{ secrets.MY_PWD }}
 
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: create
     properties:
       hibernate:
         format_sql: true
@@ -27,20 +56,23 @@ spring:
 logging.level:
   org.hibernate.SQL: debug
 
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
 
 cloud:
   aws:
     credentials:
       accessKey:
-        AKIA4CK6HAUXIV6TF7O3
+        ${{ secrets.AWS_ACC }}
       secretKey:
-        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
+        ${{ secrets.AWS_SEC }}
     s3:
       bucket:
-        triplan-bucket-0314
+        ${{ secrets.S3_BUCKET }}
     region:
       static:
         ap-northeast-2
       stack:
         auto: false
-
