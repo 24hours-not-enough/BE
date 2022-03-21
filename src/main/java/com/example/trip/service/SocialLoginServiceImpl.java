@@ -28,6 +28,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -55,7 +56,8 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final S3UploaderServiceImpl s3UploaderService;
     private final RedisServiceImpl redisServiceImpl;
 
-    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
+    private static final Long AccessTokenValidTime = 1 * 60 * 1000L; // 1분(test)
+//    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
 
@@ -294,7 +296,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
     @Transactional
     public UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
-        System.out.println("snsaccountId" + userDetails.getUsername());
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         Map<String, String> nameUrl = s3UploaderService.upload(file);
