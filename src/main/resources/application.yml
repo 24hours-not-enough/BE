@@ -42,7 +42,7 @@ spring:
     # DB username
     username: root
     # DB password
-    password: 1q2w3e4r
+    password: ${{ secrets.MY_PWD }}
 
   jpa:
     hibernate:
@@ -55,6 +55,7 @@ spring:
 
 logging.level:
   org.hibernate.SQL: debug
+
 decorator:
   datasource:
     p6spy:
