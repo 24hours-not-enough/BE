@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 @Getter
 @NoArgsConstructor
-@AllArgsConstructor
 public class FeedResponseDto {
     @Builder
     @NoArgsConstructor
