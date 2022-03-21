@@ -77,7 +77,9 @@ public class FeedService {
 
     public Map<String, String> registerFeedImage(Long feedDetailLocId, List<MultipartFile> imgFiles) {
         Map<String, String> nameAndUrl = awsS3Service.uploadFile(imgFiles);
-        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId).orElseThrow(() -> new NullPointerException(""));
+        // 해당 피드 상세 위치 값이 있는지 체크
+        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId)
+                .orElseThrow(() -> new FeedDetailLocNotFoundException());
         nameAndUrl.entrySet().forEach(x -> feedDetailLocImgRepository.save(FeedDetailLocImg.builder()
                 .feedDetailLoc(feedDetailLoc)
                 .fileName(x.getKey())
@@ -103,7 +105,7 @@ public class FeedService {
         }
 
 
-        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new IllegalArgumentException("ID가 존재하지 않습니다. "));
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new FeedNotFoundException());
 
         //feed Detail 수정
         feedRequestModifyDto.getFeedDetail().stream()

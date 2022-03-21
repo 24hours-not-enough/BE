@@ -56,6 +56,11 @@ public class ExceptionController {
     public ResponseEntity<Fail> AuthFeedCommentNotFoundException(AuthFeedCommentNotFoundException e) {
         return new ResponseEntity<>(new Fail("피드 댓글 수정, 삭제는 본인만 할 수 있습니다."), HttpStatus.OK);
     }
+    // 피드 존재 체크
+    @ExceptionHandler(FeedNotFoundException.class)
+    public ResponseEntity<Fail> FeedNotFoundException(FeedNotFoundException e) {
+        return new ResponseEntity<>(new Fail("해당 피드 값이 없습니다."), HttpStatus.OK);
+    }
 
     // 피드 상세 위치 존재 체크
     @ExceptionHandler(FeedDetailLocNotFoundException.class)
