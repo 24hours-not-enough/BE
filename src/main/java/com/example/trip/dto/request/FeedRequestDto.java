@@ -19,12 +19,10 @@ public class FeedRequestDto {
         private String title;
 
         //        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        @NotBlank
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime travelStart;
 
         //        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
-        @NotBlank
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime travelEnd;
 
@@ -36,10 +34,8 @@ public class FeedRequestDto {
         @NotBlank
         private String title;
 
-        @NotBlank
         private LocalDateTime travelStart;
 
-        @NotBlank
         private LocalDateTime travelEnd;
 
         @NotBlank

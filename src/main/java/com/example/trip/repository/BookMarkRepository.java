@@ -1,6 +1,7 @@
 package com.example.trip.repository;
 
 import com.example.trip.domain.BookMark;
+import com.example.trip.domain.Likes;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
@@ -20,4 +21,7 @@ public interface BookMarkRepository extends JpaRepository<BookMark, Long> {
 
     @Query("select b from BookMark b left join fetch b.feedDetailLoc l where l.id = :feeddetaillocId")
     BookMark FindBookmarkByfeeddetaillocId(@Param("feeddetaillocId") Long feeddetaillocId);
+
+    @Query("SELECT B FROM BookMark B WHERE B.feedDetailLoc.id = ?1 and B.user.id = ?2")
+    List<BookMark> findByFeedDetailLocIdAndUserId(Long feedDetailLocId, Long userId);
 }
