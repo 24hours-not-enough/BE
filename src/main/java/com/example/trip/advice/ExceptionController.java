@@ -114,21 +114,6 @@ public class ExceptionController {
         return new ResponseEntity<>(new Fail("알수없는 오류입니다. 관리자 문의 부탁드립니다."), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(AuthFeedNotFoundException.class)
-    public ResponseEntity<Fail> AuthFeedNotFoundException(AuthFeedNotFoundException e) {
-        return new ResponseEntity<>(new Fail("권한이 없는 여행 기록입니다."), HttpStatus.OK);
-    }
-
-    @ExceptionHandler(FeedDetailLocNotFoundException.class)
-    public ResponseEntity<Fail> FeedDetailLocNotFoundException(FeedDetailLocNotFoundException e) {
-        return new ResponseEntity<>(new Fail("존재하지 않는 피드 상세 위치입니다."), HttpStatus.OK);
-    }
-
-    @ExceptionHandler(FeedNotFoundException.class)
-    public ResponseEntity<Fail> FeedFoundException(FeedNotFoundException e) {
-        return new ResponseEntity<>(new Fail("존재하지 않는 피드입니다."), HttpStatus.OK);
-    }
-
     @ExceptionHandler(MissingServletRequestPartException.class)
     public ResponseEntity<Fail> MissingServletRequestPartException(MissingServletRequestPartException e) {
         return new ResponseEntity<>(new Fail("등록할 닉네임이 없습니다."), HttpStatus.OK);
