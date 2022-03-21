@@ -90,7 +90,6 @@ public class FeedService {
     }
 
     public void deleteFeedImage(FeedRequestDto.FeedRequestDeleteImgDto FeedRequestDeleteImgDto) {
-
         List<String> fileNames = FeedRequestDeleteImgDto.getFileNames();
         fileNames.forEach(x -> awsS3Service.deleteFile(x));
     }
