@@ -59,8 +59,11 @@ public class FeedController {
     }
 
     @PutMapping("/feed/{feedId}")
-    public ResponseEntity<FeedResponseDto> modifyFeed(@PathVariable Long feedId, @RequestBody FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto) {
-        feedService.modifyFeed(feedId, feedRequestModifyDto);
+    public ResponseEntity<FeedResponseDto> modifyFeed(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long feedId,
+            @RequestBody FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto) {
+        feedService.modifyFeed(userDetails.getUser(), feedId, feedRequestModifyDto);
         return new ResponseEntity<>(FeedResponseDto.builder()
                 .result("success")
                 .msg("피드 수정 성공하였습니다.")
@@ -68,8 +71,10 @@ public class FeedController {
     }
 
     @DeleteMapping("/feed/{feedId}")
-    public ResponseEntity<FeedResponseDto> deleteFeed(@PathVariable Long feedId) {
-        feedService.deleteFeed(feedId);
+    public ResponseEntity<FeedResponseDto> deleteFeed(
+            @PathVariable Long feedId,
+            @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        feedService.deleteFeed(userDetails.getUser(), feedId);
         return new ResponseEntity<>(FeedResponseDto.builder()
                 .result("success")
                 .msg("피드 삭제 성공하였습니다.")
@@ -77,7 +82,8 @@ public class FeedController {
     }
 
     @PostMapping("/feed/{feedDetailLocId}/like")
-    public ResponseEntity<FeedResponseDto> likeFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<FeedResponseDto> likeFeed(@PathVariable Long feedDetailLocId,
+                                                    @AuthenticationPrincipal UserDetailsImpl userDetails) {
         feedService.likeFeed(feedDetailLocId, userDetails.getUser());
         return new ResponseEntity<>(FeedResponseDto.builder()
                 .result("success")
@@ -122,8 +128,11 @@ public class FeedController {
     }
 
     @PutMapping("/feed/comment/{commentId}")
-    public ResponseEntity<FeedResponseDto> modifyFeedComment(@PathVariable Long commentId, @RequestBody FeedRequestDto.FeedRequestCommentModifyDto feedRequestCommentModifyDto) {
-        feedService.modifyFeedComment(commentId, feedRequestCommentModifyDto);
+    public ResponseEntity<FeedResponseDto> modifyFeedComment(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long commentId,
+            @RequestBody FeedRequestDto.FeedRequestCommentModifyDto feedRequestCommentModifyDto) {
+        feedService.modifyFeedComment(userDetails.getUser(), commentId, feedRequestCommentModifyDto);
         return new ResponseEntity<>(FeedResponseDto.builder()
                 .result("success")
                 .msg("댓글 수정 성공하였습니다.")
@@ -131,8 +140,10 @@ public class FeedController {
     }
 
     @DeleteMapping("/feed/comment/{commentId}")
-    public ResponseEntity<FeedResponseDto> deleteFeedComment(@PathVariable Long commentId) {
-        feedService.deleteFeedComment(commentId);
+    public ResponseEntity<FeedResponseDto> deleteFeedComment(
+            @AuthenticationPrincipal UserDetailsImpl userDetails,
+            @PathVariable Long commentId) {
+        feedService.deleteFeedComment(userDetails.getUser(), commentId);
         return new ResponseEntity<>(FeedResponseDto.builder()
                 .result("success")
                 .msg("댓글 삭제 성공하였습니다.")

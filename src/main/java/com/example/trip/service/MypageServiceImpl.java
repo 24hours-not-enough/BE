@@ -1,6 +1,6 @@
 package com.example.trip.service;
 
-import com.example.trip.advice.exception.AuthFeedNotFoundException;
+import com.example.trip.advice.exception.*;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.*;
 import com.example.trip.dto.*;
@@ -39,7 +39,7 @@ public class MypageServiceImpl implements MypageService {
         for (Feed feed : feeds) {
             List<FeedDetailLocImg> imgs = feedDetailLocImgRepository.FindFeedandImgs(feed.getId());
             List<String> imageList = imgs.stream().map(x -> x.getImgUrl()).collect(Collectors.toList());
-            arr.add(new FeedResponseDto.AllMyTrips(feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), imageList));
+            arr.add(new FeedResponseDto.AllMyTrips(feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), imageList.size(), imageList));
         }
         return arr;
 //        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
@@ -87,6 +87,7 @@ public class MypageServiceImpl implements MypageService {
     // 여행 기록 1개 전체 보기 (조회) -> cache 작업 필요
     @Cacheable(value = "feed", key = "#feedId")
     public FeedResponseDto.ReadOneTrip readOneTrip(Long userId, Long feedId) {
+        FeedValidation(feedId);
         Feed feed = authFeedValidation(userId, feedId);
         return new FeedResponseDto.ReadOneTrip(feed);
 
@@ -117,6 +118,7 @@ public class MypageServiceImpl implements MypageService {
     // feed 1개 읽기(조회) -> cache 작업 필요
     @Cacheable(value = "feeddetailloc", key = "#feeddetaillocId")
     public FeedDetailLocResponseDto.ReadOneFeed readOneFeed(Long feeddetaillocId) {
+        FeedDetailLocValidation(feeddetaillocId);
         Optional<FeedDetailLoc> byId = feedDetailLocRepository.findById(feeddetaillocId);
         FeedDetailLoc locationData = byId.get();
         return new FeedDetailLocResponseDto.ReadOneFeed(locationData);
@@ -140,7 +142,7 @@ public class MypageServiceImpl implements MypageService {
             List<FeedDetailLoc> oneCityList = feedDetailLocRepository.FindOneCityList(user.get().getId(), city.getCity());
             ArrayList<String> images = new ArrayList<>();
             if (oneCityList.size() < 3) {
-                for(FeedDetailLoc onecity:oneCityList) {
+                for(FeedDetailLoc onecity : oneCityList) {
                     images.add(onecity.getFeedDetailLocImg().get(1).getImgUrl());
                 }
             } else {
@@ -154,11 +156,10 @@ public class MypageServiceImpl implements MypageService {
         return likesFeedList;
     }
 
-    // longitude + latitude 값 제거해서 return 하는 방법?
-    public MypageResponseDto.GetPlan getPlan(Long planId, UserDetailsImpl userDetails) {
-        Optional<Plan> plan = planRepository.findById(planId);
-        Plan foundPlan = plan.get();
-        return new MypageResponseDto.GetPlan(foundPlan);
+    public MypageResponseDto.GetPlan getPlan(Long planId, Long userId) {
+        authPlanValidation(planId);
+        Plan plan = authPlanMemberValidation(planId, userId);
+        return new MypageResponseDto.GetPlan(plan);
     }
 
     // 마이페이지 프로필 수정(완료)
@@ -174,5 +175,22 @@ public class MypageServiceImpl implements MypageService {
 
     private Feed authFeedValidation(Long userId, Long feedId) {
         return feedRepository.FindFeedByUserId(userId, feedId).orElseThrow(AuthFeedNotFoundException::new);
+    }
+
+    // mock data 넣어서 확인 필요
+    private Plan authPlanMemberValidation(Long planId, Long userId) {
+        return planRepository.findByPlanAndUser(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
+    }
+
+    private void authPlanValidation(Long planId) {
+        planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
+    }
+
+    private void FeedDetailLocValidation(Long feeddetaillocId) {
+        feedDetailLocRepository.findById(feeddetaillocId).orElseThrow(FeedDetailLocNotFoundException::new);
+    }
+
+    private void FeedValidation(Long feedId) {
+        feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
     }
 }

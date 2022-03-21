@@ -1,6 +1,5 @@
 package com.example.trip.controller;
 
-import com.example.trip.advice.Success;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.*;
 import com.example.trip.response.*;
@@ -64,11 +63,9 @@ public class MypageController {
 //     기록 작성 시 계획 불러오기
     @GetMapping("/api/feed/plan/{planId}")
     public ResponseEntity<FindOnePlan> getPlan(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        MypageResponseDto.GetPlan plan = mypageService.getPlan(planId, userDetails);
+        MypageResponseDto.GetPlan plan = mypageService.getPlan(planId, userDetails.getUser().getId());
         return new ResponseEntity<>(new FindOnePlan("success", "계획을 기록 작성 페이지에 불러왔습니다.", plan), HttpStatus.OK);
     }
-
-
 
     // 마이페이지 수정
     @PutMapping("/api/mypage")
