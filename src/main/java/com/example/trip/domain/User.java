@@ -54,12 +54,13 @@ public class User extends TimeStamped {
         this.image = image;
     }
 
-    public void update(String username) {
+    public void update(String username, String url, String filename) {
         this.username = username;
+        this.image = new Image(url, filename);
     }
 
-    public void deleteAccount(String socialaccountId) {
-        this.socialaccountId = socialaccountId;
+    public void deleteAccount() {
+        this.socialaccountId = null;
         this.memberstatus = false;
     }
 }

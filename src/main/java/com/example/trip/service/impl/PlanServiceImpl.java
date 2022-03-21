@@ -61,6 +61,7 @@ public class PlanServiceImpl implements PlanService {
     @Transactional
     public void modifyPlan(Long user_id, Long planId, PlanRequestDto.Modify modify) {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
+        authMemberValidation(user_id,planId);
         authPlanValidation(planId,user_id);
         if(modify.getDel_fl()==null){
             findPlan.get().updatePlan(modify);
@@ -72,7 +73,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public PlanResponseDto findPlanOne(Long planId, Long userId) {
+    public PlanResponseDto findPlanOne(Long userId, Long planId) {
         planValidation(planId);
         authPlanValidation(planId,userId);
         return planRepository.findPlanAndMemberOne(planId);
@@ -105,7 +106,7 @@ public class PlanServiceImpl implements PlanService {
     }
 
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
-    private void setMember(List<MemberRequestDto.joinDto> memberList, Plan savePlan) {
+    private void setMember(List<MemberRequestDto.join> memberList, Plan savePlan) {
         memberList.forEach((members) ->{
             Optional<User> findNickName = Optional.ofNullable(userRepository.findByNickName(members.getNickName()).orElseThrow(UserNotFoundException::new));
             Optional<Member> findMember = memberRepository.findByNickNameAndPlanId(findNickName.get().getId(),savePlan.getId());
@@ -131,5 +132,9 @@ public class PlanServiceImpl implements PlanService {
 
     private void planValidation(Long planId) {
         planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
+    }
+
+    private void authMemberValidation(Long userId, Long planId) {
+        memberRepository.findByAuthMemberAndPlan(userId, planId).orElseThrow(AuthPlanNotFoundException::new);
     }
 }

@@ -1,8 +1,6 @@
 package com.example.trip.service.impl;
 
-import com.example.trip.advice.exception.AuthPlanNotFoundException;
-import com.example.trip.advice.exception.CalendarNotFoundException;
-import com.example.trip.advice.exception.PlanNotFoundException;
+import com.example.trip.advice.exception.*;
 import com.example.trip.domain.Calendar;
 import com.example.trip.domain.CalendarDetails;
 import com.example.trip.dto.request.CalendarDetailsRequestDto;
@@ -86,6 +84,9 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
         planValidation(planId);
         userAndPlanValidation(planId,userId);
         setCalendarDetailsList(dto);
+        List<Calendar> byPlan = calendarRepository.findByPlan(planId);
+        byPlan.forEach((Calendar::updateCalendarUnlock));
+
     }
 
     private void setCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
@@ -99,7 +100,7 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
                         .latitude(detailsList.getLatitude())
                         .longitude(detailsList.getLongitude())
                         .memo(detailsList.getLocationMemo())
-                        .order(detailsList.getSort())
+                        .sort(detailsList.getSort())
                         .build();
                 calendarDetailsRepository.save(calendarDetails);
             });
@@ -114,7 +115,7 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
                     .latitude(detailsList.getLatitude())
                     .longitude(detailsList.getLongitude())
                     .memo(detailsList.getLocationMemo())
-                    .order(detailsList.getSort())
+                    .sort(detailsList.getSort())
                     .build();
             calendarDetailsRepository.save(calendarDetails);
         });

@@ -15,8 +15,11 @@ public class Image {
     @Lob
     private String file_store_course;
 
+    private String filename;
+
     @Builder
-    public Image(String file_store_course) {
+    public Image(String file_store_course, String filename) {
         this.file_store_course = file_store_course;
+        this.filename = filename;
     }
 }

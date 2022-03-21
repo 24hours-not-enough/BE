@@ -9,4 +9,3 @@ public class FeedNotFoundException extends RuntimeException  {
         super();
     }
 }
-
