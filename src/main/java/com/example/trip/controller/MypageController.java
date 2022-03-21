@@ -1,6 +1,5 @@
 package com.example.trip.controller;
 
-import com.example.trip.advice.Success;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.*;
 import com.example.trip.response.*;

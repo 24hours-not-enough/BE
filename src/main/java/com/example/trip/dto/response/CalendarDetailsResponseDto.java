@@ -46,7 +46,7 @@ public class CalendarDetailsResponseDto {
             this.calendar_details_id = calendarDetails.getId();
             this.location_name = calendarDetails.getName();
             this.location_memo = calendarDetails.getMemo();
-            this.order = calendarDetails.getOrder();
+            this.order = calendarDetails.getSort();
         }
     }
 
