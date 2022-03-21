@@ -9,13 +9,25 @@ import java.util.List;
 import java.util.stream.Collectors;
 
 @Getter
-@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 public class FeedResponseDto {
-    private String result;
-    private String msg;
-    private Object data;
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FeedResponseDefault{
+        private String result;
+        private String msg;
+    }
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class FeedResponseOptional{
+        private String result;
+        private String msg;
+        private Object data;
+    }
+
 
     @AllArgsConstructor
     @Getter
