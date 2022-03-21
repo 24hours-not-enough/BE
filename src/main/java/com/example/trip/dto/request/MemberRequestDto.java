@@ -13,7 +13,7 @@ public class MemberRequestDto {
 
     @Getter
     @NoArgsConstructor
-    public static class joinDto{
+    public static class join{
         private String nickName;
     }
 

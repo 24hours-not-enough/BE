@@ -1,6 +1,6 @@
 package com.example.trip.domain;
 
-import com.example.trip.dto.FeedRequestDto;
+import com.example.trip.dto.request.FeedRequestDto;
 import lombok.*;
 
 import javax.persistence.*;

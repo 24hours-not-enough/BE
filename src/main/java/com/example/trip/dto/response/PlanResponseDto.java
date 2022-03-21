@@ -32,7 +32,7 @@ public class PlanResponseDto {
     private Boolean del_tc;
 
     @Builder
-    public PlanResponseDto(Long plan_id, String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end){
+    public PlanResponseDto(Long plan_id, String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end) {
         this.title = title;
         this.travel_destination = travel_destination;
         this.travel_start = travel_start;
@@ -55,7 +55,7 @@ public class PlanResponseDto {
     @NoArgsConstructor
     @Builder
     @AllArgsConstructor
-    public static class RegistDto{
+    public static class Regist {
 
         private Long plan_id;
         private String title;
@@ -66,21 +66,21 @@ public class PlanResponseDto {
 
         private LocalDateTime travel_end;
 
-        private List<MemberRequestDto.joinDto> memberList;
+        private List<MemberRequestDto.join> memberList;
 
         private Boolean del_tc;
 
-        public RegistDto(Plan plan) {
-            this.title= plan.getTitle();
-            this.del_tc=plan.getDel_tc();
-            this.travel_destination=plan.getTravel_destination();
+        public Regist(Plan plan) {
+            this.title = plan.getTitle();
+            this.del_tc = plan.getDel_tc();
+            this.travel_destination = plan.getTravel_destination();
         }
     }
 
     @Getter
     @NoArgsConstructor
     @AllArgsConstructor
-    public static class DetailAll{
+    public static class DetailAll {
         private Long plan_id;
 
         private String title;
@@ -119,5 +119,45 @@ public class PlanResponseDto {
                     .map(CheckListResponseDto::new)
                     .collect(Collectors.toList());
         }
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class GetPlan {
+        private boolean success;
+
+        private String msg;
+
+        private Long data;
+    }
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class Response{
+        private String result;
+        private String msg;
+        private Object data;
+    }
+
+    @Getter
+    @Builder
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class ResponseNodata{
+        private String result;
+        private String msg;
+        private Object data;
+    }
+
+
+    @AllArgsConstructor
+    @Getter
+    public static class GetAllPlanDetails {
+        private boolean success;
+
+        private String msg;
+
+        private List<PlanResponseDto.DetailAll> data;
     }
 }
