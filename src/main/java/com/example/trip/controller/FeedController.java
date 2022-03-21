@@ -6,6 +6,8 @@ import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.dto.FeedResponseDto;
 import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -24,6 +26,11 @@ import java.util.Map;
 public class FeedController {
     private final FeedService feedService;
 
+    @Caching(evict = {
+            @CacheEvict(value = "feedlist"),
+            @CacheEvict(value = "feed", key = "#feedId"),
+            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
+    })
     @PostMapping("/feed")
     public ResponseEntity<FeedResponseDto.FeedResponseOptional> registerFeed(
             @AuthenticationPrincipal UserDetailsImpl user,
@@ -36,6 +43,12 @@ public class FeedController {
                 .data(feedDetailLocs)
                 .build(), HttpStatus.OK);
     }
+
+    @Caching(evict = {
+            @CacheEvict(value = "feedlist"),
+            @CacheEvict(value = "feed", key = "#feedId"),
+            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
+    })
     @PostMapping("/feed/image/{feedDetailLocId}")
     public ResponseEntity<FeedResponseDto.FeedResponseOptional> registerFeedImage(
             @PathVariable Long feedDetailLocId,
@@ -48,6 +61,11 @@ public class FeedController {
                 .build(), HttpStatus.OK);
     }
 
+    @Caching(evict = {
+            @CacheEvict(value = "feedlist"),
+            @CacheEvict(value = "feed", key = "#feedId"),
+            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
+    })
     @DeleteMapping("/feed/image")
     public ResponseEntity<FeedResponseDto.FeedResponseDefault> deleteFeedImage(
             @RequestBody FeedRequestDto.FeedRequestDeleteImgDto  FeedRequestDeleteImgDto) {
@@ -69,7 +87,11 @@ public class FeedController {
                 .msg("피드 수정 성공하였습니다.")
                 .build(), HttpStatus.OK);
     }
-
+    @Caching(evict = {
+            @CacheEvict(value = "feedlist"),
+            @CacheEvict(value = "feed", key = "#feedId"),
+            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
+    })
     @DeleteMapping("/feed/{feedId}")
     public ResponseEntity<FeedResponseDto.FeedResponseDefault> deleteFeed(
             @PathVariable Long feedId,
