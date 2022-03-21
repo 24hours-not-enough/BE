@@ -147,7 +147,6 @@ public class PlanResponseDto {
     public static class ResponseNodata{
         private String result;
         private String msg;
-        private Object data;
     }
 
 
