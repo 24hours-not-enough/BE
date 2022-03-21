@@ -24,7 +24,7 @@ public class CustomAuthenticationEntryPoint implements AuthenticationEntryPoint 
         ObjectMapper objectMapper = new ObjectMapper();
         Map<String, Object> data = new HashMap<>();
 
-        String errormsg = "로그인 후 이용가능합니다.(Entrypoint)";
+        String errormsg = "로그인 후 이용가능합니다.";
 
         data.put("result", "fail");
         data.put("msg", errormsg);
