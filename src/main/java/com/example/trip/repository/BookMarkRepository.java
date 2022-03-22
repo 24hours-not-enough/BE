@@ -19,9 +19,9 @@ public interface BookMarkRepository extends JpaRepository<BookMark, Long> {
     @Query("select b from BookMark b where b.user.id = :userId")
     List<BookMark> FindBookmarkByUserId(@Param("userId") Long userId);
 
-    @Query("select b from BookMark b left join fetch b.feedDetailLoc l where l.id = :feeddetaillocId")
-    BookMark FindBookmarkByfeeddetaillocId(@Param("feeddetaillocId") Long feeddetaillocId);
-
     @Query("SELECT B FROM BookMark B WHERE B.feedDetailLoc.id = ?1 and B.user.id = ?2")
     List<BookMark> findByFeedDetailLocIdAndUserId(Long feedDetailLocId, Long userId);
+
+    List<BookMark> findByUserId(Long userId);
+
 }
