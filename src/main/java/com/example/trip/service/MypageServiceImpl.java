@@ -27,7 +27,6 @@ public class MypageServiceImpl implements MypageService {
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
     private final BookMarkRepository bookmarkRepository;
-    private final FeedCommentRepository feedCommentRepository;
     private final PlanRepository planRepository;
     private final S3UploaderServiceImpl s3UploaderService;
 
@@ -76,8 +75,8 @@ public class MypageServiceImpl implements MypageService {
     }
 
     // 캐시 작업 X
-    public List<LikesResponseDto.SortByCity> sortLikesFeed(UserDetailsImpl userDetails) {
-        Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
+    public List<LikesResponseDto.SortByCity> sortLikesFeed(String socialaccountId) {
+        Optional<User> user = userRepository.findBySocialaccountId(socialaccountId);
         List<FeedDetailLoc> totalCityList = feedDetailLocRepository.FindAllCityList(user.get().getId());
         ArrayList<LikesResponseDto.SortByCity> likesFeedList = new ArrayList<>();
         for(FeedDetailLoc city:totalCityList) {
@@ -107,12 +106,12 @@ public class MypageServiceImpl implements MypageService {
     // 마이페이지 프로필 수정(완료)
     @CacheEvict(value = "userprofile")
     @Transactional
-    public UserBasicInfoResponseDto changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
+    public UserResponseDto.UserProfile changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
         Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
         Map<String, String> nameUrl = s3UploaderService.upload(file);
         s3UploaderService.deleteFile(user.get().getImage().getFilename());
         user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserBasicInfoResponseDto(username, nameUrl.get(file.getOriginalFilename()));
+        return new UserResponseDto.UserProfile(username, nameUrl.get(file.getOriginalFilename()));
     }
 
     private Feed authFeedValidation(Long userId, Long feedId) {

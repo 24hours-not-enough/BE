@@ -1,7 +1,6 @@
 package com.example.trip.response;
 
-import com.example.trip.dto.LoginResponseDto;
-import com.example.trip.dto.UserBasicInfoResponseDto;
+import com.example.trip.dto.UserResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -12,6 +11,6 @@ public class LoginSuccess {
     private String msg;
     private boolean isfirst;
     private String email;
-    private LoginResponseDto tokens;
-    private UserBasicInfoResponseDto userbasicinfo;
+    private UserResponseDto.TokenInfo tokens;
+    private UserResponseDto.UserProfile userbasicinfo;
 }

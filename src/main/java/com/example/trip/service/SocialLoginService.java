@@ -1,10 +1,8 @@
 package com.example.trip.service;
 
-import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.User;
 import com.example.trip.dto.*;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -12,41 +10,41 @@ import java.io.IOException;
 
 public interface SocialLoginService {
 
-    KakaoLoginRequestDto kakaoLogin(String code) throws JsonProcessingException;
+    UserResponseDto.KakaoLogin kakaoLogin(String code) throws JsonProcessingException;
 
     String getKakaoAccessToken(String code) throws JsonProcessingException;
 
-    KakaoUserInfoDto getKaKaoUserInfo(String accessToken) throws JsonProcessingException;
+    UserResponseDto.GetKakaoUserInfo getKaKaoUserInfo(String accessToken) throws JsonProcessingException;
 
-    User kakaoRegister(KakaoUserInfoDto kakaoUserInfo);
+    User kakaoRegister(UserResponseDto.GetKakaoUserInfo kakaoUserInfo);
 
-    GoogleLoginRequestDto googleLogin(String code) throws JsonProcessingException;
+    UserResponseDto.GoogleLogin googleLogin(String code) throws JsonProcessingException;
 
     String getGoogleAccessToken(String code) throws JsonProcessingException;
 
-    GoogleUserInfoDto getGoogleUserInfo(String accessToken) throws JsonProcessingException;
+    UserResponseDto.GetGoogleUserInfo getGoogleUserInfo(String accessToken) throws JsonProcessingException;
 
-    User googleRegister(GoogleUserInfoDto googleUserInfo);
+    User googleRegister(UserResponseDto.GetGoogleUserInfo googleUserInfo);
 
-    LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto, HttpServletResponse response);
+    UserResponseDto.TokenInfo issueKakaoJwtToken(UserResponseDto.KakaoLogin loginRequestDto, HttpServletResponse response);
 
-    LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto, HttpServletResponse response);
+    UserResponseDto.TokenInfo issueGoogleJwtToken(UserResponseDto.GoogleLogin loginRequestDto, HttpServletResponse response);
 
-    UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException;
+    UserResponseDto.UserProfile registerMoreUserInfo(String socialaccountId, String username, MultipartFile file) throws IOException;
 
-    boolean checkKakaoIsFirstLogin(KakaoLoginRequestDto loginRequestDto);
+    boolean checkKakaoIsFirstLogin(UserResponseDto.KakaoLogin loginRequestDto);
 
-    boolean checkGoogleIsFirstLogin(GoogleLoginRequestDto loginRequestDto);
+    boolean checkGoogleIsFirstLogin(UserResponseDto.GoogleLogin loginRequestDto);
 
     void checkUsername(String username);
 
-    UserBasicInfoResponseDto sendKakaoUserBasicInfo(KakaoLoginRequestDto loginRequestDto);
+    UserResponseDto.UserProfile sendKakaoUserBasicInfo(UserResponseDto.KakaoLogin loginRequestDto);
 
-    UserBasicInfoResponseDto sendGoogleUserBasicInfo(GoogleLoginRequestDto loginRequestDto);
+    UserResponseDto.UserProfile sendGoogleUserBasicInfo(UserResponseDto.GoogleLogin loginRequestDto);
 
-    UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails);
+    UserResponseDto.UserProfile sendUserProfileInfo(String socialaccountId);
 
-    SearchUserInviteResponseDto searchUserInvite(String username);
+    UserResponseDto.invite searchUserInvite(String username);
 
-    void deleteAccount(UserDetailsImpl userDetails);
+    void deleteAccount(String socialaccountId);
 }
