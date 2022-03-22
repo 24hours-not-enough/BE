@@ -32,7 +32,7 @@ public class MypageServiceImpl implements MypageService {
     private final S3UploaderServiceImpl s3UploaderService;
 
     // 나의 전체 여행 기록 목록 보기 -> cache 필요
-    @Cacheable(value = "feedlist")
+    @Cacheable(value = "feedlist", key = "#userId")
     public List<FeedResponseDto.AllMyTrips> showAllMyFeeds(Long userId) {
         List<Feed> feeds = feedRepository.findByUserId(userId);
         ArrayList<FeedResponseDto.AllMyTrips> arr = new ArrayList<>();

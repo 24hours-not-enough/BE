@@ -26,11 +26,6 @@ import java.util.Map;
 public class FeedController {
     private final FeedService feedService;
 
-    @Caching(evict = {
-            @CacheEvict(value = "feedlist"),
-            @CacheEvict(value = "feed", key = "#feedId"),
-            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
-    })
     @PostMapping("/feed")
     public ResponseEntity<FeedResponseDto.FeedResponseOptional> registerFeed(
             @AuthenticationPrincipal UserDetailsImpl user,
@@ -44,6 +39,7 @@ public class FeedController {
                 .build(), HttpStatus.OK);
     }
 
+
     @PutMapping("/feed/{feedId}")
     public ResponseEntity<FeedResponseDto.FeedResponseDefault> modifyFeed(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
@@ -55,11 +51,6 @@ public class FeedController {
                 .msg("피드 수정 성공하였습니다.")
                 .build(), HttpStatus.OK);
     }
-    @Caching(evict = {
-            @CacheEvict(value = "feedlist"),
-            @CacheEvict(value = "feed", key = "#feedId"),
-            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
-    })
     @DeleteMapping("/feed/{feedId}")
     public ResponseEntity<FeedResponseDto.FeedResponseDefault> deleteFeed(
             @PathVariable Long feedId,

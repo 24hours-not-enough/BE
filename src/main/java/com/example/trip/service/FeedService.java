@@ -6,6 +6,8 @@ import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.repository.LikeRepository;
 import com.example.trip.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -29,6 +31,10 @@ public class FeedService {
         return feedRepository.findAll();
     }
 
+    @Caching(evict = { @CacheEvict(value = "feedlist",
+            key = "#user.id"), @CacheEvict(value = "feed",
+            key = "#feedId", condition = "#feedId != null"),
+            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
     public List<Long> registerFeed(User user, FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
         // feed 저장
@@ -72,6 +78,11 @@ public class FeedService {
         return newFeedDetailLocs;
     }
 
+
+    @Caching(evict = { @CacheEvict(value = "feedlist",
+            key = "#user.id"), @CacheEvict(value = "feed",
+            key = "#feedId", condition = "#feedId != null"),
+            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
     public void modifyFeed(User user, Long feedId, FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto) {
         // 피드를 올린 사람만 권한이 있어야함
@@ -99,6 +110,11 @@ public class FeedService {
         feed.update(feedRequestModifyDto);
     }
 
+
+    @Caching(evict = { @CacheEvict(value = "feedlist",
+            key = "#user.id"), @CacheEvict(value = "feed",
+            key = "#feedId", condition = "#feedId != null"),
+            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     public void deleteFeed(User user, Long feedId) {
         // 피드를 올린 사람만 권한이 있어야함
         List<Feed> myFeed = feedRepository.findByIdAndUserId(feedId, user.getId());

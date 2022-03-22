@@ -32,9 +32,9 @@ public class LikesController {
     }
 
     @DeleteMapping("/feed/{feedDetailLocId}/unlike")
-    public ResponseEntity<FeedResponseDto.FeedResponseOptional> unlikeFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<FeedResponseDto.FeedResponseDefault> unlikeFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
         likesService.unlikeFeed(feedDetailLocId, userDetails.getUser());
-        return new ResponseEntity<>(FeedResponseDto.FeedResponseOptional.builder()
+        return new ResponseEntity<>(FeedResponseDto.FeedResponseDefault.builder()
                 .result("success")
                 .msg("피드 좋아요 취소에 성공하였습니다.")
                 .build(), HttpStatus.OK);

@@ -14,6 +14,7 @@ public class FeedResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Getter
     public static class FeedResponseDefault{
         private String result;
         private String msg;
@@ -21,6 +22,7 @@ public class FeedResponseDto {
     @Builder
     @NoArgsConstructor
     @AllArgsConstructor
+    @Getter
     public static class FeedResponseOptional{
         private String result;
         private String msg;
