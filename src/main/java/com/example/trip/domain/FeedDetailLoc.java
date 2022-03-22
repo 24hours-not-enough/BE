@@ -28,20 +28,15 @@ public class FeedDetailLoc {
     private List<Likes> likes;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
-    private List<BookMark> bookMarks;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
     private List<FeedComment> feedComments;
 
-    @Lob
-    private String location;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feedlocation_id")
+    private  FeedLocation feedLocation;
 
     private String comment;
 
-    private String city;
-
-    public FeedDetailLoc(Long id, String city){
+    public FeedDetailLoc(Long id){
         this.id = id;
-        this.city = city;
     }
 }
