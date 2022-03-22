@@ -24,6 +24,7 @@ public class FeedService {
     private final FeedDetailRepository feedDetailRepository;
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
+    private final FeedLocationRepository feedLocationRepository;
 
 
     public List<Feed> findAll() {
@@ -61,6 +62,15 @@ public class FeedService {
         feedDetailLocs.stream()
                 .forEach(x -> feedDetailLocRepository.saveAll(x));
 
+        feedDetailLocs.stream()
+                .forEach(x -> x.forEach(y ->
+                        y.getFeedLocation().setFeedDetailLocs(x)
+                ));
+
+        feedDetailLocs.stream()
+                .forEach(x -> x.forEach(y ->
+                        feedLocationRepository.save(y.getFeedLocation())
+                ));
 
         //feed DetailLocImg 저장
         feedRequestRegisterDto.getFeedDetail().stream().
