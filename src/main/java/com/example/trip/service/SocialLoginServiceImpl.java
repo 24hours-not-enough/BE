@@ -20,7 +20,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -28,7 +27,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
-import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -65,11 +63,11 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 //    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
-    public KakaoLoginRequestDto kakaoLogin(String code) throws JsonProcessingException {
+    public UserResponseDto.KakaoLogin kakaoLogin(String code) throws JsonProcessingException {
         // 인가 코드로 액세스 토큰 요청
         String accessToken = getKakaoAccessToken(code);
         // 토큰으로 카카오 API 호출
-        KakaoUserInfoDto kakaoUserInfo = getKaKaoUserInfo(accessToken);
+        UserResponseDto.GetKakaoUserInfo kakaoUserInfo = getKaKaoUserInfo(accessToken);
 
         // DB 에 중복된 Kakao Id 있는지 확인
         String kakaoId = kakaoUserInfo.getKakaoId();
@@ -85,7 +83,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new KakaoLoginRequestDto(kakaoUserInfo.getEmail(), kakaoId);
+        return new UserResponseDto.KakaoLogin(kakaoUserInfo.getEmail(), kakaoId);
 
     }
 
@@ -120,7 +118,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         return jsonNode.get("access_token").asText();
     }
 
-    public KakaoUserInfoDto getKaKaoUserInfo(String accessToken) throws JsonProcessingException {
+    public UserResponseDto.GetKakaoUserInfo getKaKaoUserInfo(String accessToken) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         // HTTP Header 생성
         headers.add("Authorization", "Bearer " + accessToken);
@@ -145,11 +143,11 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String email = jsonNode.get("kakao_account")
                 .get("email").asText();
         System.out.println("카카오 사용자 정보: " + "ID: " + kakaoId + " 이메일: " + email);
-        return new KakaoUserInfoDto(kakaoId, email);
+        return new UserResponseDto.GetKakaoUserInfo(kakaoId, email);
     }
 
 
-    public User kakaoRegister(KakaoUserInfoDto kakaoUserInfo) {
+    public User kakaoRegister(UserResponseDto.GetKakaoUserInfo kakaoUserInfo) {
         String email = kakaoUserInfo.getEmail();
         String kakaoId = kakaoUserInfo.getKakaoId();
         String password = UUID.randomUUID().toString();
@@ -172,9 +170,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     }
 
     @Transactional
-    public GoogleLoginRequestDto googleLogin(String code) throws JsonProcessingException {
+    public UserResponseDto.GoogleLogin googleLogin(String code) throws JsonProcessingException {
         String accessToken = getGoogleAccessToken(code);
-        GoogleUserInfoDto googleUserInfo = getGoogleUserInfo(accessToken);
+        UserResponseDto.GetGoogleUserInfo googleUserInfo = getGoogleUserInfo(accessToken);
         String googleId = googleUserInfo.getGoogleId();
         User googleUser = userRepository.findBySocialaccountId(googleId)
                 .orElse(null);
@@ -189,7 +187,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new GoogleLoginRequestDto(googleUserInfo.getEmail(), googleId);
+        return new UserResponseDto.GoogleLogin(googleUserInfo.getEmail(), googleId);
     }
 
     public String getGoogleAccessToken(String code) throws JsonProcessingException {
@@ -224,7 +222,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         return jsonNode.get("access_token").asText();
     }
 
-    public GoogleUserInfoDto getGoogleUserInfo(String accessToken) throws JsonProcessingException {
+    public UserResponseDto.GetGoogleUserInfo getGoogleUserInfo(String accessToken) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         // HTTP Header 생성
@@ -248,11 +246,11 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String googleId = "GOOGLE_" + jsonNode.get("id").asText();
         String email = jsonNode.get("email").asText();
         System.out.println("구글 사용자 정보: " + "ID: " + googleId + " 이메일: " + email);
-        return new GoogleUserInfoDto(googleId, email);
+        return new UserResponseDto.GetGoogleUserInfo(googleId, email);
     }
 
 
-    public User googleRegister(GoogleUserInfoDto googleUserInfo) {
+    public User googleRegister(UserResponseDto.GetGoogleUserInfo googleUserInfo) {
         String email = googleUserInfo.getEmail();
         String googleId = googleUserInfo.getGoogleId();
 
@@ -274,34 +272,34 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         return user;
     }
 
-    public LoginResponseDto issueKakaoJwtToken(KakaoLoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public UserResponseDto.TokenInfo issueKakaoJwtToken(UserResponseDto.KakaoLogin loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), AccessTokenValidTime);
         String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), RefreshTokenValidTime);
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
         jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
         redisServiceImpl.setValues(refreshToken, loginRequestDto.getKakaoId());
-        return new LoginResponseDto(accessToken);
+        return new UserResponseDto.TokenInfo(accessToken);
     }
 
-    public LoginResponseDto issueGoogleJwtToken(GoogleLoginRequestDto loginRequestDto, HttpServletResponse response) {
+    public UserResponseDto.TokenInfo issueGoogleJwtToken(UserResponseDto.GoogleLogin loginRequestDto, HttpServletResponse response) {
         String accessToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), AccessTokenValidTime);
         String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), RefreshTokenValidTime);
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
         jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
         redisServiceImpl.setValues(refreshToken, loginRequestDto.getGoogleId());
-        return new LoginResponseDto(accessToken);
+        return new UserResponseDto.TokenInfo(accessToken);
     }
 
     @Transactional
-    public UserBasicInfoResponseDto registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+    public UserResponseDto.UserProfile registerMoreUserInfo(String socialaccountId, String username, MultipartFile file) throws IOException {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         Map<String, String> nameUrl = s3UploaderService.upload(file);
         user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserBasicInfoResponseDto(username, nameUrl.get(file.getOriginalFilename()));
+        return new UserResponseDto.UserProfile(username, nameUrl.get(file.getOriginalFilename()));
     }
 
-    public boolean checkKakaoIsFirstLogin(KakaoLoginRequestDto loginRequestDto) {
+    public boolean checkKakaoIsFirstLogin(UserResponseDto.KakaoLogin loginRequestDto) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         User founduser = user.get();
@@ -312,7 +310,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         }
     }
 
-    public boolean checkGoogleIsFirstLogin(GoogleLoginRequestDto loginRequestDto) {
+    public boolean checkGoogleIsFirstLogin(UserResponseDto.GoogleLogin loginRequestDto) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지 않습니다."));
         if (user.get().getUsername() == null) {
             return true;
@@ -327,47 +325,47 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         }
     }
 
-    public UserBasicInfoResponseDto sendKakaoUserBasicInfo(KakaoLoginRequestDto loginRequestDto) {
+    public UserResponseDto.UserProfile sendKakaoUserBasicInfo(UserResponseDto.KakaoLogin loginRequestDto) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
         if (checkKakaoIsFirstLogin(loginRequestDto)) {
-            return new UserBasicInfoResponseDto(null, null);
+            return new UserResponseDto.UserProfile(null, null);
         } else {
-            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
+            return new UserResponseDto.UserProfile(user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
-    public UserBasicInfoResponseDto sendGoogleUserBasicInfo(GoogleLoginRequestDto loginRequestDto) {
+    public UserResponseDto.UserProfile sendGoogleUserBasicInfo(UserResponseDto.GoogleLogin loginRequestDto) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
         if (checkGoogleIsFirstLogin(loginRequestDto)) {
-            return new UserBasicInfoResponseDto(null, null);
+            return new UserResponseDto.UserProfile(null, null);
         } else {
-            return new UserBasicInfoResponseDto(user.get().getUsername(), user.get().getImage().getFile_store_course());
+            return new UserResponseDto.UserProfile(user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
     // 마이페이지 유저 + 이미지 정보 전달 -> 캐싱작업 필요
     @Cacheable(value = "userprofile")
-    public UserBasicInfoResponseDto sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+    public UserResponseDto.UserProfile sendUserProfileInfo(String socialaccountId) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND));
         String imgUrl = user.get().getImage().getFile_store_course();
-        return new UserBasicInfoResponseDto(user.get().getUsername(), imgUrl);
+        return new UserResponseDto.UserProfile(user.get().getUsername(), imgUrl);
     }
 
-    public SearchUserInviteResponseDto searchUserInvite(String username) {
+    public UserResponseDto.invite searchUserInvite(String username) {
         Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
         User foundUser = user.get();
-        return new SearchUserInviteResponseDto(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
+        return new UserResponseDto.invite(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
     }
     @Transactional
-    public void deleteAccount(UserDetailsImpl userDetails) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(
+    public void deleteAccount(String socialaccountId) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(
                 () -> new CustomException(USER_NOT_FOUND)
         );
         user.get().deleteAccount();

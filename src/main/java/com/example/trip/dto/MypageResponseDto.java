@@ -3,6 +3,7 @@ package com.example.trip.dto;
 import com.example.trip.domain.Plan;
 import com.example.trip.dto.response.CalendarResponseDto;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 
 import java.time.LocalDateTime;
@@ -28,5 +29,13 @@ public class MypageResponseDto {
             this.calendars = plan.getCalendars().stream()
                     .map(CalendarResponseDto.Plan::new).collect(Collectors.toList());
         }
+    }
+
+    @Getter
+    @Builder
+    public static class Response {
+        private String result;
+        private String msg;
+        private Object data;
     }
 }
