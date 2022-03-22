@@ -61,11 +61,6 @@ public class JwtTokenProvider {
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
     }
 
-    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
-    }
-
     // Request의 Header에서 AccessToken 값을 가져옵니다. "authorization" : "token'
     public String resolveAccessToken(HttpServletRequest request) {
         if(request.getHeader("authorization") != null )
@@ -107,16 +102,4 @@ public class JwtTokenProvider {
     public boolean existsRefreshToken(String refreshtoken) {
         return redisServiceImpl.getValues(refreshtoken) != null;
     }
-
-    public void notExistAccessToken() {
-        throw new RuntimeException("엑세스 토큰이 없습니다.");
-    }
-
-    public void notExistRefreshToken() {
-        throw new RuntimeException("리프레시 토큰이 없습니다.");
-    }
-
-//    public boolean existsRefreshToken(String refreshtoken) {
-//        return redisService.getValues(refreshtoken) != null;
-//    }
 }

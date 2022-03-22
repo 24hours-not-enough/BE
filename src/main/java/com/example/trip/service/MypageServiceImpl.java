@@ -42,21 +42,6 @@ public class MypageServiceImpl implements MypageService {
             arr.add(new FeedResponseDto.AllMyTrips(feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), imageList.size(), imageList));
         }
         return arr;
-//        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername())).orElseThrow(() -> new CustomException(USER_NOT_FOUND));
-//        User foundUser = user.get();
-//        List<Feed> feeds = feedRepository.findByUserId(foundUser.getId());
-//        ArrayList<FeedResponseDto.AllMyTrips> array = new ArrayList<>();
-
-//        for (Feed feed : feeds) {
-//            List<FeedDetailLocImg> imgs = feedDetailLocImgRepository.FindFeedandImgs(feed.getId());
-//            ArrayList<String> arr = new ArrayList<>();
-//            for (FeedDetailLocImg img : imgs) {
-//                arr.add(img.getImgUrl());
-//            }
-//            FeedResponseDto.AllMyTrips dto = new FeedResponseDto.AllMyTrips(feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), arr);
-//            array.add(dto);
-//        }
-//        return array;
     }
 
     // 캐시 작업 X
@@ -71,17 +56,6 @@ public class MypageServiceImpl implements MypageService {
             arr.add(dto);
         }
         return arr;
-//        Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
-//        List<BookMark> bookMarks = bookmarkRepository.FindBookmarkByUserId(user.get().getId());
-//
-//        for (BookMark bookMark: bookMarks) {
-//            BookmarkResponseDto dto = new BookmarkResponseDto(
-//                    bookMark.getFeedDetailLoc().getId(),
-//                    bookMark.getFeedDetailLoc().getLocation(),
-//                    bookMark.getFeedDetailLoc().getCity());
-//            arrayList.add(dto);
-//        }
-//        return arrayList;
     }
 
     // 여행 기록 1개 전체 보기 (조회) -> cache 작업 필요
@@ -90,29 +64,6 @@ public class MypageServiceImpl implements MypageService {
         FeedValidation(feedId);
         Feed feed = authFeedValidation(userId, feedId);
         return new FeedResponseDto.ReadOneTrip(feed);
-
-//        Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
-//        Feed feed = feedRepository.FindFeedByUserId(user.get().getId(), feedId);
-//        List<FeedDetail> feedDetails = feed.getFeedDetail();
-//        ArrayList<FeedDetailResponseDto> FeedDetailList = new ArrayList<>();
-//        for (FeedDetail feedDetail: feedDetails) {
-//            List<FeedDetailLoc> feedDetailLocs = feedDetail.getFeedDetailLoc();
-//            ArrayList<FeedDetailLocResponseDto> feedDetailLocList = new ArrayList<>();
-//            for(FeedDetailLoc feedDetailLoc: feedDetailLocs) {
-//                List<FeedDetailLocImg> feedDetailLocImgs = feedDetailLoc.getFeedDetailLocImg();
-//                ArrayList<String> imgUrls = new ArrayList<>();
-//                for(FeedDetailLocImg feedDetailLocImg:feedDetailLocImgs) {
-//                    String feedDetailLocImgUrl = feedDetailLocImg.getImgUrl();
-//                    imgUrls.add(feedDetailLocImgUrl);
-//                }
-//                FeedDetailLocResponseDto feedDetailLocResponseDto = new FeedDetailLocResponseDto(feedDetailLoc.getLocation(), feedDetailLoc.getCity(), feedDetailLoc.getComment(), imgUrls);
-//                feedDetailLocList.add(feedDetailLocResponseDto);
-//            }
-//            FeedDetailResponseDto dto = new FeedDetailResponseDto(feedDetail.getId(), feedDetail.getDay(), feedDetailLocList);
-//            FeedDetailList.add(dto);
-//        }
-//
-//        return new FeedResponseDto.ReadOneTrip(feed.getId(), feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), FeedDetailList);
     }
 
     // feed 1개 읽기(조회) -> cache 작업 필요
@@ -122,15 +73,6 @@ public class MypageServiceImpl implements MypageService {
         Optional<FeedDetailLoc> byId = feedDetailLocRepository.findById(feeddetaillocId);
         FeedDetailLoc locationData = byId.get();
         return new FeedDetailLocResponseDto.ReadOneFeed(locationData);
-
-//        List<String> imgUrls = feedDetailLocImgRepository.FindImgsByFeedDetailLocId(feeddetaillocId);
-//        List<FeedComment> comments = feedCommentRepository.FindFeedCommentByFeedDetailLocId(feeddetaillocId);
-//
-//        ArrayList<FeedCommentResponseDto> commentsList = new ArrayList<>();
-//        comments.stream().forEach(comment -> commentsList.add(new FeedCommentResponseDto(comment.getUser().getUsername(), comment.getContent())));
-//
-//        return new FeedDetailLocCommentResponseDto(locationData.getLocation(), locationData.getCity(), locationData.getComment(), imgUrls, commentsList);
-
     }
 
     // 캐시 작업 X
