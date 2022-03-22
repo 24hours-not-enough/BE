@@ -280,7 +280,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
         jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
         redisServiceImpl.setValues(refreshToken, loginRequestDto.getKakaoId());
-//        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
@@ -290,7 +289,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
         jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
         redisServiceImpl.setValues(refreshToken, loginRequestDto.getGoogleId());
-//        userRepository.updateRefreshToken(loginRequestDto.getEmail(), refreshToken);
         return new LoginResponseDto(accessToken);
     }
 
