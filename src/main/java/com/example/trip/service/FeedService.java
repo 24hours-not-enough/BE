@@ -2,14 +2,14 @@ package com.example.trip.service;
 
 import com.example.trip.advice.exception.*;
 import com.example.trip.domain.*;
+import com.example.trip.dto.response.FeedDetailLocResponseDto.GetFeedDetailLoc;
+import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.dto.request.FeedRequestDto;
-import com.example.trip.repository.LikeRepository;
 import com.example.trip.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -131,5 +131,32 @@ public class FeedService {
             throw new AuthFeedNotFoundException();
         }
         feedRepository.deleteById(feedId);
+    }
+
+    public List<FeedResponseDto.GetFeed> getFeeds(Long userId) {
+        List<Feed> feeds = feedRepository.findByUserId(userId);
+        ArrayList<FeedResponseDto.GetFeed> arr = new ArrayList<>();
+        for (Feed feed : feeds) {
+            FeedResponseDto.GetFeed dto = new FeedResponseDto.GetFeed(feed);
+            arr.add(dto);
+        }
+        return arr;
+    }
+
+    public List<Map<String, List<GetFeedDetailLoc>>> getLikeFeeds(Long userId) {
+        List<FeedDetailLoc> addressList = feedDetailLocRepository.findAddressCnt(userId);
+
+        ArrayList<Map<String, List<GetFeedDetailLoc>>> arr = new ArrayList<>();
+
+        for(FeedDetailLoc address : addressList) {
+            Map<String, List<GetFeedDetailLoc>> map = new HashMap<>();
+            List<FeedDetailLoc> locations = feedDetailLocRepository.findLocationsByLikes(userId, address.getFeedLocation().getPlaceAddress());
+            List<GetFeedDetailLoc> oneCityLocations = locations.stream().map(GetFeedDetailLoc::new).collect(Collectors.toList());
+            map.put(address.getFeedLocation().getPlaceAddress(), oneCityLocations);
+
+            arr.add(map);
+
+        }
+        return arr;
     }
 }
