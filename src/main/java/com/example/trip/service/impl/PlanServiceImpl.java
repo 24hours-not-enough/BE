@@ -97,7 +97,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId) {
-        return planRepository.findPlanDetails()
+        return planRepository.findPlanDetails(userId)
                 .stream()
                 .map(PlanResponseDto.DetailAll::new)
                 .collect(Collectors.toList());
