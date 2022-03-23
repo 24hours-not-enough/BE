@@ -27,6 +27,8 @@ public class FeedLocation {
 
     private String longitude;
 
+    private String placeAddress;
+
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedLocation")
     private List<FeedDetailLoc> feedDetailLocs;
 

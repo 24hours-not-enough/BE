@@ -23,7 +23,7 @@ public class BookMarkService {
         FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId)
                 .orElseThrow(() -> new FeedDetailLocNotFoundException());
         BookMark bookmark = BookMark.builder()
-                .feedDetailLoc(feedDetailLoc)
+//                .feedDetailLoc(feedDetailLoc)
                 .user(user)
                 .build();
 
@@ -32,11 +32,11 @@ public class BookMarkService {
 
     public void unbookmarkFeed(Long feedDetailLocId, User user) {
         // 북마크를 한 사람만 권한이 있어야함
-        List<BookMark> myBookmark = bookMarkRepository.findByFeedDetailLocIdAndUserId(feedDetailLocId, user.getId());
+//        List<BookMark> myBookmark = bookMarkRepository.findByFeedDetailLocIdAndUserId(feedDetailLocId, user.getId());
 
-        if (myBookmark.isEmpty()) {
-            throw new AuthBookMarkNotFoundException();
-        }
-        bookMarkRepository.deleteBookmarkFeed(feedDetailLocId, user.getId());
+//        if (myBookmark.isEmpty()) {
+//            throw new AuthBookMarkNotFoundException();
+//        }
+//        bookMarkRepository.deleteBookmarkFeed(feedDetailLocId, user.getId());
     }
 }

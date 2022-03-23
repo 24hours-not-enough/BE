@@ -103,13 +103,13 @@ public class UserController {
                 .msg("회원 탈퇴되었습니다.").build(), HttpStatus.OK);
     }
 
-    @GetMapping("/api/user")
-    public ResponseEntity<UserResponseDto.Response> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
-        return new ResponseEntity<>(UserResponseDto.Response.builder()
-                .result("success")
-                .msg("유저 정보입니다.")
-                .data().build()
-                , HttpStatus.OK);
-    }
+//    @GetMapping("/api/user")
+//    public ResponseEntity<UserResponseDto.Response> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+//        bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
+//        return new ResponseEntity<>(UserResponseDto.Response.builder()
+//                .result("success")
+//                .msg("유저 정보입니다.")
+//                .data().build()
+//                , HttpStatus.OK);
+//    }
 }

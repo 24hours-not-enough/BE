@@ -12,9 +12,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
-import java.util.Collection;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
@@ -45,11 +43,12 @@ public class FeedService {
                 .build();
 
         Feed newFeed = feedRepository.save(feed);
-
+        System.out.println("Feed 저장");
         //feed Detail 저장
         feedRequestRegisterDto.getFeedDetail().stream()
                 .forEach(x -> x.setFeed(newFeed));
         List<FeedDetail> feedDetails = feedDetailRepository.saveAll(feedRequestRegisterDto.getFeedDetail());
+        System.out.println("Feed Detail 저장");
 
         //feed DetailLoc 저장
         feedRequestRegisterDto.getFeedDetail().stream().
@@ -59,18 +58,17 @@ public class FeedService {
                 .map(FeedDetail::getFeedDetailLoc)
                 .collect(Collectors.toList());
 
+        List<FeedLocation> feedLocations = feedDetailLocs.stream()
+                        .flatMap(List<FeedDetailLoc>::stream)
+                                .map(FeedDetailLoc::getFeedLocation)
+                                        .collect(Collectors.toList());
+        feedLocationRepository.saveAll(feedLocations);
+        System.out.println("Feed Location 저장");
         feedDetailLocs.stream()
                 .forEach(x -> feedDetailLocRepository.saveAll(x));
+        System.out.println("Feed Detail Loc 저장");
 
-        feedDetailLocs.stream()
-                .forEach(x -> x.forEach(y ->
-                        y.getFeedLocation().setFeedDetailLocs(x)
-                ));
 
-        feedDetailLocs.stream()
-                .forEach(x -> x.forEach(y ->
-                        feedLocationRepository.save(y.getFeedLocation())
-                ));
 
         //feed DetailLocImg 저장
         feedRequestRegisterDto.getFeedDetail().stream().
