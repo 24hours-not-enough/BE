@@ -1,6 +1,8 @@
-package com.example.trip.dto;
+package com.example.trip.dto.response;
 
 import com.example.trip.domain.FeedDetail;
+import com.example.trip.domain.FeedDetailLoc;
+import com.example.trip.dto.response.FeedDetailLocResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -20,6 +22,15 @@ public class FeedDetailResponseDto {
         public GetFeedDetail(FeedDetail feedDetail) {
             this.day = feedDetail.getDay();
             this.feedDetailLoc = feedDetail.getFeedDetailLoc().stream().map(FeedDetailLocResponseDto.GetFeedDetailLoc::new).collect(Collectors.toList());
+        }
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class GetOnlyLoc {
+        private List<FeedDetailLocResponseDto.GetOnlyImg> day;
+        public GetOnlyLoc(FeedDetail feedDetail) {
+            this.day = feedDetail.getFeedDetailLoc().stream().map(FeedDetailLocResponseDto.GetOnlyImg::new).collect(Collectors.toList());
         }
     }
 }

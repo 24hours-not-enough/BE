@@ -2,18 +2,16 @@ package com.example.trip.controller;
 
 
 import com.example.trip.config.security.UserDetailsImpl;
+import com.example.trip.dto.response.FeedDetailLocResponseDto.GetFeedDetailLoc;
 import com.example.trip.dto.request.FeedRequestDto;
-import com.example.trip.dto.FeedResponseDto;
+import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.validation.Valid;
 import java.util.List;
@@ -60,5 +58,17 @@ public class FeedController {
                 .result("success")
                 .msg("피드 삭제 성공하였습니다.")
                 .build(), HttpStatus.OK);
+    }
+
+    @GetMapping("/feed")
+    public ResponseEntity<FeedResponseDto.Response> feedInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<FeedResponseDto.GetFeed> feeds = feedService.getFeeds(userDetails .getUser().getId());
+        List<Map<String, List<GetFeedDetailLoc>>> likes = feedService.getLikeFeeds(userDetails.getUser().getId());
+        return new ResponseEntity<>(FeedResponseDto.Response.builder()
+                .result("success")
+                .msg("피드 정보입니다.")
+                .myFeeds(feeds)
+                .myLikes(likes).build()
+                , HttpStatus.OK);
     }
 }

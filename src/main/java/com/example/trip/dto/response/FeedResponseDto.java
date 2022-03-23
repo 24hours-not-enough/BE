@@ -1,7 +1,8 @@
-package com.example.trip.dto;
+package com.example.trip.dto.response;
 
 import com.example.trip.domain.Feed;
-import com.example.trip.dto.FeedDetailLocResponseDto.GetFeedDetailLoc;
+import com.example.trip.dto.response.FeedDetailLocResponseDto.GetFeedDetailLoc;
+import com.example.trip.dto.response.FeedDetailLocResponseDto.GetOnlyImg;
 import lombok.*;
 
 import java.time.LocalDateTime;
@@ -39,6 +40,7 @@ public class FeedResponseDto {
         private LocalDateTime travelStart;
         private LocalDateTime travelEnd;
         private List<FeedDetailResponseDto.GetFeedDetail> feedDetail;
+        private List<FeedDetailResponseDto.GetOnlyLoc> images;
 
         public GetFeed(Feed feed) {
             this.feedId = feed.getId();
@@ -46,6 +48,7 @@ public class FeedResponseDto {
             this.travelStart = feed.getTravelStart();
             this.travelEnd = feed.getTravelEnd();
             this.feedDetail = feed.getFeedDetail().stream().map(FeedDetailResponseDto.GetFeedDetail::new).collect(Collectors.toList());
+            this.images = feed.getFeedDetail().stream().map(FeedDetailResponseDto.GetOnlyLoc::new).collect(Collectors.toList());
         }
     }
 
