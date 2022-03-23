@@ -81,19 +81,19 @@ public class PlanResponseDto {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class DetailAll {
-        private Long plan_id;
+        private Long planId;
 
         private String title;
 
-        private String travel_destination;
+        private String travelDestination;
 
-        private LocalDateTime travel_start;
+        private LocalDateTime travelStart;
 
-        private LocalDateTime travel_end;
+        private LocalDateTime travelEnd;
 
-        private Boolean del_tc;
+        private Boolean delTc;
 
-        private String room_id;
+        private String roomId;
 
         private List<MemberResponseDto> members;
 
@@ -102,13 +102,13 @@ public class PlanResponseDto {
         private List<CheckListResponseDto> checkLists;
 
         public DetailAll(Plan plan) {
-            this.plan_id = plan.getId();
+            this.planId = plan.getId();
             this.title = plan.getTitle();
-            this.travel_destination = plan.getTravel_destination();
-            this.travel_start = plan.getTravel_start();
-            this.travel_end = plan.getTravel_end();
-            this.del_tc = plan.getDel_tc();
-            this.room_id = plan.getUuid();
+            this.travelDestination = plan.getTravel_destination();
+            this.travelStart = plan.getTravel_start();
+            this.travelEnd = plan.getTravel_end();
+            this.delTc = plan.getDel_tc();
+            this.roomId = plan.getUuid();
             this.members = plan.getMembers().stream()
                     .map(MemberResponseDto::new)
                     .collect(Collectors.toList());

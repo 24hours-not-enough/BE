@@ -50,7 +50,7 @@ public class CheckListServiceImpl implements CheckListService {
         dto.forEach((checkList)->{
             CheckList checklist = CheckList.builder()
                     .check_item(checkList.getCheckName())
-                    .is_checked(checkList.getIs_checked())
+                    .is_checked(checkList.getIsChecked())
                     .is_locked(false)
                     .plan(plan)
                     .build();

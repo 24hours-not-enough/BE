@@ -18,10 +18,20 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponseDto {
-    private String profileImg;
+
+    private Long userId;
+
+    private String userProfileImage;
+
+    private String userName;
+
+    private Boolean roomRep;
 
     public MemberResponseDto(Member member) {
-        this.profileImg = member.getUser().getImage().getFile_store_course();
+        this.userProfileImage = member.getUser().getImage().getFile_store_course();
+        this.userId = member.getUser().getId();
+        this.userName = member.getUser().getUsername();
+        this.roomRep = member.getRoom_rep();
     }
 
     @Getter
@@ -29,19 +39,19 @@ public class MemberResponseDto {
     @AllArgsConstructor
     public static class invite{
 
-        private String file_store_course;
+        private String fileStoreCourse;
 
         private String nickname;
 
-        private Long user_id;
+        private Long userId;
 
-        private Boolean room_rep;
+        private Boolean roomRep;
 
         public invite(Member member) {
-            this.file_store_course = member.getUser().getImage().getFile_store_course();
+            this.fileStoreCourse = member.getUser().getImage().getFile_store_course();
             this.nickname = member.getUser().getUsername();
-            this.user_id = member.getId();
-            this.room_rep = member.getRoom_rep();
+            this.userId = member.getId();
+            this.roomRep = member.getRoom_rep();
         }
     }
 
@@ -51,7 +61,7 @@ public class MemberResponseDto {
     public static class inviteList{
         private String nickName;
 
-        private String file_store_course;
+        private String userProfileImage;
 
         private String title;
 
@@ -59,7 +69,7 @@ public class MemberResponseDto {
 
         public inviteList(Member member) {
             this.nickName = member.getUser().getUsername();
-            this.file_store_course = member.getUser().getImage().getFile_store_course();
+            this.userProfileImage = member.getUser().getImage().getFile_store_course();
             this.title = member.getPlan().getTitle();
             this.planId = member.getPlan().getId();
         }
@@ -69,9 +79,9 @@ public class MemberResponseDto {
     @AllArgsConstructor
     @Getter
     public static class AllMember{
-        private Long member_id;
+        private Long memberId;
 
-        private Boolean room_rep;
+        private Boolean roomRep;
 
         private Boolean active;
     }

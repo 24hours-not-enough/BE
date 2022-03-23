@@ -8,9 +8,7 @@ import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
 import java.time.LocalDateTime;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.UUID;
+import java.util.*;
 
 @Entity
 @Getter
@@ -39,13 +37,13 @@ public class Plan extends TimeStamped {
     private User user;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Member> members = new ArrayList<>();
+    private final Set<Member> members = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<Calendar> calendars = new ArrayList<>();
+    private final Set<Calendar> calendars = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
-    private final List<CheckList> checkLists = new ArrayList<>();
+    private final Set<CheckList> checkLists = new HashSet<>();
 
     @Builder
     public Plan(String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end, Boolean del_tc, User user, String uuid) {
@@ -62,9 +60,9 @@ public class Plan extends TimeStamped {
         return Plan.builder()
                 .user(user)
                 .title(dto.getTitle())
-                .travel_destination(dto.getTravel_destination())
-                .travel_start(dto.getTravel_start())
-                .travel_end(dto.getTravel_end())
+                .travel_destination(dto.getTravelDestination())
+                .travel_start(dto.getTravelStart())
+                .travel_end(dto.getTravelEnd())
                 .del_tc(true)
                 .uuid(UUID.randomUUID().toString())
                 .build();
@@ -75,19 +73,19 @@ public class Plan extends TimeStamped {
             this.title = modify.getTitle();
         }
         if (modify.getTitle() != null) {
-            this.travel_destination = modify.getTravel_destination();
+            this.travel_destination = modify.getTravelDestination();
         }
         if (modify.getTitle() != null) {
-            this.travel_start = modify.getTravel_start();
+            this.travel_start = modify.getTravelStart();
         }
         if (modify.getTitle() != null) {
-            this.travel_end = modify.getTravel_end();
+            this.travel_end = modify.getTravelEnd();
         }else {
-            this.del_tc = modify.getDel_fl();
+            this.del_tc = modify.getDelFl();
         }
     }
 
     public void deletePlan(PlanRequestDto.Modify modify) {
-        this.del_tc = modify.getDel_fl();
+        this.del_tc = modify.getDelFl();
     }
 }

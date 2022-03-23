@@ -10,15 +10,15 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CheckListResponseDto {
 
-    private Long check_List_id;
+    private Long checkListId;
 
-    private String check_item;
+    private String checkItem;
 
-    private Boolean is_checked;
+    private Boolean isChecked;
 
     public CheckListResponseDto(CheckList checkList) {
-        this.check_List_id = checkList.getId();
-        this.check_item = checkList.getCheck_item();
-        this.is_checked = checkList.getIs_checked();
+        this.checkListId = checkList.getId();
+        this.checkItem = checkList.getCheck_item();
+        this.isChecked = checkList.getIs_checked();
     }
 }

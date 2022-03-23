@@ -39,7 +39,7 @@ public class CheckList {
 
     public void updateCheckList(CheckListsRequestDto dto) {
         this.check_item = dto.getCheckName();
-        this.is_checked = dto.getIs_checked();
+        this.is_checked = dto.getIsChecked();
     }
 
     public void updateCheckListLock() {
