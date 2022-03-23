@@ -60,7 +60,7 @@ public class PlanController {
         if(modify.getTitle()!=null){
             msg = "계획 수정 성공!";
         }
-        else if(modify.getDel_fl()==true){
+        else if(modify.getDelFl()==true){
             msg = "계획 복구 성공!";
         }else{
             msg = "계획 삭제 성공!";
@@ -104,9 +104,9 @@ public class PlanController {
     }
 
     @ApiOperation(value = "나의 여행계획 전체조회", notes = "로그인 사용자만 가능")
-    @GetMapping("/plan/{planId}/planDetails")
-    public ResponseEntity<PlanResponseDto.Response> MemberAndPlanAllList(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
-        List<PlanResponseDto.DetailAll> planAllAndMember = planService.findPlanAllAndMember(userDetails.getUser().getId(), planId);
+    @GetMapping("/plan/planDetails")
+    public ResponseEntity<PlanResponseDto.Response> MemberAndPlanAllList(@AuthenticationPrincipal UserDetailsImpl userDetails){
+        List<PlanResponseDto.DetailAll> planAllAndMember = planService.findPlanAllAndMember(userDetails.getUser().getId());
         return new ResponseEntity<>(PlanResponseDto.Response.builder()
                 .result("success")
                 .msg("계획 상세 전체조회 성공")
