@@ -4,12 +4,14 @@ package com.example.trip.domain;
 import lombok.AccessLevel;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Getter
+@Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FeedLocation {
 
@@ -24,6 +26,8 @@ public class FeedLocation {
     private String latitude;
 
     private String longitude;
+
+    private String placeAddress;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedLocation")
     private List<FeedDetailLoc> feedDetailLocs;

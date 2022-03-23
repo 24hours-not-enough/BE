@@ -30,11 +30,9 @@ public class FeedDetailLoc {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
     private List<FeedComment> feedComments;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feedlocation_id")
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "feed_location_id")
     private  FeedLocation feedLocation;
-
-    private String comment;
 
     public FeedDetailLoc(Long id){
         this.id = id;

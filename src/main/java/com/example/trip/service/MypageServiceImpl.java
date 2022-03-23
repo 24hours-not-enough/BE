@@ -31,71 +31,71 @@ public class MypageServiceImpl implements MypageService {
     private final S3UploaderServiceImpl s3UploaderService;
 
     // 나의 전체 여행 기록 목록 보기 -> cache 필요
-    @Cacheable(value = "feedlist", key = "#userId")
-    public List<FeedResponseDto.AllMyTrips> showAllMyFeeds(Long userId) {
-        List<Feed> feeds = feedRepository.findByUserId(userId);
-        ArrayList<FeedResponseDto.AllMyTrips> arr = new ArrayList<>();
-        for (Feed feed : feeds) {
-            List<FeedDetailLocImg> imgs = feedDetailLocImgRepository.FindFeedandImgs(feed.getId());
-            List<String> imageList = imgs.stream().map(x -> x.getImgUrl()).collect(Collectors.toList());
-            arr.add(new FeedResponseDto.AllMyTrips(feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), imageList.size(), imageList));
-        }
-        return arr;
-    }
+//    @Cacheable(value = "feedlist", key = "#userId")
+//    public List<FeedResponseDto.AllMyTrips> showAllMyFeeds(Long userId) {
+//        List<Feed> feeds = feedRepository.findByUserId(userId);
+//        ArrayList<FeedResponseDto.AllMyTrips> arr = new ArrayList<>();
+//        for (Feed feed : feeds) {
+//            List<FeedDetailLocImg> imgs = feedDetailLocImgRepository.FindFeedandImgs(feed.getId());
+//            List<String> imageList = imgs.stream().map(x -> x.getImgUrl()).collect(Collectors.toList());
+//            arr.add(new FeedResponseDto.AllMyTrips(feed.getTitle(), feed.getTravelStart(), feed.getTravelEnd(), imageList.size(), imageList));
+//        }
+//        return arr;
+//    }
+
+//    // 캐시 작업 X
+//    public List<BookmarkResponseDto> getBookmarkPlaces(Long userId) {
+//        List<BookMark> bookMarks = bookmarkRepository.FindBookmarkByUserId(userId);
+//        ArrayList<BookmarkResponseDto> arr = new ArrayList<>();
+//        for (BookMark bookMark: bookMarks) {
+//            BookmarkResponseDto dto = new BookmarkResponseDto(
+//                    bookMark.getFeedDetailLoc().getId(),
+//                    bookMark.getFeedDetailLoc().getLocation(),
+//                    bookMark.getFeedDetailLoc().getCity());
+//            arr.add(dto);
+//        }
+//        return arr;
+//    }
+
+//    // 여행 기록 1개 전체 보기 (조회) -> cache 작업 필요
+//    @Cacheable(value = "feed", key = "#feedId")
+//    public FeedResponseDto.ReadOneTrip readOneTrip(Long userId, Long feedId) {
+//        FeedValidation(feedId);
+//        Feed feed = authFeedValidation(userId, feedId);
+//        return new FeedResponseDto.ReadOneTrip(feed);
+//    }
+//
+//    // feed 1개 읽기(조회) -> cache 작업 필요
+//    @Cacheable(value = "feeddetailloc", key = "#feeddetaillocId")
+//    public FeedDetailLocResponseDto.ReadOneFeed readOneFeed(Long feeddetaillocId) {
+//        FeedDetailLocValidation(feeddetaillocId);
+//        Optional<FeedDetailLoc> byId = feedDetailLocRepository.findById(feeddetaillocId);
+//        FeedDetailLoc locationData = byId.get();
+//        return new FeedDetailLocResponseDto.ReadOneFeed(locationData);
+//    }
 
     // 캐시 작업 X
-    public List<BookmarkResponseDto> getBookmarkPlaces(Long userId) {
-        List<BookMark> bookMarks = bookmarkRepository.FindBookmarkByUserId(userId);
-        ArrayList<BookmarkResponseDto> arr = new ArrayList<>();
-        for (BookMark bookMark: bookMarks) {
-            BookmarkResponseDto dto = new BookmarkResponseDto(
-                    bookMark.getFeedDetailLoc().getId(),
-                    bookMark.getFeedDetailLoc().getLocation(),
-                    bookMark.getFeedDetailLoc().getCity());
-            arr.add(dto);
-        }
-        return arr;
-    }
-
-    // 여행 기록 1개 전체 보기 (조회) -> cache 작업 필요
-    @Cacheable(value = "feed", key = "#feedId")
-    public FeedResponseDto.ReadOneTrip readOneTrip(Long userId, Long feedId) {
-        FeedValidation(feedId);
-        Feed feed = authFeedValidation(userId, feedId);
-        return new FeedResponseDto.ReadOneTrip(feed);
-    }
-
-    // feed 1개 읽기(조회) -> cache 작업 필요
-    @Cacheable(value = "feeddetailloc", key = "#feeddetaillocId")
-    public FeedDetailLocResponseDto.ReadOneFeed readOneFeed(Long feeddetaillocId) {
-        FeedDetailLocValidation(feeddetaillocId);
-        Optional<FeedDetailLoc> byId = feedDetailLocRepository.findById(feeddetaillocId);
-        FeedDetailLoc locationData = byId.get();
-        return new FeedDetailLocResponseDto.ReadOneFeed(locationData);
-    }
-
-    // 캐시 작업 X
-    public List<LikesResponseDto.SortByCity> sortLikesFeed(String socialaccountId) {
-        Optional<User> user = userRepository.findBySocialaccountId(socialaccountId);
-        List<FeedDetailLoc> totalCityList = feedDetailLocRepository.FindAllCityList(user.get().getId());
-        ArrayList<LikesResponseDto.SortByCity> likesFeedList = new ArrayList<>();
-        for(FeedDetailLoc city:totalCityList) {
-            List<FeedDetailLoc> oneCityList = feedDetailLocRepository.FindOneCityList(user.get().getId(), city.getCity());
-            ArrayList<String> images = new ArrayList<>();
-            if (oneCityList.size() < 3) {
-                for(FeedDetailLoc onecity : oneCityList) {
-                    images.add(onecity.getFeedDetailLocImg().get(1).getImgUrl());
-                }
-            } else {
-                for(int i=0; i<3; i++) {
-                    images.add(oneCityList.get(i).getFeedDetailLocImg().get(1).getImgUrl());
-                }
-            }
-            LikesResponseDto.SortByCity dto = new LikesResponseDto.SortByCity(city.getCity(), oneCityList.size(), images);
-            likesFeedList.add(dto);
-        }
-        return likesFeedList;
-    }
+//    public List<LikesResponseDto.SortByCity> sortLikesFeed(String socialaccountId) {
+//        Optional<User> user = userRepository.findBySocialaccountId(socialaccountId);
+//        List<FeedDetailLoc> totalCityList = feedDetailLocRepository.FindAllCityList(user.get().getId());
+//        ArrayList<LikesResponseDto.SortByCity> likesFeedList = new ArrayList<>();
+//        for(FeedDetailLoc city:totalCityList) {
+//            List<FeedDetailLoc> oneCityList = feedDetailLocRepository.FindOneCityList(user.get().getId(), city.getCity());
+//            ArrayList<String> images = new ArrayList<>();
+//            if (oneCityList.size() < 3) {
+//                for(FeedDetailLoc onecity : oneCityList) {
+//                    images.add(onecity.getFeedDetailLocImg().get(1).getImgUrl());
+//                }
+//            } else {
+//                for(int i=0; i<3; i++) {
+//                    images.add(oneCityList.get(i).getFeedDetailLocImg().get(1).getImgUrl());
+//                }
+//            }
+//            LikesResponseDto.SortByCity dto = new LikesResponseDto.SortByCity(city.getCity(), oneCityList.size(), images);
+//            likesFeedList.add(dto);
+//        }
+//        return likesFeedList;
+//    }
 
     public MypageResponseDto.GetPlan getPlan(Long planId, Long userId) {
         authPlanValidation(planId);
