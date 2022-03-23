@@ -2,12 +2,13 @@ package com.example.trip.dto;
 
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
+import com.example.trip.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -96,5 +97,40 @@ public class UserResponseDto {
         private String file_store_course;
         private String nickname;
         private Long user_id;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class GetUser {
+        private Long userId;
+        private String nickname;
+        private String imageUrl;
+
+        public GetUser(User user) {
+            this.userId = user.getId();
+            this.nickname = user.getUsername();
+            this.imageUrl = user.getImage().getFile_store_course();
+        }
+    }
+
+    @Builder
+    @Getter
+    public static class Responsev2 {
+        private String result;
+        private String msg;
+        private UserResponseDto.GetUser userInfo;
+        private List<FeedLocationResponseDto.BookMark> bookmark;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class LoginSuccess {
+        private String result;
+        private String msg;
+        private boolean isfirst;
+        private String email;
+        private TokenInfo tokens;
+        private UserProfile userbasicinfo;
     }
 }

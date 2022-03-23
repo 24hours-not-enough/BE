@@ -12,11 +12,14 @@ public class FeedCommentResponseDto {
 
     @AllArgsConstructor
     @Getter
-    public static class InFeed {
+    public static class GetComment {
+
+        private Long commentId;
         private String username;
         private String content;
 
-        public InFeed(FeedComment feedComment) {
+        public GetComment(FeedComment feedComment) {
+            this.commentId = feedComment.getId();
             this.username = feedComment.getUser().getUsername();
             this.content = feedComment.getContent();
         }
