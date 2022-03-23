@@ -1,4 +1,4 @@
-package com.example.trip.dto;
+package com.example.trip.dto.request;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;

@@ -1,21 +1,19 @@
-package com.example.trip.service;
+package com.example.trip.service.impl;
 
-import com.example.trip.advice.exception.*;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.*;
-import com.example.trip.dto.*;
+import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.repository.*;
 import com.example.trip.repository.BookMarkRepository;
 import com.example.trip.repository.plan.PlanRepository;
+import com.example.trip.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
