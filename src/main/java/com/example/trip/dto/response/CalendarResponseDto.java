@@ -14,14 +14,14 @@ import java.util.stream.Collectors;
 @AllArgsConstructor
 public class CalendarResponseDto {
 
-    private Long calendar_id;
+    private Long calendarId;
 
     private String days;
 
     private List<CalendarDetailsResponseDto> calendarDetails;
 
     public CalendarResponseDto(Calendar calendar) {
-        this.calendar_id = calendar.getId();
+        this.calendarId = calendar.getId();
         this.days = calendar.getDays();
         this.calendarDetails = calendar.getCalendarDetails().stream()
                 .map(CalendarDetailsResponseDto::new)
@@ -31,14 +31,14 @@ public class CalendarResponseDto {
     @AllArgsConstructor
     @Getter
     public static class Plan {
-        private Long calendar_id;
+        private Long calendarId;
 
         private String days;
 
         private List<CalendarDetailsResponseDto.Plan> calendarDetails;
 
         public Plan(Calendar calendar) {
-            this.calendar_id = calendar.getId();
+            this.calendarId = calendar.getId();
             this.days = calendar.getDays();
             this.calendarDetails = calendar.getCalendarDetails().stream()
                     .map(CalendarDetailsResponseDto.Plan::new)
