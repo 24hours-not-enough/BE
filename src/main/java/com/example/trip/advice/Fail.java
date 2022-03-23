@@ -12,11 +12,11 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Fail {
 
-    private boolean success;
+    private String result;
     private String msg;
 
     public Fail(String msg) {
-        this.success = false;
+        this.result = "fail";
         this.msg = msg;
     }
 
