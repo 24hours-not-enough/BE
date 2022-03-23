@@ -18,10 +18,16 @@ import java.util.List;
 @NoArgsConstructor
 @AllArgsConstructor
 public class MemberResponseDto {
-    private String profileImg;
+
+    private Long userId;
+    private String userProfileImage;
+
+    private String userName;
 
     public MemberResponseDto(Member member) {
-        this.profileImg = member.getUser().getImage().getFile_store_course();
+        this.userProfileImage = member.getUser().getImage().getFile_store_course();
+        this.userId = member.getUser().getId();
+        this.userName = member.getUser().getUsername();
     }
 
     @Getter
