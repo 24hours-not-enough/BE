@@ -22,11 +22,11 @@ import java.util.Map;
 public class FeedDetailLocImgController {
     private final FeedDetailLocImgService feedDetailLocImgService;
 
-    @Caching(evict = {
-            @CacheEvict(value = "feedlist"),
-            @CacheEvict(value = "feed", key = "#feedId"),
-            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
-    })
+//    @Caching(evict = {
+//            @CacheEvict(value = "feedlist"),
+//            @CacheEvict(value = "feed", key = "#feedId"),
+//            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
+//    })
     @PostMapping("/feed/image/{feedDetailLocId}")
     public ResponseEntity<FeedResponseDto.FeedResponseOptional> registerFeedImage(
             @PathVariable Long feedDetailLocId,
@@ -39,11 +39,11 @@ public class FeedDetailLocImgController {
                 .build(), HttpStatus.OK);
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "feedlist"),
-            @CacheEvict(value = "feed", key = "#feedId"),
-            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
-    })
+//    @Caching(evict = {
+//            @CacheEvict(value = "feedlist"),
+//            @CacheEvict(value = "feed", key = "#feedId"),
+//            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
+//    })
     @DeleteMapping("/feed/image")
     public ResponseEntity<FeedResponseDto.FeedResponseDefault> deleteFeedImage(
             @RequestBody FeedRequestDto.FeedRequestDeleteImgDto  FeedRequestDeleteImgDto) {

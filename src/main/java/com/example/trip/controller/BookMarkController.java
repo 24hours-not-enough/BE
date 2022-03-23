@@ -20,18 +20,18 @@ import org.springframework.web.bind.annotation.RequestMapping;
 public class BookMarkController {
     private final BookMarkService bookmarkService;
 
-    @PostMapping("/feed/{feedDetailLocId}/bookmark")
-    public ResponseEntity<FeedResponseDto.FeedResponseDefault> bookmarkFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        bookmarkService.bookmarkFeed(feedDetailLocId, userDetails.getUser());
+    @PostMapping("/feed/{feedLocId}/bookmark")
+    public ResponseEntity<FeedResponseDto.FeedResponseDefault> bookmarkFeed(@PathVariable Long feedLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        bookmarkService.bookmarkFeed(feedLocId, userDetails.getUser());
         return new ResponseEntity<>(FeedResponseDto.FeedResponseDefault.builder()
                 .result("success")
                 .msg("피드 북마크 등록에 성공하였습니다.")
                 .build(), HttpStatus.OK);
     }
 
-    @DeleteMapping("/feed/{feedDetailLocId}/unbookmark")
-    public ResponseEntity<FeedResponseDto.FeedResponseDefault> unbookmarkFeed(@PathVariable Long feedDetailLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
-        bookmarkService.unbookmarkFeed(feedDetailLocId, userDetails.getUser());
+    @DeleteMapping("/feed/{feedLocId}/unbookmark")
+    public ResponseEntity<FeedResponseDto.FeedResponseDefault> unbookmarkFeed(@PathVariable Long feedLocId, @AuthenticationPrincipal UserDetailsImpl userDetails) {
+        bookmarkService.unbookmarkFeed(feedLocId, userDetails.getUser());
         return new ResponseEntity<>(FeedResponseDto.FeedResponseDefault.builder()
                 .result("success")
                 .msg("피드 북마크 취소에 성공하였습니다.")

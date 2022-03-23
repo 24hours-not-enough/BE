@@ -26,4 +26,8 @@ public class FeedDetail{
     private List<FeedDetailLoc> feedDetailLoc;
 
     private String day;
+
+    public void update(FeedDetail feedDetails){
+        this.day = feedDetails.day;
+    }
 }

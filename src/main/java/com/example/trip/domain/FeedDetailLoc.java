@@ -17,6 +17,8 @@ public class FeedDetailLoc {
     @Column(name = "feed_detail_loc_id")
     private Long id;
 
+    private String memo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_detail_id")
     private FeedDetail feedDetail;
@@ -36,5 +38,9 @@ public class FeedDetailLoc {
 
     public FeedDetailLoc(Long id){
         this.id = id;
+    }
+
+    public void update(FeedDetailLoc feedDetailLoc){
+        this.memo = feedDetailLoc.getMemo();
     }
 }

@@ -18,4 +18,7 @@ public interface FeedDetailLocRepository extends JpaRepository<FeedDetailLoc, Lo
     @Query(value = "SELECT * FROM feed_detail_loc fdl inner join likes li on fdl.feed_detail_loc_id = li.feed_detail_loc_id inner join user us on li.user_id = ?1 where fdl.city = ?2", nativeQuery = true)
     List<FeedDetailLoc> FindOneCityList(Long userId, String city);
 
+    @Query("SELECT F FROM FeedDetailLoc  F WHERE F.feedDetail.id = ?1")
+    List<FeedDetailLoc> findByFeedDetailId(Long feedDetailID);
+
 }
