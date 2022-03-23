@@ -1,4 +1,4 @@
-package com.example.trip.dto;
+package com.example.trip.dto.response;
 
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
@@ -72,7 +72,7 @@ public class UserResponseDto {
     @Getter
     public static class TokenInfo {
         private String access_token;
-        //    private String refresh_token;
+        private String refresh_token;
     }
 
     @Builder
@@ -103,13 +103,13 @@ public class UserResponseDto {
     @Getter
     public static class GetUser {
         private Long userId;
-        private String nickname;
-        private String imageUrl;
+        private String userName;
+        private String userProfileImage;
 
         public GetUser(User user) {
             this.userId = user.getId();
-            this.nickname = user.getUsername();
-            this.imageUrl = user.getImage().getFile_store_course();
+            this.userName = user.getUsername();
+            this.userProfileImage = user.getImage().getFile_store_course();
         }
     }
 
