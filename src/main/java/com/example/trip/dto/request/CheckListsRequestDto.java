@@ -10,5 +10,5 @@ public class CheckListsRequestDto {
 
     private String checkName;
 
-    private Boolean is_checked;
+    private Boolean isChecked;
 }
