@@ -16,11 +16,11 @@ public class PlanRequestDto {
     public static class Regist{
         private String title;
 
-        private String travel_destination;
+        private String travelDestination;
 
-        private LocalDateTime travel_start;
+        private LocalDateTime travelStart;
 
-        private LocalDateTime travel_end;
+        private LocalDateTime travelEnd;
 
         private List<MemberRequestDto.join> memberList;
     }
@@ -30,14 +30,14 @@ public class PlanRequestDto {
     public static class Modify{
         private String title;
 
-        private String travel_destination;
+        private String travelDestination;
 
-        private LocalDateTime travel_start;
+        private LocalDateTime travelStart;
 
-        private LocalDateTime travel_end;
+        private LocalDateTime travelEnd;
 
         private List<MemberRequestDto.join> memberList;
 
-        private Boolean del_fl;
+        private Boolean delFl;
     }
 }

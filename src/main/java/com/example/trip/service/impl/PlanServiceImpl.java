@@ -63,7 +63,7 @@ public class PlanServiceImpl implements PlanService {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
         authMemberValidation(user_id,planId);
         authPlanValidation(planId,user_id);
-        if(modify.getDel_fl()==null){
+        if(modify.getDelFl()==null){
             findPlan.get().updatePlan(modify);
             memberRepository.deleteByPlanId(planId);
             setMember(modify.getMemberList(),findPlan.get());
@@ -96,10 +96,8 @@ public class PlanServiceImpl implements PlanService {
     }
 
     @Override
-    public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId, Long planId) {
-        planValidation(planId);
-        authPlanValidation(planId,userId);
-        return planRepository.findPlanDetails(planId)
+    public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId) {
+        return planRepository.findPlanDetails(userId)
                 .stream()
                 .map(PlanResponseDto.DetailAll::new)
                 .collect(Collectors.toList());

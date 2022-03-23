@@ -10,11 +10,11 @@ import lombok.NoArgsConstructor;
 @AllArgsConstructor
 public class CalendarDetailsResponseDto {
 
-    private Long calendar_details_id;
+    private Long calendarDetailsId;
 
-    private String location_name;
+    private String locationName;
 
-    private String location_memo;
+    private String locationMemo;
 
     private String latitude;
 
@@ -23,9 +23,9 @@ public class CalendarDetailsResponseDto {
     private int sort;
 
     public CalendarDetailsResponseDto(CalendarDetails calendarDetails) {
-        this.calendar_details_id = calendarDetails.getId();
-        this.location_name = calendarDetails.getName();
-        this.location_memo = calendarDetails.getMemo();
+        this.calendarDetailsId = calendarDetails.getId();
+        this.locationName = calendarDetails.getName();
+        this.locationMemo = calendarDetails.getMemo();
         this.latitude = calendarDetails.getLatitude();
         this.longitude = calendarDetails.getLongitude();
         this.sort = calendarDetails.getSort();
@@ -34,19 +34,19 @@ public class CalendarDetailsResponseDto {
     @AllArgsConstructor
     @Getter
     public static class Plan {
-        private Long calendar_details_id;
+        private Long calendarDetailsId;
 
-        private String location_name;
+        private String locationName;
 
-        private String location_memo;
+        private String locationMemo;
 
-        private int order;
+        private int sort;
 
         public Plan(CalendarDetails calendarDetails) {
-            this.calendar_details_id = calendarDetails.getId();
-            this.location_name = calendarDetails.getName();
-            this.location_memo = calendarDetails.getMemo();
-            this.order = calendarDetails.getSort();
+            this.calendarDetailsId = calendarDetails.getId();
+            this.locationName = calendarDetails.getName();
+            this.locationMemo = calendarDetails.getMemo();
+            this.sort = calendarDetails.getSort();
         }
     }
 
