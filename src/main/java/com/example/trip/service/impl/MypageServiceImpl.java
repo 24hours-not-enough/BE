@@ -1,5 +1,6 @@
 package com.example.trip.service.impl;
 
+import com.example.trip.advice.exception.UserNotFoundException;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.*;
 import com.example.trip.dto.response.UserResponseDto;
@@ -105,11 +106,11 @@ public class MypageServiceImpl implements MypageService {
     @CacheEvict(value = "userprofile")
     @Transactional
     public UserResponseDto.UserProfile changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
-        Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername()).orElseThrow(UserNotFoundException::new));
         Map<String, String> nameUrl = s3UploaderService.upload(file);
         s3UploaderService.deleteFile(user.get().getImage().getFilename());
         user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserResponseDto.UserProfile(username, nameUrl.get(file.getOriginalFilename()));
+        return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
     }
 
 //    private Feed authFeedValidation(Long userId, Long feedId) {

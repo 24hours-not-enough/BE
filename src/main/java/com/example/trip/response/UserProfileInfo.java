@@ -7,5 +7,5 @@ import lombok.Getter;
 @AllArgsConstructor
 @Getter
 public class UserProfileInfo {
-    private UserResponseDto.UserProfile userbasicinfo;
+    private UserResponseDto.UserProfile userInfo;
 }

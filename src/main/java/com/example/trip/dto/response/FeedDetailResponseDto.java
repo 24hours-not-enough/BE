@@ -1,8 +1,6 @@
 package com.example.trip.dto.response;
 
 import com.example.trip.domain.FeedDetail;
-import com.example.trip.domain.FeedDetailLoc;
-import com.example.trip.dto.response.FeedDetailLocResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

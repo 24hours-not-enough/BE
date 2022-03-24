@@ -64,8 +64,9 @@ public class UserResponseDto {
     @AllArgsConstructor
     @Getter
     public static class UserProfile {
-        private String username;
-        private String profileImg;
+        private Long userId;
+        private String userName;
+        private String userProfileImg;
     }
 
     @AllArgsConstructor
@@ -94,9 +95,9 @@ public class UserResponseDto {
     @AllArgsConstructor
     @Getter
     public static class invite {
-        private String file_store_course;
-        private String nickname;
-        private Long user_id;
+        private String userProfileImg;
+        private String userName;
+        private Long userId;
     }
 
     @AllArgsConstructor
@@ -128,9 +129,8 @@ public class UserResponseDto {
     public static class LoginSuccess {
         private String result;
         private String msg;
-        private boolean isfirst;
-        private String email;
+        private boolean isFirst;
         private TokenInfo tokens;
-        private UserProfile userbasicinfo;
+        private UserProfile userInfo;
     }
 }
