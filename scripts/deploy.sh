@@ -2,7 +2,7 @@
 
 echo "> deploy 실행이 되는가"
 
-REPOSITORY=/home/ec2-user/app
+REPOSITORY=/home/ubuntu/app
 PROJECT_NAME=trip-0.0.1-SNAPSHOT
 
 echo "> 현재 구동중인 애플리케이션 pid 확인"
