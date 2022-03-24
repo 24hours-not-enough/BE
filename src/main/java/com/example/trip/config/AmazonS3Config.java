@@ -12,13 +12,13 @@ import org.springframework.context.annotation.Configuration;
 public class AmazonS3Config {
 
 
-    @Value("${secrets.AWS_S3_ACCESS_KEY}")
+    @Value("${aws.s3.accesskey}")
     private String accessKey;
 
-    @Value("${secrets.AWS_S3_SECRET_KEY}")
+    @Value("${aws.s3.secretkey}")
     private String secretKey;
 
-    @Value("${secrets.AWS_S3_BUCKET_NAME}")
+    @Value("${aws.s3.bucketname}")
     private String region;
 
     @Bean
