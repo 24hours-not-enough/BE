@@ -292,9 +292,17 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     @Transactional
     public UserResponseDto.UserProfile registerMoreUserInfo(String socialaccountId, String username, MultipartFile file) throws IOException {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
-        Map<String, String> nameUrl = s3UploaderService.upload(file);
-        user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
+        if (file.isEmpty()) {
+            user.get().update(username, "url", "filename");
+            return new UserResponseDto.UserProfile(user.get().getId(), username, "url");
+        } else {
+            Map<String, String> nameUrl = s3UploaderService.upload(file);
+            user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
+            return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
+        }
+
+
+
     }
 
     public boolean checkKakaoIsFirstLogin(UserResponseDto.KakaoLogin loginRequestDto) {
