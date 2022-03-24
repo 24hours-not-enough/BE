@@ -9,6 +9,7 @@ import com.example.trip.dto.response.AllLocationsDto;
 import com.example.trip.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
@@ -25,7 +26,7 @@ public class FeedService {
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
     private final FeedLocationRepository feedLocationRepository;
 
-
+    @Cacheable(value = "allFeeds")
     public List<AllLocationsDto> findAll() {
 
         List<FeedLocation> feedLocations = feedLocationRepository.findAll();
@@ -43,9 +44,10 @@ public class FeedService {
         return allLocationsDtos;
     }
 
-    @Caching(evict = { @CacheEvict(value = "feedlist",
-            key = "#user.id"), @CacheEvict(value = "feed",
-            key = "#feedId", condition = "#feedId != null"),
+    @Caching(evict = {
+            @CacheEvict(value = "allFeeds", allEntries = true),
+            @CacheEvict(value = "feedlist", key = "#user.id"),
+            @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
             @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
     public List<Long> registerFeed(User user, FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
