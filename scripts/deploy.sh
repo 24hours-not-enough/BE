@@ -1,7 +1,7 @@
 #!/bin/bash
 
-REPOSITORY=/home/ec2-user/app/step2/zip/build/libs
-PROJECT_NAME=BE
+REPOSITORY=/home/ec2-user/app/step2/zip
+PROJECT_NAME=trip-0.0.1-SNAPSHOT
 
 echo "> 현재 구동중인 애플리케이션 pid 확인"
 
