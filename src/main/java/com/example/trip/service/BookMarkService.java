@@ -1,5 +1,6 @@
 package com.example.trip.service;
 
+import com.example.trip.advice.exception.AuthBookMarkNotFoundException;
 import com.example.trip.advice.exception.FeedDetailLocNotFoundException;
 import com.example.trip.domain.BookMark;
 import com.example.trip.domain.FeedDetailLoc;

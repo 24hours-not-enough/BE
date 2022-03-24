@@ -36,8 +36,6 @@ public class FeedDetailLoc extends TimeStamped {
     @JoinColumn(name = "feed_location_id")
     private  FeedLocation feedLocation;
 
-    private String memo;
-
     public FeedDetailLoc(Long id){
         this.id = id;
     }
