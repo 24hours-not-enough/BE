@@ -29,6 +29,7 @@ public class AllLocationsDto {
         for(FeedDetailLoc feedDetailLoc : feedDetailLocs){
             FeedPerLocationDto feedPerLocationDto = FeedPerLocationDto.builder()
                     .feedId(feedDetailLoc.getId())
+                    .date(feedDetailLoc.createdAt)
                     .memo(feedDetailLoc.getMemo())
                     .build();
 
