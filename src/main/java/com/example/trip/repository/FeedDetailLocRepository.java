@@ -21,7 +21,7 @@ public interface FeedDetailLocRepository extends JpaRepository<FeedDetailLoc, Lo
 //    @Query(value = "SELECT * FROM FeedDetailLoc fdl inner join Likes li on li.user_id = ?1 inner join FeedLocation fl where li.feed_detail_loc_id = fdl.feed_detail_loc_id and fl.feed_location_id = fdl.feed_location_id and fl.place_address= ?2", nativeQuery = true)
 
 //    @Query("select fdl from FeedDetailLoc fdl inner join Likes li on li.user.id = ?1 inner join FeedLocation fl where li.feedDetailLoc.id = fdl.id and fl.id = fdl.feedLocation.id and fl.placeAddress = ?2")
-    @Query(value = "SELECT * FROM miniblog.feed_detail_loc fdl inner join miniblog.likes li on li.user_id = :userId inner join miniblog.feed_location fl where li.feed_detail_loc_id = fdl.feed_detail_loc_id and fl.feed_location_id = fdl.feed_location_id and fl.place_address = :address", nativeQuery = true)
+    @Query(value = "SELECT * FROM feed_detail_loc fdl inner join likes li on li.user_id = :userId inner join feed_location fl where li.feed_detail_loc_id = fdl.feed_detail_loc_id and fl.feed_location_id = fdl.feed_location_id and fl.place_address = :address", nativeQuery = true)
     List<FeedDetailLoc> findLocationsByLikes(Long userId, String address);
 
     @Query(value = "SELECT distinct * FROM feed_detail_loc fdl inner join likes li on li.user_id = 1 inner join feed_location fl where li.feed_detail_loc_id = fdl.feed_detail_loc_id and fl.feed_location_id = fdl.feed_location_id", nativeQuery = true)

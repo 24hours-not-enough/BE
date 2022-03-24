@@ -129,7 +129,7 @@ public class UserResponseDto {
     public static class LoginSuccess {
         private String result;
         private String msg;
-        private boolean isFirst;
+        private boolean first;
         private TokenInfo tokens;
         private UserProfile userInfo;
     }

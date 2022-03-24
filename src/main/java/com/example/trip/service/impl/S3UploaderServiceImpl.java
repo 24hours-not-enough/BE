@@ -27,7 +27,7 @@ public class S3UploaderServiceImpl implements S3UploaderService {
 
     private final AmazonS3Client amazonS3Client;
 
-    @Value("${secrets.AWS_S3_BUCKET_NAME}")
+    @Value("${aws.s3.bucketname}")
     public String bucket;  // S3 버킷 이름
 
     public Map<String, String> upload(MultipartFile multipartFile) throws IOException {
