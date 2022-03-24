@@ -39,7 +39,6 @@ cloud:
         static: ${{ secrets.AWS_REGION }}
       stack:
         auto: false
-
     credentials:
       accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
       secretKey: ${{ secrets.AWS_S3_SECRET_KEY }}

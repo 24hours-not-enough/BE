@@ -36,21 +36,17 @@ public class User extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @Column
-    private String refreshToken;
-
     @Embedded
     private Image image;
 
     @Builder
-    public User(String email, String username, String password, boolean memberstatus, String socialaccountId, Role role, String refreshToken, Image image) {
+    public User(String email, String username, String password, boolean memberstatus, String socialaccountId, Role role, Image image) {
         this.email = email;
         this.username = username;
         this.password = password;
         this.memberstatus = memberstatus;
         this.socialaccountId = socialaccountId;
         this.role = role;
-        this.refreshToken = refreshToken;
         this.image = image;
     }
 

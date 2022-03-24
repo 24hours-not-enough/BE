@@ -1,6 +1,5 @@
 package com.example.trip.repository;
 
-import com.example.trip.domain.FeedDetail;
 import com.example.trip.domain.FeedDetailLocImg;
 import io.lettuce.core.dynamic.annotation.Param;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,5 +13,4 @@ public interface FeedDetailLocImgRepository extends JpaRepository<FeedDetailLocI
 
     @Query("select i.imgUrl from FeedDetailLocImg i where i.feedDetailLoc.id = :feeddetaillocId")
     List<String> FindImgsByFeedDetailLocId(@Param("feeddetaillocId") Long feeddetaillocId);
-
 }
