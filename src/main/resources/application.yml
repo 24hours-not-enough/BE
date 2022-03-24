@@ -16,7 +16,7 @@ spring:
 
   jpa:
     hibernate:
-      ddl-auto: create
+      ddl-auto: update
     properties:
       hibernate:
         format_sql: true
@@ -33,16 +33,14 @@ decorator:
 
 cloud:
   aws:
-    credentials:
-      accessKey:
-        ${aws.s3.accesskey}
-      secretKey:
-        ${aws.s3.secretkey}
     s3:
-      bucket:
-        ${aws.s3.bucketname}
-    region:
-      static:
-        ${{ secrets.AWS_REGION }}
+      bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
+      region:
+        static: ${{ secrets.AWS_REGION }}
       stack:
         auto: false
+
+    credentials:
+      accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
+      secretKey: ${{ secrets.AWS_S3_SECRET_KEY }}
+
