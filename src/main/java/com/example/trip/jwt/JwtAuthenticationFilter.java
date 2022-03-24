@@ -1,7 +1,6 @@
 package com.example.trip.jwt;
 
-import com.example.trip.exceptionhandling.CustomException;
-import com.example.trip.exceptionhandling.ErrorCode;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;

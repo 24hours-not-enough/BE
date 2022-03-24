@@ -1,13 +1,14 @@
-package com.example.trip.dto;
+package com.example.trip.dto.response;
 
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
+import com.example.trip.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import javax.persistence.*;
+import java.util.List;
 
 @Getter
 @AllArgsConstructor
@@ -63,15 +64,16 @@ public class UserResponseDto {
     @AllArgsConstructor
     @Getter
     public static class UserProfile {
-        private String username;
-        private String profileImg;
+        private Long userId;
+        private String userName;
+        private String userProfileImg;
     }
 
     @AllArgsConstructor
     @Getter
     public static class TokenInfo {
         private String access_token;
-        //    private String refresh_token;
+        private String refresh_token;
     }
 
     @Builder
@@ -93,8 +95,42 @@ public class UserResponseDto {
     @AllArgsConstructor
     @Getter
     public static class invite {
-        private String file_store_course;
-        private String nickname;
-        private Long user_id;
+        private String userProfileImg;
+        private String userName;
+        private Long userId;
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class GetUser {
+        private Long userId;
+        private String userName;
+        private String userProfileImage;
+
+        public GetUser(User user) {
+            this.userId = user.getId();
+            this.userName = user.getUsername();
+            this.userProfileImage = user.getImage().getFile_store_course();
+        }
+    }
+
+    @Builder
+    @Getter
+    public static class Responsev2 {
+        private String result;
+        private String msg;
+        private UserResponseDto.GetUser userInfo;
+        private List<FeedLocationResponseDto.BookMark> bookmark;
+
+    }
+
+    @AllArgsConstructor
+    @Getter
+    public static class LoginSuccess {
+        private String result;
+        private String msg;
+        private boolean isFirst;
+        private TokenInfo tokens;
+        private UserProfile userInfo;
     }
 }

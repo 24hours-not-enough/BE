@@ -1,9 +1,8 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.dto.FeedResponseDto;
+import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.service.BookMarkService;
-import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;

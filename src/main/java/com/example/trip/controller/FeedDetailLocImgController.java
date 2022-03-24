@@ -1,9 +1,8 @@
 package com.example.trip.controller;
 
-import com.example.trip.dto.FeedResponseDto;
+import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.service.FeedDetailLocImgService;
-import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;

@@ -1,4 +1,4 @@
-package com.example.trip.dto;
+package com.example.trip.dto.response;
 
 import com.example.trip.domain.FeedComment;
 import lombok.AllArgsConstructor;
@@ -12,12 +12,15 @@ public class FeedCommentResponseDto {
 
     @AllArgsConstructor
     @Getter
-    public static class InFeed {
-        private String username;
+    public static class GetComment {
+
+        private Long commentId;
+        private UserResponseDto.GetUser creator;
         private String content;
 
-        public InFeed(FeedComment feedComment) {
-            this.username = feedComment.getUser().getUsername();
+        public GetComment(FeedComment feedComment) {
+            this.commentId = feedComment.getId();
+            this.creator = new UserResponseDto.GetUser(feedComment.getUser());
             this.content = feedComment.getContent();
         }
     }

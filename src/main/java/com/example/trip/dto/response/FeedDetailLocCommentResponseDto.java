@@ -1,5 +1,6 @@
-package com.example.trip.dto;
+package com.example.trip.dto.response;
 
+import com.example.trip.dto.response.FeedCommentResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 

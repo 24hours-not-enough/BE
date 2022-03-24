@@ -4,7 +4,7 @@ package com.example.trip.jwt;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.config.security.UserDetailsServiceImpl;
 import com.example.trip.repository.UserRepository;
-import com.example.trip.service.RedisServiceImpl;
+import com.example.trip.service.impl.RedisServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +23,6 @@ public class JwtTokenProvider {
     private String secretKey = "rabbitandturtle";
 
     private final UserDetailsServiceImpl userDetailsService;
-    private final UserRepository userRepository;
     private final RedisServiceImpl redisServiceImpl;
 
     // 객체 초기화, secretKey를 Base64로 인코딩

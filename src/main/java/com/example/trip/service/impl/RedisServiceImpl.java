@@ -1,5 +1,6 @@
-package com.example.trip.service;
+package com.example.trip.service.impl;
 
+import com.example.trip.service.RedisService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;

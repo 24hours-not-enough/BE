@@ -2,8 +2,7 @@ package com.example.trip.controller;
 
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.dto.FeedResponseDto;
-import com.example.trip.service.FeedService;
+import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.service.LikesService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;

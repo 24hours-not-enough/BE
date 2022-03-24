@@ -1,8 +1,8 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.dto.*;
-import com.example.trip.response.*;
+import com.example.trip.dto.response.MypageResponseDto;
+import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
-import java.util.List;
 
 @Controller
 @RequiredArgsConstructor
@@ -82,16 +81,16 @@ public class MypageController {
 //    }
 
 //    // 마이페이지 수정
-//    @PutMapping("/api/mypage")
-//    public ResponseEntity<MypageResponseDto.Response> changeProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
-//                                                 @RequestPart String username,
-//                                                 @RequestPart MultipartFile file) throws IOException {
-//        UserResponseDto.UserProfile info = mypageService.changeProfile(userDetails, username, file);
-//        return new ResponseEntity<>(MypageResponseDto.Response.builder()
-//                                                        .result("success")
-//                                                        .msg("마이페이지 수정 완료입니다.")
-//                                                        .data(info).build(), HttpStatus.OK);
-//    }
+    @PutMapping("/api/mypage")
+    public ResponseEntity<MypageResponseDto.Response> changeProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                    @RequestPart String username,
+                                                                    @RequestPart MultipartFile file) throws IOException {
+        UserResponseDto.UserProfile info = mypageService.changeProfile(userDetails, username, file);
+        return new ResponseEntity<>(MypageResponseDto.Response.builder()
+                                                        .result("success")
+                                                        .msg("마이페이지 수정 완료입니다.")
+                                                        .data(info).build(), HttpStatus.OK);
+    }
 
 
 }

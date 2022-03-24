@@ -1,11 +1,14 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.dto.*;
+import com.example.trip.dto.request.UserRequestDto;
+import com.example.trip.dto.response.FeedLocationResponseDto;
+import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.response.*;
 import com.example.trip.service.BookMarkService;
 import com.example.trip.service.RedisService;
 import com.example.trip.service.SocialLoginService;
+import com.example.trip.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
@@ -19,6 +22,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.List;
 
 @RequiredArgsConstructor
 @Controller
@@ -29,24 +33,24 @@ public class UserController {
 
     private final BookMarkService bookMarkService;
 
+    private final UserService userService;
+
     // 카카오 로그인
     @GetMapping("/api/kakaologin")
-    public ResponseEntity<LoginSuccess> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseEntity<UserResponseDto.LoginSuccess> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         UserResponseDto.KakaoLogin loginRequestDto = socialLoginService.kakaoLogin(code);
-        return new ResponseEntity<>(new LoginSuccess("success", "카카오 로그인 성공",
+        return new ResponseEntity<>(new UserResponseDto.LoginSuccess("success", "카카오 로그인 성공",
                 socialLoginService.checkKakaoIsFirstLogin(loginRequestDto),
-                loginRequestDto.getEmail(),
                 socialLoginService.issueKakaoJwtToken(loginRequestDto, response),
                 socialLoginService.sendKakaoUserBasicInfo(loginRequestDto)), HttpStatus.OK);
     }
 
     // 구글 로그인
     @GetMapping("/api/googlelogin")
-    public ResponseEntity<LoginSuccess> googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseEntity<UserResponseDto.LoginSuccess> googleLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
         UserResponseDto.GoogleLogin loginRequestDto = socialLoginService.googleLogin(code);
-        return new ResponseEntity<>(new LoginSuccess("success", "구글 로그인 성공",
+        return new ResponseEntity<>(new UserResponseDto.LoginSuccess("success", "구글 로그인 성공",
                 socialLoginService.checkGoogleIsFirstLogin(loginRequestDto),
-                loginRequestDto.getEmail(),
                 socialLoginService.issueGoogleJwtToken(loginRequestDto, response),
                 socialLoginService.sendGoogleUserBasicInfo(loginRequestDto)), HttpStatus.OK);
     }
@@ -63,20 +67,15 @@ public class UserController {
                                                         .data(userBasicInfo).build(), HttpStatus.OK);
     }
 
-    @PostMapping("/api/username")
+    // 아이디 중복 확인
+   @PostMapping("/api/username")
     public ResponseEntity<UserResponseDto.ResponseNoData> checkUsername(@Valid @RequestBody UserRequestDto.CheckUsername checkUsername) {
-        socialLoginService.checkUsername(checkUsername.getUsername());
+        socialLoginService.checkUsername(checkUsername.getUserName());
         return new ResponseEntity<>(UserResponseDto.ResponseNoData.builder()
                 .result("success").msg("사용가능한 닉네임입니다.").build(), HttpStatus.OK);
     }
 
-    // 유저 정보 전달
-    @GetMapping("/user/userprofileinfo")
-    public ResponseEntity<UserProfileInfo> sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserResponseDto.UserProfile userBasicInfo = socialLoginService.sendUserProfileInfo(userDetails.getUser().getSocialaccountId());
-        return new ResponseEntity<>(new UserProfileInfo(userBasicInfo), HttpStatus.OK);
-    }
-
+    // 사용자 초대
     @GetMapping("/api/user/{nickname}")
     public ResponseEntity<UserResponseDto.Response> searchUserInvite(@PathVariable String nickname) {
         UserResponseDto.invite invite = socialLoginService.searchUserInvite(nickname);
@@ -103,13 +102,15 @@ public class UserController {
                 .msg("회원 탈퇴되었습니다.").build(), HttpStatus.OK);
     }
 
-//    @GetMapping("/api/user")
-//    public ResponseEntity<UserResponseDto.Response> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-//        bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
-//        return new ResponseEntity<>(UserResponseDto.Response.builder()
-//                .result("success")
-//                .msg("유저 정보입니다.")
-//                .data().build()
-//                , HttpStatus.OK);
-//    }
+    @GetMapping("/api/user")
+    public ResponseEntity<UserResponseDto.Responsev2> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        UserResponseDto.GetUser user = userService.findUser(userDetails.getUser().getId());
+        List<FeedLocationResponseDto.BookMark> bookMarkPlaces = bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
+        return new ResponseEntity<>(UserResponseDto.Responsev2.builder()
+                .result("success")
+                .msg("유저 정보입니다.")
+                .userInfo(user)
+                .bookmark(bookMarkPlaces).build()
+                , HttpStatus.OK);
+    }
 }

@@ -1,21 +1,20 @@
-package com.example.trip.service;
+package com.example.trip.service.impl;
 
-import com.example.trip.advice.exception.*;
+import com.example.trip.advice.exception.UserNotFoundException;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.*;
-import com.example.trip.dto.*;
+import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.repository.*;
 import com.example.trip.repository.BookMarkRepository;
 import com.example.trip.repository.plan.PlanRepository;
+import com.example.trip.service.MypageService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.util.*;
-import java.util.stream.Collectors;
 
 
 @Service
@@ -42,7 +41,7 @@ public class MypageServiceImpl implements MypageService {
 //        }
 //        return arr;
 //    }
-
+//
 //    // 캐시 작업 X
 //    public List<BookmarkResponseDto> getBookmarkPlaces(Long userId) {
 //        List<BookMark> bookMarks = bookmarkRepository.FindBookmarkByUserId(userId);
@@ -56,7 +55,7 @@ public class MypageServiceImpl implements MypageService {
 //        }
 //        return arr;
 //    }
-
+//
 //    // 여행 기록 1개 전체 보기 (조회) -> cache 작업 필요
 //    @Cacheable(value = "feed", key = "#feedId")
 //    public FeedResponseDto.ReadOneTrip readOneTrip(Long userId, Long feedId) {
@@ -73,7 +72,7 @@ public class MypageServiceImpl implements MypageService {
 //        FeedDetailLoc locationData = byId.get();
 //        return new FeedDetailLocResponseDto.ReadOneFeed(locationData);
 //    }
-
+//
     // 캐시 작업 X
 //    public List<LikesResponseDto.SortByCity> sortLikesFeed(String socialaccountId) {
 //        Optional<User> user = userRepository.findBySocialaccountId(socialaccountId);
@@ -96,42 +95,42 @@ public class MypageServiceImpl implements MypageService {
 //        }
 //        return likesFeedList;
 //    }
-
-    public MypageResponseDto.GetPlan getPlan(Long planId, Long userId) {
-        authPlanValidation(planId);
-        Plan plan = authPlanMemberValidation(planId, userId);
-        return new MypageResponseDto.GetPlan(plan);
-    }
+//
+//    public MypageResponseDto.GetPlan getPlan(Long planId, Long userId) {
+//        authPlanValidation(planId);
+//        Plan plan = authPlanMemberValidation(planId, userId);
+//        return new MypageResponseDto.GetPlan(plan);
+//    }
 
     // 마이페이지 프로필 수정(완료)
     @CacheEvict(value = "userprofile")
     @Transactional
     public UserResponseDto.UserProfile changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
-        Optional<User> user = userRepository.findBySocialaccountId(userDetails.getUsername());
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername()).orElseThrow(UserNotFoundException::new));
         Map<String, String> nameUrl = s3UploaderService.upload(file);
         s3UploaderService.deleteFile(user.get().getImage().getFilename());
         user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserResponseDto.UserProfile(username, nameUrl.get(file.getOriginalFilename()));
+        return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
     }
 
-    private Feed authFeedValidation(Long userId, Long feedId) {
-        return feedRepository.FindFeedByUserId(userId, feedId).orElseThrow(AuthFeedNotFoundException::new);
-    }
-
-    // mock data 넣어서 확인 필요
-    private Plan authPlanMemberValidation(Long planId, Long userId) {
-        return planRepository.findByPlanAndUser(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
-    }
-
-    private void authPlanValidation(Long planId) {
-        planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
-    }
-
-    private void FeedDetailLocValidation(Long feeddetaillocId) {
-        feedDetailLocRepository.findById(feeddetaillocId).orElseThrow(FeedDetailLocNotFoundException::new);
-    }
-
-    private void FeedValidation(Long feedId) {
-        feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
-    }
+//    private Feed authFeedValidation(Long userId, Long feedId) {
+//        return feedRepository.FindFeedByUserId(userId, feedId).orElseThrow(AuthFeedNotFoundException::new);
+//    }
+//
+//    // mock data 넣어서 확인 필요
+//    private Plan authPlanMemberValidation(Long planId, Long userId) {
+//        return planRepository.findByPlanAndUser(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
+//    }
+//
+//    private void authPlanValidation(Long planId) {
+//        planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
+//    }
+//
+//    private void FeedDetailLocValidation(Long feeddetaillocId) {
+//        feedDetailLocRepository.findById(feeddetaillocId).orElseThrow(FeedDetailLocNotFoundException::new);
+//    }
+//
+//    private void FeedValidation(Long feedId) {
+//        feedRepository.findById(feedId).orElseThrow(FeedNotFoundException::new);
+//    }
 }

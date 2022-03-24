@@ -1,4 +1,4 @@
-package com.example.trip.dto;
+package com.example.trip.dto.response;
 
 import com.example.trip.domain.Plan;
 import com.example.trip.dto.response.CalendarResponseDto;
