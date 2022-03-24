@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "> deploy 실행이 되는가"
+
 REPOSITORY=/home/ec2-user/app/step2/zip
 PROJECT_NAME=trip-0.0.1-SNAPSHOT
 
@@ -17,7 +19,7 @@ else
     sleep 5
 fi
 
-echo "> 새 어플리케이션 배포"
+echo "> 새 어플리케이션 배포 중"
 JAR_NAME=$(ls -tr $REPOSITORY/*.jar | tail -n 1)
 
 echo "> JAR Name: $JAR_NAME"
