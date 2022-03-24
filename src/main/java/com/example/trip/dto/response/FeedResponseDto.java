@@ -2,10 +2,10 @@ package com.example.trip.dto.response;
 
 import com.example.trip.domain.Feed;
 import com.example.trip.dto.response.FeedDetailLocResponseDto.GetFeedDetailLoc;
-import com.example.trip.dto.response.FeedDetailLocResponseDto.GetOnlyImg;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
@@ -40,15 +40,18 @@ public class FeedResponseDto {
         private LocalDateTime travelStart;
         private LocalDateTime travelEnd;
         private List<FeedDetailResponseDto.GetFeedDetail> feedDetail;
-        private List<FeedDetailResponseDto.GetOnlyLoc> images;
+        private List<String> images;
 
         public GetFeed(Feed feed) {
+
+            images = new ArrayList<>();
+
             this.feedId = feed.getId();
             this.title = feed.getTitle();
             this.travelStart = feed.getTravelStart();
             this.travelEnd = feed.getTravelEnd();
             this.feedDetail = feed.getFeedDetail().stream().map(FeedDetailResponseDto.GetFeedDetail::new).collect(Collectors.toList());
-            this.images = feed.getFeedDetail().stream().map(FeedDetailResponseDto.GetOnlyLoc::new).collect(Collectors.toList());
+            feed.getFeedDetail().forEach(e -> e.getFeedDetailLoc().forEach(x -> x.getFeedDetailLocImg().forEach(y -> images.add(y.getImgUrl()))));
         }
     }
 
