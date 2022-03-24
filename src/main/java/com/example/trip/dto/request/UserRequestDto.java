@@ -12,6 +12,6 @@ public class UserRequestDto {
     @Getter
     public static class CheckUsername {
         @NotBlank
-        private String username;
+        private String userName;
     }
 }

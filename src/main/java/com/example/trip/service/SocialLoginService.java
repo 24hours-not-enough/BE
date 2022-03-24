@@ -42,8 +42,6 @@ public interface SocialLoginService {
 
     UserResponseDto.UserProfile sendGoogleUserBasicInfo(UserResponseDto.GoogleLogin loginRequestDto);
 
-    UserResponseDto.UserProfile sendUserProfileInfo(String socialaccountId);
-
     UserResponseDto.invite searchUserInvite(String username);
 
     void deleteAccount(String socialaccountId);

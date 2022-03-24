@@ -294,7 +294,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
         Map<String, String> nameUrl = s3UploaderService.upload(file);
         user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserResponseDto.UserProfile(username, nameUrl.get(file.getOriginalFilename()));
+        return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
     }
 
     public boolean checkKakaoIsFirstLogin(UserResponseDto.KakaoLogin loginRequestDto) {
@@ -325,27 +325,19 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     public UserResponseDto.UserProfile sendKakaoUserBasicInfo(UserResponseDto.KakaoLogin loginRequestDto) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(UserNotFoundException::new);
         if (checkKakaoIsFirstLogin(loginRequestDto)) {
-            return new UserResponseDto.UserProfile(null, null);
+            return new UserResponseDto.UserProfile(user.get().getId(), null, null);
         } else {
-            return new UserResponseDto.UserProfile(user.get().getUsername(), user.get().getImage().getFile_store_course());
+            return new UserResponseDto.UserProfile(user.get().getId(), user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
     public UserResponseDto.UserProfile sendGoogleUserBasicInfo(UserResponseDto.GoogleLogin loginRequestDto) {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(UserNotFoundException::new);
         if (checkGoogleIsFirstLogin(loginRequestDto)) {
-            return new UserResponseDto.UserProfile(null, null);
+            return new UserResponseDto.UserProfile(user.get().getId(), null, null);
         } else {
-            return new UserResponseDto.UserProfile(user.get().getUsername(), user.get().getImage().getFile_store_course());
+            return new UserResponseDto.UserProfile(user.get().getId(), user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
-    }
-
-    // 마이페이지 유저 + 이미지 정보 전달 -> 캐싱작업 필요
-    @Cacheable(value = "userprofile")
-    public UserResponseDto.UserProfile sendUserProfileInfo(String socialaccountId) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
-        String imgUrl = user.get().getImage().getFile_store_course();
-        return new UserResponseDto.UserProfile(user.get().getUsername(), imgUrl);
     }
 
     public UserResponseDto.invite searchUserInvite(String username) {

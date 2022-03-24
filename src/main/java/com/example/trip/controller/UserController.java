@@ -41,7 +41,6 @@ public class UserController {
         UserResponseDto.KakaoLogin loginRequestDto = socialLoginService.kakaoLogin(code);
         return new ResponseEntity<>(new UserResponseDto.LoginSuccess("success", "카카오 로그인 성공",
                 socialLoginService.checkKakaoIsFirstLogin(loginRequestDto),
-                loginRequestDto.getEmail(),
                 socialLoginService.issueKakaoJwtToken(loginRequestDto, response),
                 socialLoginService.sendKakaoUserBasicInfo(loginRequestDto)), HttpStatus.OK);
     }
@@ -52,7 +51,6 @@ public class UserController {
         UserResponseDto.GoogleLogin loginRequestDto = socialLoginService.googleLogin(code);
         return new ResponseEntity<>(new UserResponseDto.LoginSuccess("success", "구글 로그인 성공",
                 socialLoginService.checkGoogleIsFirstLogin(loginRequestDto),
-                loginRequestDto.getEmail(),
                 socialLoginService.issueGoogleJwtToken(loginRequestDto, response),
                 socialLoginService.sendGoogleUserBasicInfo(loginRequestDto)), HttpStatus.OK);
     }
@@ -72,16 +70,9 @@ public class UserController {
     // 아이디 중복 확인
    @PostMapping("/api/username")
     public ResponseEntity<UserResponseDto.ResponseNoData> checkUsername(@Valid @RequestBody UserRequestDto.CheckUsername checkUsername) {
-        socialLoginService.checkUsername(checkUsername.getUsername());
+        socialLoginService.checkUsername(checkUsername.getUserName());
         return new ResponseEntity<>(UserResponseDto.ResponseNoData.builder()
                 .result("success").msg("사용가능한 닉네임입니다.").build(), HttpStatus.OK);
-    }
-
-    // 유저 정보 전달 -> 필요 없는 것 같은데 프론트 확인 필요
-    @GetMapping("/user/userprofileinfo")
-    public ResponseEntity<UserProfileInfo> sendUserProfileInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserResponseDto.UserProfile userBasicInfo = socialLoginService.sendUserProfileInfo(userDetails.getUser().getSocialaccountId());
-        return new ResponseEntity<>(new UserProfileInfo(userBasicInfo), HttpStatus.OK);
     }
 
     // 사용자 초대
@@ -113,7 +104,7 @@ public class UserController {
 
     @GetMapping("/api/user")
     public ResponseEntity<UserResponseDto.Responsev2> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserResponseDto.GetUser user = userService.findUser(userDetails.getUser());
+        UserResponseDto.GetUser user = userService.findUser(userDetails.getUser().getId());
         List<FeedLocationResponseDto.BookMark> bookMarkPlaces = bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
         return new ResponseEntity<>(UserResponseDto.Responsev2.builder()
                 .result("success")
