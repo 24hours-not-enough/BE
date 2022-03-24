@@ -20,7 +20,7 @@ import java.util.*;
 @RequiredArgsConstructor
 public class AwsS3Service {
 
-    @Value("${aws.s3.bucketname}")
+    @Value("${cloud.aws.s3.bucket}")
     private String bucket;
 
     private final AmazonS3 amazonS3;
