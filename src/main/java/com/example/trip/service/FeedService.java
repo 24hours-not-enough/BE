@@ -3,13 +3,12 @@ package com.example.trip.service;
 import com.example.trip.advice.exception.*;
 import com.example.trip.domain.*;
 import com.example.trip.dto.request.FeedRequestDto;
-import com.example.trip.repository.LikeRepository;
+import com.example.trip.dto.response.AllLocationsDto;
 import com.example.trip.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
-import org.springframework.web.multipart.MultipartFile;
 
 import javax.transaction.Transactional;
 import java.util.*;
@@ -25,9 +24,21 @@ public class FeedService {
     private final FeedLocationRepository feedLocationRepository;
 
 
-    public List<Feed> findAll() {
+    public List<AllLocationsDto> findAll() {
 
-        return feedRepository.findAll();
+        List<FeedLocation> feedLocations = feedLocationRepository.findAll();
+        List<AllLocationsDto> allLocationsDtos = new ArrayList<>();
+        for(FeedLocation feedLocation : feedLocations) {
+            AllLocationsDto allLocationsDto = AllLocationsDto.builder()
+                    .placeId(feedLocation.getId())
+                    .locationName(feedLocation.getName())
+                    .latitude(feedLocation.getLatitude())
+                    .longitude(feedLocation.getLongitude())
+                    .build();
+            allLocationsDto.toFeedPerLocation(feedLocation.getFeedDetailLocs());
+            allLocationsDtos.add(allLocationsDto);
+        }
+        return allLocationsDtos;
     }
 
     @Caching(evict = { @CacheEvict(value = "feedlist",
