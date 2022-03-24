@@ -4,7 +4,7 @@ package com.example.trip.jwt;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.config.security.UserDetailsServiceImpl;
 import com.example.trip.repository.UserRepository;
-import com.example.trip.service.RedisServiceImpl;
+import com.example.trip.service.impl.RedisServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -23,7 +23,6 @@ public class JwtTokenProvider {
     private String secretKey = "rabbitandturtle";
 
     private final UserDetailsServiceImpl userDetailsService;
-    private final UserRepository userRepository;
     private final RedisServiceImpl redisServiceImpl;
 
     // 객체 초기화, secretKey를 Base64로 인코딩
@@ -59,11 +58,6 @@ public class JwtTokenProvider {
     public String getUserPk(String token) {
         // UserPK 즉 User의 이메일을 반환
         return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
-    }
-
-    // Request의 Header에서 token 값을 가져옵니다. "X-AUTH-TOKEN" : "TOKEN값'
-    public String resolveToken(HttpServletRequest request) {
-        return request.getHeader("X-AUTH-TOKEN");
     }
 
     // Request의 Header에서 AccessToken 값을 가져옵니다. "authorization" : "token'
@@ -107,16 +101,4 @@ public class JwtTokenProvider {
     public boolean existsRefreshToken(String refreshtoken) {
         return redisServiceImpl.getValues(refreshtoken) != null;
     }
-
-    public void notExistAccessToken() {
-        throw new RuntimeException("엑세스 토큰이 없습니다.");
-    }
-
-    public void notExistRefreshToken() {
-        throw new RuntimeException("리프레시 토큰이 없습니다.");
-    }
-
-//    public boolean existsRefreshToken(String refreshtoken) {
-//        return redisService.getValues(refreshtoken) != null;
-//    }
 }
