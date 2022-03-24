@@ -17,10 +17,10 @@ public class BookMark {
     private Long id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "feed_detail_loc_id")
-    private FeedDetailLoc feedDetailLoc;
-
-    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "feedlocation_id")
+    private FeedLocation feedLocation;
 }

@@ -11,7 +11,7 @@ import java.util.List;
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Builder
 @AllArgsConstructor
-public class FeedDetailLoc {
+public class FeedDetailLoc extends TimeStamped {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "feed_detail_loc_id")
@@ -28,20 +28,15 @@ public class FeedDetailLoc {
     private List<Likes> likes;
 
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
-    private List<BookMark> bookMarks;
-
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedDetailLoc")
     private List<FeedComment> feedComments;
 
-    @Lob
-    private String location;
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    @JoinColumn(name = "feed_location_id")
+    private  FeedLocation feedLocation;
 
-    private String comment;
+    private String memo;
 
-    private String city;
-
-    public FeedDetailLoc(Long id, String city){
+    public FeedDetailLoc(Long id){
         this.id = id;
-        this.city = city;
     }
 }
