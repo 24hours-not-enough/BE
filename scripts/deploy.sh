@@ -1,5 +1,7 @@
 #!/bin/bash
 
+echo "> deploy 실행이 되는가"
+
 REPOSITORY=/home/ec2-user/app/step2/zip
 PROJECT_NAME=trip-0.0.1-SNAPSHOT
 
