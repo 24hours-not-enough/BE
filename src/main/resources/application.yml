@@ -25,6 +25,10 @@ spring:
             scope: account_email
             authorization-grant-type: authorization_code
             client-authentication-method: POST
+          google:
+            client-id: ${google_client_id}
+            client-secret: ${google_client_secret}
+            scope: email
           provider:
             kakao:
               authorization_uri: https://kauth.kakao.com/oauth/authorize
