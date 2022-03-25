@@ -49,10 +49,10 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     @Value("${spring.security.oauth2.client.registration.kakao.secret-key}")
     private String kakao_client_secret;
 
-    @Value("${google_client_id}")
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
     private String google_client_id;
 
-    @Value("${google_client_secret}")
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
     private String google_client_secret;
 
     private final UserRepository userRepository;
