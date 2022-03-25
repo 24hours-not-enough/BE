@@ -94,7 +94,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakao_client_id);
-        body.add("redirect_uri", "http://localhost:8080/api/kakaologin");
+        body.add("redirect_uri", "http://13.209.47.53/api/kakaologin");
         body.add("code", code);
         body.add("client_secret", kakao_client_secret);
 
