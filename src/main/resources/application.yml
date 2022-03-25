@@ -21,7 +21,7 @@ spring:
             client-id: ${{ secrets.KAKAO_CLIENT_ID}}
             client-name: Kakao
             secret-key: ${{ secrets.KAKAO_CLIENT_SECRET}}
-            redirect-uri: 'http://13.209.47.53/api/kakaologin'
+            redirect-uri: 'http://localhost:3000/api/kakaologin'
             scope: account_email
             authorization-grant-type: authorization_code
             client-authentication-method: POST
