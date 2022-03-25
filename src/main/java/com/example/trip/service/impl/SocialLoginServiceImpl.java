@@ -10,6 +10,8 @@ import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.jwt.JwtTokenProvider;
 import com.example.trip.repository.UserRepository;
 import com.example.trip.service.SocialLoginService;
+import com.example.trip.service.impl.RedisServiceImpl;
+import com.example.trip.service.impl.S3UploaderServiceImpl;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
