@@ -5,6 +5,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
+import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
 import java.util.List;
 public class PlanRequestDto {
@@ -14,12 +15,16 @@ public class PlanRequestDto {
     @Builder
     @AllArgsConstructor
     public static class Regist{
+        @NotBlank
         private String title;
 
+        @NotBlank
         private String travelDestination;
 
+        @NotBlank
         private LocalDateTime travelStart;
 
+        @NotBlank
         private LocalDateTime travelEnd;
 
         private List<MemberRequestDto.join> memberList;
