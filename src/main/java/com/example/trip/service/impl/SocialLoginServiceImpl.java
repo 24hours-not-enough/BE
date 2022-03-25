@@ -14,7 +14,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -42,10 +42,18 @@ import java.util.UUID;
 @RequiredArgsConstructor
 @Service
 public class SocialLoginServiceImpl implements SocialLoginService {
-    String kakao_client_id = System.getenv("kakao_client_id");
-    String kakao_client_secret = System.getenv("kakao_client_secret");
-    String google_client_id = System.getenv("google_client_id");
-    String google_client_secret = System.getenv("google_client_secret");
+
+    @Value("${kakao_client_id}")
+    private String kakao_client_id;
+
+    @Value("${kakao_client_secret}")
+    private String kakao_client_secret;
+
+    @Value("${google_client_id}")
+    private String google_client_id;
+
+    @Value("${google_client_secret}")
+    private String google_client_secret;
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -53,12 +61,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final S3UploaderServiceImpl s3UploaderService;
     private final RedisServiceImpl redisServiceImpl;
 
-    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1분(test)
+    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
-
-//    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
-//    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public UserResponseDto.KakaoLogin kakaoLogin(String code) throws JsonProcessingException {
@@ -94,6 +99,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakao_client_id);
+//        body.add("redirect_uri", "http://localhost:8080/api/kakaologin");
         body.add("redirect_uri", "http://13.209.47.53/api/kakaologin");
         body.add("code", code);
         body.add("client_secret", kakao_client_secret);
