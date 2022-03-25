@@ -45,8 +45,8 @@ public class FeedService {
     }
 
     @Caching(evict = {
-            @CacheEvict(value = "allFeeds", allEntries = true),
-            @CacheEvict(value = "feedlist", key = "#user.id"),
+            @CacheEvict(value = "allFeeds", allEntries = true, condition = "allFeeds != null"),
+            @CacheEvict(value = "feedlist", key = "#user.id", condition = "feedlist != null"),
             @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
             @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
@@ -101,12 +101,16 @@ public class FeedService {
     }
 
 
-    @Caching(evict = { @CacheEvict(value = "feedlist",
-            key = "#user.id"), @CacheEvict(value = "feed",
-            key = "#feedId", condition = "#feedId != null"),
+    @Caching(evict = {
+            @CacheEvict(value = "allFeeds", allEntries = true, condition = "allFeeds != null"),
+            @CacheEvict(value = "feedlist", key = "#user.id", condition = "feedlist != null"),
+            @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
             @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
     public void modifyFeed(User user, Long feedId, FeedRequestDto.FeedRequestRegisterDto feedRequestModifyDto) {
+        feedRepository.deleteById(feedId);
+        registerFeed(user, feedRequestModifyDto);
+
         // 피드를 올린 사람만 권한이 있어야함
 //        List<Feed> myFeed = feedRepository.findByIdAndUserId(feedId, user.getId());
 //
@@ -115,8 +119,7 @@ public class FeedService {
 //        }
 
 //Feed 수정
-        feedRepository.deleteById(feedId);
-        registerFeed(user, feedRequestModifyDto);
+
 //        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new FeedNotFoundException());
 //        feed.update(feedRequestModifyDto);
 //
