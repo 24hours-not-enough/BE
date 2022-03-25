@@ -9,13 +9,11 @@ import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.exceptionhandling.CustomException;
 import com.example.trip.jwt.JwtTokenProvider;
 import com.example.trip.repository.UserRepository;
-import com.example.trip.service.impl.RedisServiceImpl;
-import com.example.trip.service.impl.S3UploaderServiceImpl;
+import com.example.trip.service.SocialLoginService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -61,9 +59,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
-
-//    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
-//    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public UserResponseDto.KakaoLogin kakaoLogin(String code) throws JsonProcessingException {
