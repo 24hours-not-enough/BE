@@ -62,6 +62,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final RedisServiceImpl redisServiceImpl;
 
 
+
 //    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
     private static final Long AccessTokenValidTime = 1 * 60 * 1000L; // 1분(test)
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
@@ -369,3 +370,4 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
 
 }
+

@@ -29,4 +29,7 @@ public interface FeedDetailLocRepository extends JpaRepository<FeedDetailLoc, Lo
 
 //    @Query("select distinct fl.placeAddress from FeedDetailLoc fdl inner join Likes li on li.user.id = ?1 inner join FeedLocation fl where li.feedDetailLoc.id = fdl.id and fl.id = fdl.feedLocation.id")
 
+    @Query("SELECT F FROM FeedDetailLoc  F WHERE F.feedDetail.id = ?1")
+    List<FeedDetailLoc> findByFeedDetailId(Long feedDetailID);
+
 }
