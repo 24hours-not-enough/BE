@@ -57,6 +57,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
 
+//    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
+//    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
+
     @Transactional
     public UserResponseDto.KakaoLogin kakaoLogin(String code) throws JsonProcessingException {
         // 인가 코드로 액세스 토큰 요청
