@@ -43,10 +43,10 @@ import java.util.UUID;
 @Service
 public class SocialLoginServiceImpl implements SocialLoginService {
 
-    @Value("${kakao_client_id}")
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
     private String kakao_client_id;
 
-    @Value("${kakao_client_secret}")
+    @Value("${spring.security.oauth2.client.registration.kakao.secret-key}")
     private String kakao_client_secret;
 
     @Value("${google_client_id}")
