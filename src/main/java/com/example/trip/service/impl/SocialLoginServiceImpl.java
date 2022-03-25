@@ -1,4 +1,4 @@
-package com.example.trip.service;
+package com.example.trip.service.impl;
 
 import com.example.trip.advice.exception.AlreadyExistUsernameException;
 import com.example.trip.advice.exception.UserNotFoundException;
