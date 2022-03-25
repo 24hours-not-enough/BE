@@ -12,6 +12,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @NoArgsConstructor
@@ -95,6 +96,8 @@ public class PlanResponseDto {
 
         private String roomId;
 
+        private MemberResponseDto creator;
+
         private List<MemberResponseDto> members;
 
         private List<CalendarResponseDto> calendars;
@@ -102,6 +105,7 @@ public class PlanResponseDto {
         private List<CheckListResponseDto> checkLists;
 
         public DetailAll(Plan plan) {
+            List<MemberResponseDto> collect = plan.getMembers().stream().filter(Member::getRoom_rep).map(MemberResponseDto::new).collect(Collectors.toList());
             this.planId = plan.getId();
             this.title = plan.getTitle();
             this.travelDestination = plan.getTravel_destination();
@@ -109,7 +113,9 @@ public class PlanResponseDto {
             this.travelEnd = plan.getTravel_end();
             this.delTc = plan.getDel_tc();
             this.roomId = plan.getUuid();
+            this.creator = collect.get(0);
             this.members = plan.getMembers().stream()
+                    .filter(member -> !member.getRoom_rep())
                     .map(MemberResponseDto::new)
                     .collect(Collectors.toList());
             this.calendars = plan.getCalendars().stream()
