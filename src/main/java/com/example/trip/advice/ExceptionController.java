@@ -109,10 +109,10 @@ public class ExceptionController {
         return new ResponseEntity<>(new Fail("수정중인 체크리스트입니다."), HttpStatus.BAD_REQUEST);
     }
 
-    @ExceptionHandler(Exception.class)
-    public ResponseEntity<Fail> defaultException(Exception e) {
-        return new ResponseEntity<>(new Fail("알수없는 오류입니다. 관리자 문의 부탁드립니다."), HttpStatus.BAD_REQUEST);
-    }
+//    @ExceptionHandler(Exception.class)
+//    public ResponseEntity<Fail> defaultException(Exception e) {
+//        return new ResponseEntity<>(new Fail("알수없는 오류입니다. 관리자 문의 부탁드립니다."), HttpStatus.BAD_REQUEST);
+//    }
 
     @ExceptionHandler(MissingServletRequestPartException.class)
     public ResponseEntity<Fail> MissingServletRequestPartException(MissingServletRequestPartException e) {
