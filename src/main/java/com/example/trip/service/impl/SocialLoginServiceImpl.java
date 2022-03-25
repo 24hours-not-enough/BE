@@ -62,7 +62,8 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final RedisServiceImpl redisServiceImpl;
 
 
-    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
+//    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
+    private static final Long AccessTokenValidTime = 1 * 60 * 1000L; // 1분(test)
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
 
@@ -206,7 +207,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         body.add("code", code);
         body.add("client_id", google_client_id);
         body.add("client_secret", google_client_secret);
-        body.add("redirect_uri", "http://localhost:8080/api/googlelogin");
+        body.add("redirect_uri", "http://localhost:3000/api/googlelogin");
         body.add("grant_type", "authorization_code");
 
         // HTTP 요청 보내기
