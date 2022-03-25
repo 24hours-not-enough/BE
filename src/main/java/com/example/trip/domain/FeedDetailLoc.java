@@ -17,6 +17,8 @@ public class FeedDetailLoc extends TimeStamped {
     @Column(name = "feed_detail_loc_id")
     private Long id;
 
+    private String memo;
+
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_detail_id")
     private FeedDetail feedDetail;
@@ -34,9 +36,11 @@ public class FeedDetailLoc extends TimeStamped {
     @JoinColumn(name = "feed_location_id")
     private  FeedLocation feedLocation;
 
-    private String memo;
-
     public FeedDetailLoc(Long id){
         this.id = id;
+    }
+
+    public void update(FeedDetailLoc feedDetailLoc){
+        this.memo = feedDetailLoc.getMemo();
     }
 }

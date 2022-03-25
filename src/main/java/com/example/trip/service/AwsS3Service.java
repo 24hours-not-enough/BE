@@ -27,7 +27,6 @@ public class AwsS3Service {
 
     public Map<String, String> uploadFile(List<MultipartFile> multipartFile) {
         Map<String, String> nameAndUrl = new HashMap<String, String>();
-
         // forEach 구문을 통해 multipartFile로 넘어온 파일들 하나씩 fileNameList에 추가
         multipartFile.forEach(file -> {
             String fileName = createFileName(file.getOriginalFilename());
