@@ -37,6 +37,8 @@ jobs:
           cloud.aws.s3.region: ${{ secrets.AWS_REGION }}
           spring.security.oauth2.client.registration.kakao.client-id: ${{ secrets.KAKAO_CLIENT_ID}}
           spring.security.oauth2.client.registration.kakao.secret-key: ${{ secrets.KAKAO_CLIENT_SECRET}}
+          spring.security.oauth2.client.registration.google.client-id: ${{ secrets.GOOGLE_CLIENT_ID }
+          spring.security.oauth2.client.registration.google.client-secret: ${{secrets.GOOGLE_CLIENT_SECRET }}
 
       - name: Build with Gradle
         run: ./gradlew build
