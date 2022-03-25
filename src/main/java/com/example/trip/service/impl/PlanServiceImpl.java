@@ -97,10 +97,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId) {
-        return planRepository.findPlanDetails(userId)
-                .stream()
-                .map(PlanResponseDto.DetailAll::new)
-                .collect(Collectors.toList());
+        return planRepository.findPlanDetails(userId);
     }
 
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
