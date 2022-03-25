@@ -15,7 +15,7 @@ public class CachingConfig {
     @Bean
     public CacheManager cacheManager() {
         SimpleCacheManager simpleCacheManager = new SimpleCacheManager();
-        simpleCacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("feedlist"), new ConcurrentMapCache("feed"), new ConcurrentMapCache("feeddetailloc")));
+        simpleCacheManager.setCaches(Arrays.asList(new ConcurrentMapCache("allFeeds"),new ConcurrentMapCache("feedlist"), new ConcurrentMapCache("feed"), new ConcurrentMapCache("feeddetailloc")));
         return simpleCacheManager;
     }
 }
