@@ -53,6 +53,8 @@ public class FeedService {
         Feed feed = Feed.builder()
                 .user(user)
                 .title(feedRequestRegisterDto.getTitle())
+                .travelStart(feedRequestRegisterDto.getTravelStart())
+                .travelEnd(feedRequestRegisterDto.getTravelEnd())
                 .build();
 
         Feed newFeed = feedRepository.save(feed);
