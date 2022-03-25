@@ -1,5 +1,6 @@
 package com.example.trip.service;
 
+import com.example.trip.advice.exception.AuthBookMarkNotFoundException;
 import com.example.trip.advice.exception.FeedDetailLocNotFoundException;
 import com.example.trip.domain.BookMark;
 import com.example.trip.domain.FeedDetailLoc;
@@ -23,26 +24,26 @@ public class BookMarkService {
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedLocationRepository feedLocationRepository;
 
-    public void bookmarkFeed(Long feedDetailLocId, User user) {
+    public void bookmarkFeed(Long feedLocationId, User user) {
         // 해당 피드 상세 위치 값이 있는지 체크
-        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId)
+        FeedLocation feedLocation = feedLocationRepository.findById(feedLocationId)
                 .orElseThrow(() -> new FeedDetailLocNotFoundException());
         BookMark bookmark = BookMark.builder()
-//                .feedDetailLoc(feedDetailLoc)
+                .feedLocation(feedLocation)
                 .user(user)
                 .build();
 
         bookMarkRepository.save(bookmark);
     }
 
-    public void unbookmarkFeed(Long feedDetailLocId, User user) {
+    public void unbookmarkFeed(Long feedLocId, User user) {
         // 북마크를 한 사람만 권한이 있어야함
-//        List<BookMark> myBookmark = bookMarkRepository.findByFeedDetailLocIdAndUserId(feedDetailLocId, user.getId());
+        List<BookMark> myBookmark = bookMarkRepository.findByFeedLocIdAndUserId(feedLocId, user.getId());
 
-//        if (myBookmark.isEmpty()) {
-//            throw new AuthBookMarkNotFoundException();
-//        }
-//        bookMarkRepository.deleteBookmarkFeed(feedDetailLocId, user.getId());
+        if (myBookmark.isEmpty()) {
+            throw new AuthBookMarkNotFoundException();
+        }
+        bookMarkRepository.deleteBookmarkFeed(feedLocId, user.getId());
     }
 
     public List<FeedLocationResponseDto.BookMark> findBookMarkPlaces(Long userId) {
