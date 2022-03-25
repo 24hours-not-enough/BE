@@ -53,12 +53,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final RedisServiceImpl redisServiceImpl;
 
 
-    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
+    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
-
-//    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
-//    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public UserResponseDto.KakaoLogin kakaoLogin(String code) throws JsonProcessingException {
