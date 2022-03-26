@@ -26,18 +26,33 @@ public class CalendarServiceImpl implements CalendarService {
     private final PlanRepository planRepository;
 
     private final MemberRepository memberRepository;
+
     @Override
     @Transactional
     public void addDays(Long planId, Long userId) {
         planValidation(planId);
         authPlanValidation(planId, userId);
+        List<Calendar> daysByPlanId = calendarRepository.findDaysByPlanId(planId);
+        Optional<Calendar> first = daysByPlanId.stream().findFirst();
         Optional<Plan> findPlan = planRepository.findById(planId);
-        Calendar calendar = Calendar.builder()
-                .days("ex) 1일차")
-                .plan(findPlan.get())
-                .is_locked(false)
-                .build();
-        calendarRepository.save(calendar);
+        if(!first.isPresent()){
+            Calendar calendar = Calendar.builder()
+                    .days("1일차")
+                    .plan(findPlan.get())
+                    .is_locked(false)
+                    .build();
+            calendarRepository.save(calendar);
+        }else {
+            String day = first.get().getDays();
+            int intDay = Integer.parseInt(day.replaceAll("[^0-9]", ""));
+
+            Calendar calendar = Calendar.builder()
+                    .days(intDay + 1 + "일차")
+                    .plan(findPlan.get())
+                    .is_locked(false)
+                    .build();
+            calendarRepository.save(calendar);
+        }
     }
 
     @Override
@@ -54,7 +69,7 @@ public class CalendarServiceImpl implements CalendarService {
     }
 
     private void authPlanValidation(Long planId, Long userId) {
-        memberRepository.findByUserAndPlanActive(planId,userId).orElseThrow(AuthPlanNotFoundException::new);
+        memberRepository.findByUserAndPlanActive(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
     }
 
     private void planValidation(Long planId) {
