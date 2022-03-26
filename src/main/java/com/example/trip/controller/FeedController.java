@@ -42,7 +42,7 @@ public class FeedController {
     public ResponseEntity<FeedResponseDto.FeedResponseDefault> modifyFeed(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long feedId,
-            @RequestBody FeedRequestDto.FeedRequestRegisterDto feedRequestModifyDto) {
+            @RequestBody FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto) {
         feedService.modifyFeed(userDetails.getUser(), feedId, feedRequestModifyDto);
         return new ResponseEntity<>(FeedResponseDto.FeedResponseDefault.builder()
                 .result("success")
