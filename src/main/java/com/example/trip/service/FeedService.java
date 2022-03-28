@@ -8,6 +8,8 @@ import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.dto.response.AllLocationsDto;
 import com.example.trip.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -25,6 +27,9 @@ public class FeedService {
     private final FeedDetailLocRepository feedDetailLocRepository;
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
     private final FeedLocationRepository feedLocationRepository;
+
+    @Autowired
+    CacheManager cacheManager;
 
     @Cacheable(value = "allFeeds")
     public List<AllLocationsDto> findAll() {
@@ -44,13 +49,15 @@ public class FeedService {
         return allLocationsDtos;
     }
 
-    @Caching(evict = {
-            @CacheEvict(value = "allFeeds", allEntries = true, condition = "allFeeds != null"),
-            @CacheEvict(value = "feedlist", key = "#user.id", condition = "feedlist != null"),
-            @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
-            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
+//    @Caching(evict = {
+//            @CacheEvict(value = "allFeeds", allEntries = true),
+//            @CacheEvict(value = "feedlist", key = "#user.id", condition = "feedlist != null"),
+//            @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
+//            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
     public List<Long> registerFeed(User user, FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
+        cacheManager.getCache("allFeeds").clear();
+
         // feed 저장
         Feed feed = Feed.builder()
                 .user(user)
@@ -101,58 +108,80 @@ public class FeedService {
     }
 
 
-    @Caching(evict = {
-            @CacheEvict(value = "allFeeds", allEntries = true, condition = "allFeeds != null"),
-            @CacheEvict(value = "feedlist", key = "#user.id", condition = "feedlist != null"),
-            @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
-            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
+//    @Caching(evict = {
+//            @CacheEvict(value = "allFeeds", allEntries = true, condition = "allFeeds != null"),
+//            @CacheEvict(value = "feedlist", key = "#user.id", condition = "feedlist != null"),
+//            @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
+//            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
-    public void modifyFeed(User user, Long feedId, FeedRequestDto.FeedRequestRegisterDto feedRequestModifyDto) {
-        feedRepository.deleteById(feedId);
-        registerFeed(user, feedRequestModifyDto);
+    public void modifyFeed(User user, Long feedId, FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto) {
+//        feedRepository.deleteById(feedId);
+//        registerFeed(user, feedRequestModifyDto);
 
         // 피드를 올린 사람만 권한이 있어야함
-//        List<Feed> myFeed = feedRepository.findByIdAndUserId(feedId, user.getId());
-//
-//        if (myFeed.isEmpty()) {
-//            throw new AuthFeedNotFoundException();
-//        }
+        List<Feed> myFeed = feedRepository.findByIdAndUserId(feedId, user.getId());
+
+        if (myFeed.isEmpty()) {
+            throw new AuthFeedNotFoundException();
+        }
 
 //Feed 수정
 
-//        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new FeedNotFoundException());
-//        feed.update(feedRequestModifyDto);
-//
-//        List<FeedDetail> feedDetails = feedDetailRepository.findByFeedId(feedId);
-//        feedDetailRepository.deleteByFeedId(feedId);
-//
-//        //feed Detail 수정
-//        feedDetails.forEach(x -> x.update(
-//                feedRequestModifyDto.getFeedDetail().get(feedDetails.indexOf(x))
-//        ));
-//
-//        //feed DetailLoc 수정
-//        List<FeedDetailLoc> feedDetailLocs = new ArrayList<>();
-//        feedDetails.forEach(x ->
-//                feedDetailLocRepository.findByFeedDetailId(x.getId())
-//                        .forEach(y -> feedDetailLocs.add(y))
-//                );
-//
-//        feedDetailLocs.forEach(x -> x.update(
-//                feedRequestModifyDto.getFeedDetail().stream()
-//                        .map(FeedDetail::getFeedDetailLoc)
-//                        .flatMap(List<FeedDetailLoc>::stream)
-//                        .collect(Collectors.toList())
-//                        .get(feedDetailLocs.indexOf(x)
-//
-//        )));
-    }
+        Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new FeedNotFoundException());
+        feed.update(feedRequestModifyDto);
+
+        List<FeedDetail> feedDetails = feed.getFeedDetail();
+        feedDetails.forEach(x -> x.update(
+                feedRequestModifyDto.getFeedDetail().get(feedDetails.indexOf(x))
+        ));
 
 
-    @Caching(evict = { @CacheEvict(value = "feedlist",
-            key = "#user.id"), @CacheEvict(value = "feed",
-            key = "#feedId", condition = "#feedId != null"),
-            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
+        List<FeedDetailLoc> feedDetailLocs = feedDetails.stream()
+                .map(FeedDetail::getFeedDetailLoc)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+        feedDetailLocs.forEach(x -> x.update(
+                feedRequestModifyDto.getFeedDetail().stream()
+                        .map(FeedDetail::getFeedDetailLoc)
+                        .flatMap(List<FeedDetailLoc>::stream)
+                        .collect(Collectors.toList())
+                        .get(feedDetailLocs.indexOf(x)
+
+                        )));
+        List<FeedLocation> feedLocations = feedDetailLocs.stream()
+                .map(FeedDetailLoc::getFeedLocation)
+                .collect(Collectors.toList());
+
+        feedLocations.forEach(x -> x.update(
+                feedRequestModifyDto.getFeedDetail().stream()
+                        .map(FeedDetail::getFeedDetailLoc)
+                        .flatMap(List<FeedDetailLoc>::stream)
+                        .map(FeedDetailLoc::getFeedLocation)
+                        .collect(Collectors.toList())
+                        .get(feedLocations.indexOf(x)))
+
+        );
+
+
+        List<FeedDetailLocImg> feedDetailLocImgs = feedDetailLocs.stream()
+                .map(FeedDetailLoc::getFeedDetailLocImg)
+                .flatMap(List<FeedDetailLocImg>::stream)
+                .collect(Collectors.toList());
+
+        feedDetailLocImgs.forEach(x -> x.update(
+                feedRequestModifyDto.getFeedDetail().stream()
+                        .map(FeedDetail::getFeedDetailLoc)
+                        .flatMap(List<FeedDetailLoc>::stream)
+                        .map(FeedDetailLoc::getFeedDetailLocImg)
+                        .flatMap(List<FeedDetailLocImg>::stream)
+                        .collect(Collectors.toList()).get(feedDetailLocImgs.indexOf(x))
+        ));    }
+
+
+//    @Caching(evict = { @CacheEvict(value = "feedlist",
+//            key = "#user.id"), @CacheEvict(value = "feed",
+//            key = "#feedId", condition = "#feedId != null"),
+//            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     public void deleteFeed(User user, Long feedId) {
         // 피드를 올린 사람만 권한이 있어야함
         List<Feed> myFeed = feedRepository.findByIdAndUserId(feedId, user.getId());
