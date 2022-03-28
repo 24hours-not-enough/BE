@@ -5,11 +5,13 @@ import com.example.trip.advice.exception.CalendarModifyException;
 import com.example.trip.advice.exception.PlanNotFoundException;
 import com.example.trip.domain.Calendar;
 import com.example.trip.domain.Plan;
+import com.example.trip.dto.response.CalendarResponseDto;
 import com.example.trip.repository.CalendarRepository;
 import com.example.trip.repository.MemberRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.CalendarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,12 +31,14 @@ public class CalendarServiceImpl implements CalendarService {
 
     @Override
     @Transactional
-    public void addDays(Long planId, Long userId) {
+    public CalendarResponseDto.CalendarAdd addDays(Long planId, Long userId) {
         planValidation(planId);
         authPlanValidation(planId, userId);
         List<Calendar> daysByPlanId = calendarRepository.findDaysByPlanId(planId);
         Optional<Calendar> first = daysByPlanId.stream().findFirst();
         Optional<Plan> findPlan = planRepository.findById(planId);
+        Optional<Calendar> calendarList = calendarRepository.findAll(Sort.by(Sort.Direction.DESC,"id")).stream().findFirst();
+
         if(!first.isPresent()){
             Calendar calendar = Calendar.builder()
                     .days("1일차")
@@ -53,6 +57,8 @@ public class CalendarServiceImpl implements CalendarService {
                     .build();
             calendarRepository.save(calendar);
         }
+            return CalendarResponseDto.CalendarAdd.builder()
+                    .calendarId(calendarList.get().getId()+1).build();
     }
 
     @Override

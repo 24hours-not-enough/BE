@@ -3,6 +3,7 @@ package com.example.trip.dto.response;
 import com.example.trip.domain.Calendar;
 import com.example.trip.domain.Member;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -44,5 +45,11 @@ public class CalendarResponseDto {
                     .map(CalendarDetailsResponseDto.Plan::new)
                     .collect(Collectors.toList());
         }
+    }
+
+    @Getter
+    @Builder
+    public static class CalendarAdd{
+        private Long calendarId;
     }
 }
