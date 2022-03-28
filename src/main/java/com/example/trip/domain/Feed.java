@@ -3,7 +3,6 @@ package com.example.trip.domain;
 
 import com.example.trip.dto.request.FeedRequestDto;
 import lombok.*;
-
 import javax.persistence.*;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -42,3 +41,5 @@ public class Feed extends TimeStamped{
         this.feedDetail = feedRequestModifyDto.getFeedDetail();
     }
 }
+
+
