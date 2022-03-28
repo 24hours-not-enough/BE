@@ -4,6 +4,8 @@ import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.dto.request.UserRequestDto;
 import com.example.trip.dto.response.FeedLocationResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
+import com.example.trip.redis.notification.Notification;
+import com.example.trip.redis.notification.NotifyRepository;
 import com.example.trip.response.*;
 import com.example.trip.service.BookMarkService;
 import com.example.trip.service.RedisService;
@@ -30,15 +32,14 @@ public class UserController {
 
     private final SocialLoginService socialLoginService;
     private final RedisService redisService;
-
     private final BookMarkService bookMarkService;
-
     private final UserService userService;
 
     // 카카오 로그인
     @GetMapping("/api/kakaologin")
-    public ResponseEntity<UserResponseDto.LoginSuccess> kakaoLogin(@RequestParam String code, HttpServletResponse response) throws JsonProcessingException {
+    public ResponseEntity<UserResponseDto.LoginSuccess> kakaoLogin(@RequestParam String code, HttpServletResponse response, HttpServletRequest request) throws JsonProcessingException {
         UserResponseDto.KakaoLogin loginRequestDto = socialLoginService.kakaoLogin(code);
+        userService.registerLog(request, loginRequestDto);
         return new ResponseEntity<>(new UserResponseDto.LoginSuccess("success", "카카오 로그인 성공",
                 socialLoginService.checkKakaoIsFirstLogin(loginRequestDto),
                 socialLoginService.issueKakaoJwtToken(loginRequestDto, response),
