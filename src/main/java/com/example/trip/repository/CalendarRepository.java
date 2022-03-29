@@ -17,4 +17,8 @@ public interface CalendarRepository extends JpaRepository<Calendar,Long> {
 
     @Query("select c from Calendar c where c.plan.id =:planId and c.is_locked =true ")
     Optional<Calendar> findByPlanLock(Long planId);
+
+    @Query("select c from Calendar c where c.plan.id =:planId order by c.id desc")
+    List<Calendar> findDaysByPlanId(@Param("planId") Long planId);
+
 }

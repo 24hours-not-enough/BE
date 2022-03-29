@@ -18,11 +18,12 @@ public class FeedCommentController {
     private final FeedCommentService feedCommentService;
 
     @PostMapping("/feed/comment/{feedDetailLocId}")
-    public ResponseEntity<FeedResponseDto.FeedResponseDefault> registerFeedComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long feedDetailLocId, @RequestBody FeedRequestDto.FeedRequestCommentRegisterDto feedRequestCommentRegisterDto) {
-        feedCommentService.registerFeedComment(userDetails.getUser(), feedDetailLocId, feedRequestCommentRegisterDto);
-        return new ResponseEntity<>(FeedResponseDto.FeedResponseDefault.builder()
+    public ResponseEntity<FeedResponseDto.FeedResponseOptional> registerFeedComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long feedDetailLocId, @RequestBody FeedRequestDto.FeedRequestCommentRegisterDto feedRequestCommentRegisterDto) {
+        Long commentId = feedCommentService.registerFeedComment(userDetails.getUser(), feedDetailLocId, feedRequestCommentRegisterDto);
+        return new ResponseEntity<>(FeedResponseDto.FeedResponseOptional.builder()
                 .result("success")
                 .msg("댓글 등록 성공하였습니다.")
+                .data(commentId)
                 .build(), HttpStatus.OK);
     }
 
