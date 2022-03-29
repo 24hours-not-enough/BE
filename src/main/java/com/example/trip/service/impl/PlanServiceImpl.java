@@ -89,7 +89,7 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     @Transactional
-    public void removePlan(Long planId, Long userId) {
+    public void removePlan(Long userId, Long planId) {
         planValidation(planId);
         authPlanValidation(planId,userId);
         planRepository.deleteById(planId);
