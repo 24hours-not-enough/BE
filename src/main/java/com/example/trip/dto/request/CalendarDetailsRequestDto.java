@@ -38,7 +38,7 @@ public class CalendarDetailsRequestDto {
     @Getter
     @NoArgsConstructor
     public static class AddAll{
-        private Long calendar_id;
+        private Long calendarId;
 
         private String days;
 

@@ -12,43 +12,44 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 @Getter
 @NoArgsConstructor
 public class PlanResponseDto {
 
-    private Long plan_id;
+    private Long planId;
 
     private String title;
 
-    private String travel_destination;
+    private String travelDestination;
 
-    private LocalDateTime travel_start;
+    private LocalDateTime travelStart;
 
-    private LocalDateTime travel_end;
+    private LocalDateTime travelEnd;
 
     private List<MemberResponseDto> memberList;
 
-    private Boolean del_tc;
+    private Boolean delFl;
 
     @Builder
     public PlanResponseDto(Long plan_id, String title, String travel_destination, LocalDateTime travel_start, LocalDateTime travel_end) {
         this.title = title;
-        this.travel_destination = travel_destination;
-        this.travel_start = travel_start;
-        this.travel_end = travel_end;
+        this.travelDestination = travel_destination;
+        this.travelStart = travel_start;
+        this.travelEnd = travel_end;
     }
 
     public PlanResponseDto(Plan plan) {
-        this.plan_id = plan.getId();
+        this.planId = plan.getId();
         this.title = plan.getTitle();
-        this.travel_destination = plan.getTravel_destination();
-        this.travel_start = plan.getTravel_start();
-        this.travel_end = plan.getTravel_end();
+        this.travelDestination = plan.getTravel_destination();
+        this.travelStart = plan.getTravel_start();
+        this.travelEnd = plan.getTravel_end();
         this.memberList = plan.getMembers().stream()
                 .map(MemberResponseDto::new)
                 .collect(Collectors.toList());
-        this.del_tc = plan.getDel_tc();
+        this.delFl = plan.getDel_tc();
     }
 
     @Getter
@@ -57,23 +58,23 @@ public class PlanResponseDto {
     @AllArgsConstructor
     public static class Regist {
 
-        private Long plan_id;
+        private Long planId;
         private String title;
 
-        private String travel_destination;
+        private String travelDestination;
 
-        private LocalDateTime travel_start;
+        private LocalDateTime travelStart;
 
-        private LocalDateTime travel_end;
+        private LocalDateTime travelEnd;
 
         private List<MemberRequestDto.join> memberList;
 
-        private Boolean del_tc;
+        private Boolean delFl;
 
         public Regist(Plan plan) {
             this.title = plan.getTitle();
-            this.del_tc = plan.getDel_tc();
-            this.travel_destination = plan.getTravel_destination();
+            this.delFl = plan.getDel_tc();
+            this.travelDestination = plan.getTravel_destination();
         }
     }
 
@@ -95,6 +96,8 @@ public class PlanResponseDto {
 
         private String roomId;
 
+        private MemberResponseDto creator;
+
         private List<MemberResponseDto> members;
 
         private List<CalendarResponseDto> calendars;
@@ -102,6 +105,7 @@ public class PlanResponseDto {
         private List<CheckListResponseDto> checkLists;
 
         public DetailAll(Plan plan) {
+            List<MemberResponseDto> collect = plan.getMembers().stream().filter(Member::getRoom_rep).map(MemberResponseDto::new).collect(Collectors.toList());
             this.planId = plan.getId();
             this.title = plan.getTitle();
             this.travelDestination = plan.getTravel_destination();
@@ -109,7 +113,9 @@ public class PlanResponseDto {
             this.travelEnd = plan.getTravel_end();
             this.delTc = plan.getDel_tc();
             this.roomId = plan.getUuid();
+            this.creator = collect.get(0);
             this.members = plan.getMembers().stream()
+                    .filter(member -> !member.getRoom_rep())
                     .map(MemberResponseDto::new)
                     .collect(Collectors.toList());
             this.calendars = plan.getCalendars().stream()
