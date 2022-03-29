@@ -91,8 +91,8 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
 
     private void setCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
         dto.forEach((details)->{
-            Optional<Calendar> findCalendar = calendarRepository.findById(details.getCalendar_id());
-            calendarDetailsRepository.deleteByCalendarId(details.getCalendar_id());
+            Optional<Calendar> findCalendar = calendarRepository.findById(details.getCalendarId());
+            calendarDetailsRepository.deleteByCalendarId(details.getCalendarId());
             details.getCalendarDetails().forEach((detailsList)->{
                 CalendarDetails calendarDetails = CalendarDetails.builder()
                         .calendar(findCalendar.get())
