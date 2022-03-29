@@ -17,7 +17,8 @@ public class ChatRoom implements Serializable {
 
     public static ChatRoom create(Long plan_id) {
         ChatRoom chatRoom = new ChatRoom();
-        chatRoom.room_id = Long.parseLong(UUID.randomUUID().toString());
+//        chatRoom.room_id = Long.parseLong(UUID.randomUUID().toString());
+        chatRoom.room_id = plan_id;
         chatRoom.plan_id = plan_id;
         return chatRoom;
     }

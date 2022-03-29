@@ -3,14 +3,14 @@ package com.example.trip.redis;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.HashOperations;
 import org.springframework.data.redis.core.RedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Repository;
 
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Repository
@@ -21,8 +21,10 @@ public class ChatRepository {
     private final RedisSubscriber redisSubscriber;
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
+    private static final String CHAT_MESSAGES = "CHAT_MESSAGES";
     private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, Long, ChatRoom> opsHashChatRoom;
+    private HashOperations<String, Long, List<ChatMessage>> opsHashChatMsg;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 planId로 찾을수 있도록 한다.
     private Map<Long, ChannelTopic> topics;
 
@@ -30,14 +32,49 @@ public class ChatRepository {
     private void init() {
         opsHashChatRoom = redisTemplate.opsForHash();
         topics = new HashMap<>();
+        opsHashChatMsg = redisTemplate.opsForHash();
     }
 
     public List<ChatRoom> findAllRoom() {
         return opsHashChatRoom.values(CHAT_ROOMS);
     }
 
+//    public List<ChatMessage> findAllMsg() {
+//        return opsHashChatMsg.values(CHAT_MESSAGES);
+//    }
+
     public ChatRoom findRoomById(Long planId) {
         return opsHashChatRoom.get(CHAT_ROOMS, planId);
+    }
+    public List<ChatMessage> findMsgById(Long planId) {
+        return opsHashChatMsg.get(CHAT_MESSAGES, planId);
+    }
+    /**
+     * 채팅방 메세지 생성 : 채팅방마다의 메세지를 redis hash에 저장한다.
+     */
+//    public HashOperations<String, Long, ChatMessage> createChatMsg(Long planId) {
+//        ChatMessage chatMessages = ChatMessage.builder()
+//                .plan_id(planId)
+//                .build();
+//        opsHashChatMsg.put(CHAT_MESSAGES, planId, chatMessages);
+//        return opsHashChatMsg;
+//    }
+
+    public ChatMessage addChatMsg(Long planId, String msg) {
+
+        ChatMessage chatMsg = ChatMessage.builder()
+                .plan_id(planId)
+                .chatMessage(msg)
+                .build();
+        // 해당 방번호에 메세지 정보를 추가
+        if(opsHashChatMsg.get(CHAT_MESSAGES, planId) == null){
+            List<ChatMessage> chatMessages = new ArrayList<>();
+            opsHashChatMsg.put(CHAT_MESSAGES, planId, chatMessages);
+        }
+        List<ChatMessage> chatMessages2 = opsHashChatMsg.get(CHAT_MESSAGES, planId);
+        chatMessages2.add(chatMsg);
+        opsHashChatMsg.put(CHAT_MESSAGES, planId, chatMessages2);
+        return chatMsg;
     }
 
     /**
@@ -46,6 +83,7 @@ public class ChatRepository {
     public ChatRoom createChatRoom(Long planId) {
         ChatRoom chatRoom = ChatRoom.create(planId);
         opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getPlan_id(), chatRoom);
+        System.out.println("create"+opsHashChatRoom.get(CHAT_ROOMS, planId));
         return chatRoom;
     }
 
