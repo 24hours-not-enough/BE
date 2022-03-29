@@ -12,19 +12,24 @@ import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerCo
 @RequiredArgsConstructor
 @Configuration
 @EnableWebSocketMessageBroker
+@RequiredArgsConstructor
 public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
 
     private final StompHandler stompHandler;
 
     @Override
     public void configureMessageBroker(MessageBrokerRegistry config) {
-        config.enableSimpleBroker("/topic");
+        // 서버 -> 클라이언트(클라이언트가 subscribe 할 때)
+        config.enableSimpleBroker("/topic", "/queue");
+        // 클라이언트 -> 서버
         config.setApplicationDestinationPrefixes("/app");
     }
 
     @Override
     public void registerStompEndpoints(StompEndpointRegistry registry) {
+        // 클라이언트에서 websocket을 연결할 api를 설정
         registry.addEndpoint("/endpoint").withSockJS();
+        registry.addEndpoint("/alarmpoint").withSockJS();
     }
 
 //    @Override

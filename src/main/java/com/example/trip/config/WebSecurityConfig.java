@@ -54,12 +54,11 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
 
         http
-                .authorizeRequests()
-//                .antMatchers("/api/kakaologin", "/api/googlelogin", "/", "/api/map").permitAll()
-//                .anyRequest().authenticated() // 위 antMatchers 이외에는 모든 api 인증 필요
-                .anyRequest().permitAll()
+               .authorizeRequests()
+               .antMatchers("/api/kakaologin", "/api/googlelogin", "/", "/api/map").permitAll()
+               .anyRequest().authenticated() // 위 antMatchers 이외에는 모든 api 인증 필요
                     .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+               .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
         http.exceptionHandling()
                 .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인가 관련
