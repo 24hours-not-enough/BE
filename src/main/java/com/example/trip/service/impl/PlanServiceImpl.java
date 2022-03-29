@@ -14,6 +14,7 @@ import com.example.trip.repository.UserRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.PlanService;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -25,6 +26,7 @@ import java.util.stream.Collectors;
 @RequiredArgsConstructor
 @Service
 @Transactional(readOnly = true)
+@Slf4j
 public class PlanServiceImpl implements PlanService {
 
     private final UserRepository userRepository;
@@ -97,6 +99,14 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId) {
+        List<PlanResponseDto.DetailAll> planDetails = planRepository.findPlanDetails(userId);
+        planDetails.forEach((list)->{
+            log.info("list.getTitle() = {} ", list.getTitle());
+            log.info("list.getPlanId() = {} ", list.getPlanId());
+            log.info("list.getRoomId() = {} ", list.getRoomId());
+        });
+        log.info("planDetails.size() = {}", planDetails.size());
+        log.info("===========================");
         return planRepository.findPlanDetails(userId);
     }
 

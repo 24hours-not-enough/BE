@@ -1,6 +1,7 @@
 package com.example.trip.domain;
 
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -22,4 +23,12 @@ public class LoginLog extends TimeStamped{
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id")
     private User user;
+
+    @Builder
+    public LoginLog(Long id, String email, String login_ip, User user) {
+        this.id = id;
+        this.email = email;
+        this.login_ip = login_ip;
+        this.user = user;
+    }
 }

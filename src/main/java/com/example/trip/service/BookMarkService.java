@@ -3,7 +3,6 @@ package com.example.trip.service;
 import com.example.trip.advice.exception.AuthBookMarkNotFoundException;
 import com.example.trip.advice.exception.FeedDetailLocNotFoundException;
 import com.example.trip.domain.BookMark;
-import com.example.trip.domain.FeedDetailLoc;
 import com.example.trip.domain.FeedLocation;
 import com.example.trip.domain.User;
 import com.example.trip.dto.response.FeedLocationResponseDto;
@@ -15,7 +14,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Service
@@ -47,14 +46,11 @@ public class BookMarkService {
     }
 
     public List<FeedLocationResponseDto.BookMark> findBookMarkPlaces(Long userId) {
-
-        List<BookMark> bookMarks = bookMarkRepository.findByUserId(userId);
         ArrayList<FeedLocationResponseDto.BookMark> arr = new ArrayList<>();
-        for (BookMark bookMark : bookMarks) {
-            Optional<FeedLocation> location = feedLocationRepository.findById(bookMark.getFeedLocation().getId());
-            FeedLocationResponseDto.BookMark bookMarkLoc = new FeedLocationResponseDto.BookMark(location.get());
-            arr.add(bookMarkLoc);
-        }
+        bookMarkRepository.findByUserId(userId).stream()
+                .map(x -> arr.add(new FeedLocationResponseDto.BookMark(
+                        feedLocationRepository.findById(x.getFeedLocation().getId()).get())))
+                .collect(Collectors.toList());
         return arr;
 
     }
