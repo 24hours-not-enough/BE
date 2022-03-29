@@ -61,8 +61,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                     .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
 
-        http.exceptionHandling()
-                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인가 관련
-                .accessDeniedHandler(new AccessDeniedHandler()); // 인증 관련
+//        http.exceptionHandling()
+//                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인가 관련
+//                .accessDeniedHandler(new AccessDeniedHandler()); // 인증 관련
     }
 }
