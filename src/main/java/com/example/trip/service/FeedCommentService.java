@@ -20,7 +20,7 @@ public class FeedCommentService {
     private final CommentRepository commentRepository;
     private final FeedDetailLocRepository feedDetailLocRepository;
 
-    public void registerFeedComment(User user, Long feedDetailLocId, FeedRequestDto.FeedRequestCommentRegisterDto feedRequestCommentRegisterDto) {
+    public Long registerFeedComment(User user, Long feedDetailLocId, FeedRequestDto.FeedRequestCommentRegisterDto feedRequestCommentRegisterDto) {
         // 해당 피드 상세 위치 값이 있는지 체크
         FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId)
                 .orElseThrow(() -> new FeedDetailLocNotFoundException());
@@ -29,8 +29,8 @@ public class FeedCommentService {
                 .user(user)
                 .content(feedRequestCommentRegisterDto.getContent())
                 .build();
-        commentRepository.save(feedComment);
-
+        FeedComment comment = commentRepository.save(feedComment);
+        return comment.getId();
     }
 
     @Transactional
