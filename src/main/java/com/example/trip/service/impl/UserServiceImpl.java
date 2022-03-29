@@ -27,7 +27,6 @@ public class UserServiceImpl implements UserService {
 
     public void registerLog(HttpServletRequest request, UserResponseDto.KakaoLogin loginRequestDto) {
         String remoteAddr = request.getRemoteAddr();
-        System.out.println(remoteAddr + "remoteAddr");
         Optional<User> user = userRepository.findBySocialaccountId(loginRequestDto.getKakaoId());
         LoginLog log = LoginLog.builder().email(loginRequestDto.getEmail()).login_ip(remoteAddr).user(user.get()).build();
         loginLogRepository.save(log);
