@@ -38,7 +38,6 @@ public class Feed extends TimeStamped{
         this.title = feedRequestModifyDto.getTitle();
         this.travelStart = feedRequestModifyDto.getTravelStart();
         this.travelEnd = feedRequestModifyDto.getTravelEnd();
-        this.feedDetail = feedRequestModifyDto.getFeedDetail();
     }
 }
 

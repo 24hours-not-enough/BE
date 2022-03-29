@@ -25,7 +25,6 @@ public class FeedDetailLocImg {
 
     private String imgUrl;
 
-
     public void update(FeedDetailLocImg feedDetailLocImg){
         this.fileName = feedDetailLocImg.getFileName();
         this.imgUrl = feedDetailLocImg.getImgUrl();
