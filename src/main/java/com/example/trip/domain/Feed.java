@@ -40,3 +40,5 @@ public class Feed extends TimeStamped{
         this.travelEnd = feedRequestModifyDto.getTravelEnd();
     }
 }
+
+

@@ -8,6 +8,8 @@ import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.dto.response.AllLocationsDto;
 import com.example.trip.repository.*;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.cache.annotation.Caching;
@@ -26,7 +28,10 @@ public class FeedService {
     private final FeedDetailLocImgRepository feedDetailLocImgRepository;
     private final FeedLocationRepository feedLocationRepository;
 
-//    @Cacheable(value = "allFeeds")
+    @Autowired
+    CacheManager cacheManager;
+
+    @Cacheable(value = "allFeeds")
     public List<AllLocationsDto> findAll() {
 
         List<FeedLocation> feedLocations = feedLocationRepository.findAll();
@@ -45,12 +50,14 @@ public class FeedService {
     }
 
 //    @Caching(evict = {
-//            @CacheEvict(value = "allFeeds", allEntries = true, condition = "allFeeds != null"),
+//            @CacheEvict(value = "allFeeds", allEntries = true),
 //            @CacheEvict(value = "feedlist", key = "#user.id", condition = "feedlist != null"),
 //            @CacheEvict(value = "feed", key = "#feedId", condition = "#feedId != null"),
 //            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId", condition = "#feeddetaillocId != null") })
     @Transactional
     public List<Long> registerFeed(User user, FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
+        cacheManager.getCache("allFeeds").clear();
+
         // feed 저장
         Feed feed = Feed.builder()
                 .user(user)
@@ -111,8 +118,6 @@ public class FeedService {
 //        feedRepository.deleteById(feedId);
 //        registerFeed(user, feedRequestModifyDto);
 
-
-
         // 피드를 올린 사람만 권한이 있어야함
         List<Feed> myFeed = feedRepository.findByIdAndUserId(feedId, user.getId());
 
@@ -126,8 +131,6 @@ public class FeedService {
         feed.update(feedRequestModifyDto);
 
         List<FeedDetail> feedDetails = feed.getFeedDetail();
-
-//        //feed Detail 수정
         feedDetails.forEach(x -> x.update(
                 feedRequestModifyDto.getFeedDetail().get(feedDetails.indexOf(x))
         ));
@@ -144,20 +147,20 @@ public class FeedService {
                         .collect(Collectors.toList())
                         .get(feedDetailLocs.indexOf(x)
 
-        )));
+                        )));
         List<FeedLocation> feedLocations = feedDetailLocs.stream()
                 .map(FeedDetailLoc::getFeedLocation)
                 .collect(Collectors.toList());
 
         feedLocations.forEach(x -> x.update(
-                        feedRequestModifyDto.getFeedDetail().stream()
-                                .map(FeedDetail::getFeedDetailLoc)
-                                .flatMap(List<FeedDetailLoc>::stream)
-                                .map(FeedDetailLoc::getFeedLocation)
-                                .collect(Collectors.toList())
-                                .get(feedLocations.indexOf(x)))
+                feedRequestModifyDto.getFeedDetail().stream()
+                        .map(FeedDetail::getFeedDetailLoc)
+                        .flatMap(List<FeedDetailLoc>::stream)
+                        .map(FeedDetailLoc::getFeedLocation)
+                        .collect(Collectors.toList())
+                        .get(feedLocations.indexOf(x)))
 
-                );
+        );
 
 
         List<FeedDetailLocImg> feedDetailLocImgs = feedDetailLocs.stream()
@@ -172,8 +175,7 @@ public class FeedService {
                         .map(FeedDetailLoc::getFeedDetailLocImg)
                         .flatMap(List<FeedDetailLocImg>::stream)
                         .collect(Collectors.toList()).get(feedDetailLocImgs.indexOf(x))
-        ));
-    }
+        ));    }
 
 
 //    @Caching(evict = { @CacheEvict(value = "feedlist",

@@ -3,6 +3,7 @@ package com.example.trip.domain;
 
 import com.example.trip.dto.request.FeedRequestDto;
 import lombok.AccessLevel;
+import com.example.trip.dto.request.FeedRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
