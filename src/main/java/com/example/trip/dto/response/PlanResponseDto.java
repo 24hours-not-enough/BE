@@ -115,7 +115,6 @@ public class PlanResponseDto {
             this.roomId = plan.getUuid();
             this.creator = collect.get(0);
             this.members = plan.getMembers().stream()
-                    .filter(member -> !member.getRoom_rep())
                     .map(MemberResponseDto::new)
                     .collect(Collectors.toList());
             this.calendars = plan.getCalendars().stream()
