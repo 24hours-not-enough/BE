@@ -69,20 +69,10 @@ public class Plan extends TimeStamped {
     }
 
     public void updatePlan(PlanRequestDto.Modify modify) {
-        if (modify.getTitle() != null) {
             this.title = modify.getTitle();
-        }
-        if (modify.getTitle() != null) {
             this.travel_destination = modify.getTravelDestination();
-        }
-        if (modify.getTitle() != null) {
             this.travel_start = modify.getTravelStart();
-        }
-        if (modify.getTitle() != null) {
             this.travel_end = modify.getTravelEnd();
-        }else {
-            this.del_tc = modify.getDelFl();
-        }
     }
 
     public void deletePlan(Boolean del_tc) {

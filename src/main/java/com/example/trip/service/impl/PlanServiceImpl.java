@@ -65,13 +65,9 @@ public class PlanServiceImpl implements PlanService {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
         authMemberValidation(user_id,planId);
         authPlanValidation(planId,user_id);
-        if(modify.getDelFl()==null){
             findPlan.get().updatePlan(modify);
             memberRepository.deleteByPlanId(planId);
             setMember(modify.getMemberList(),findPlan.get());
-        }else{
-            findPlan.get().updatePlan(modify);
-        }
     }
 
     @Override
