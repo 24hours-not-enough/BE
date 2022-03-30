@@ -23,13 +23,10 @@ public class ChatController {
      */
     @MessageMapping("/chat")
 //    public void message(ChatSendDto message, @Header("token") String token) {
-    public ResponseEntity<List<ChatMessage>> message(ChatSendDto message) {
+    public void message(ChatSendDto message) {
 //            System.out.println(token);
 //        String nickName = jwtTokenProvider.getUserPk(token);
 //        chatRoomService.handleMsg(message.getPlan_id(), message, nickName);
-        List<ChatMessage> chatMessages = chatRoomService.handleMsg(message.getPlan_id(), message);
-        chatMessages.forEach(x -> System.out.println(x.getChatMessage()));
-        return new ResponseEntity<>(chatMessages, HttpStatus.OK);
-
+        chatRoomService.handleMsg(message.getPlan_id(), message);
     }
 }
