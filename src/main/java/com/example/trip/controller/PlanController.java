@@ -72,6 +72,22 @@ public class PlanController {
                 .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "여행 계획 복구, 삭제", notes = "계획을 등록한 사람만 가능")
+    @PutMapping("/plan/{planId}/storage")
+    public ResponseEntity<PlanResponseDto.ResponseNodata> planStorage(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
+        Boolean modifyDelPlan = planService.modifyDelPlan(userDetails.getUser().getId(), planId);
+        String msg;
+        if(modifyDelPlan){
+            msg = "계획 복구 성공!";
+        }else{
+            msg = "계획 삭제 성공!";
+        }
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
+                .result("success")
+                .msg(msg)
+                .build(),HttpStatus.OK);
+    }
+
     @ApiOperation(value = "나의 여행계획 단건 조회", notes = "로그인 사용자만 가능")
     @GetMapping("/plan/{planId}")
     public ResponseEntity<PlanResponseDto.Response> planOne(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId) {

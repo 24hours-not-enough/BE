@@ -85,7 +85,7 @@ public class Plan extends TimeStamped {
         }
     }
 
-    public void deletePlan(PlanRequestDto.Modify modify) {
-        this.del_tc = modify.getDelFl();
+    public void deletePlan(Boolean del_tc) {
+        this.del_tc = del_tc;
     }
 }

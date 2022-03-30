@@ -110,6 +110,16 @@ public class PlanServiceImpl implements PlanService {
         return planRepository.findPlanDetails(userId);
     }
 
+    @Override
+    @Transactional
+    public Boolean modifyDelPlan(Long userId, Long planId) {
+        Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
+        authMemberValidation(userId, planId);
+        Boolean planDel = findPlan.get().getDel_tc();
+        findPlan.get().deletePlan(!planDel);
+        return !planDel;
+    }
+
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함
     private void setMember(List<MemberRequestDto.join> memberList, Plan savePlan) {
         memberList.forEach((members) ->{
