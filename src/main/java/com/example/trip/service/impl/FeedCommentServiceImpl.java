@@ -11,9 +11,7 @@ import com.example.trip.repository.FeedDetailLocRepository;
 import com.example.trip.service.FeedCommentService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
-import java.util.List;
 
 @RequiredArgsConstructor
 @Service
@@ -50,7 +48,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         if (myFeedComment == null) {
             throw new AuthFeedCommentNotFoundException();
         }
-//        FeedComment feedComment = commentRepository.findById(commentId).orElseThrow(() -> new NullPointerException("해당 값이 없습니다."));
+        // 피드 댓글 수정
         myFeedComment.update(feedRequestCommentModifyDto);
 
     }
@@ -64,7 +62,7 @@ public class FeedCommentServiceImpl implements FeedCommentService {
         if (myFeedComment == null) {
             throw new AuthFeedCommentNotFoundException();
         }
-
+        // 피드 댓글 삭제
         commentRepository.deleteById(commentId);
     }
 }
