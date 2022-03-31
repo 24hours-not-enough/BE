@@ -38,14 +38,14 @@ public class CalendarServiceImpl implements CalendarService {
         Optional<Calendar> first = daysByPlanId.stream().findFirst();
         Optional<Plan> findPlan = planRepository.findById(planId);
         Optional<Calendar> calendarList = calendarRepository.findAll(Sort.by(Sort.Direction.DESC,"id")).stream().findFirst();
-
+        Calendar save;
         if(!first.isPresent()){
             Calendar calendar = Calendar.builder()
                     .days("1일차")
                     .plan(findPlan.get())
                     .is_locked(false)
                     .build();
-            calendarRepository.save(calendar);
+            save = calendarRepository.save(calendar);
         }else {
             String day = first.get().getDays();
             int intDay = Integer.parseInt(day.replaceAll("[^0-9]", ""));
@@ -55,10 +55,10 @@ public class CalendarServiceImpl implements CalendarService {
                     .plan(findPlan.get())
                     .is_locked(false)
                     .build();
-            calendarRepository.save(calendar);
+            save = calendarRepository.save(calendar);
         }
             return CalendarResponseDto.CalendarAdd.builder()
-                    .calendarId(calendarList.get().getId()+1).build();
+                    .calendarId(save.getId()).build();
     }
 
     @Override
