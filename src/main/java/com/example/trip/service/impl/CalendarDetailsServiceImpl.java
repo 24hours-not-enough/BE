@@ -83,15 +83,20 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
     public void addCalendarDetailsAll(Long planId, List<CalendarDetailsRequestDto.AddAll> dto, Long userId) {
         planValidation(planId);
         userAndPlanValidation(planId,userId);
-        setCalendarDetailsList(dto);
         List<Calendar> byPlan = calendarRepository.findByPlan(planId);
-        byPlan.forEach((Calendar::updateCalendarUnlock));
+        dto.forEach((list)->{
+            byPlan.forEach((planList->{
+                planList.updateCalendarUnlock(list.getDays());
+            }));
+        });
+        setCalendarDetailsList(dto);
+
 
     }
 
     private void setCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
         dto.forEach((details)->{
-            Optional<Calendar> findCalendar = calendarRepository.findById(details.getCalendarId());
+            Optional<Calendar> findCalendar = Optional.ofNullable(calendarRepository.findById(details.getCalendarId()).orElseThrow(CalendarNotFoundException::new));
             calendarDetailsRepository.deleteByCalendarId(details.getCalendarId());
             details.getCalendarDetails().forEach((detailsList)->{
                 CalendarDetails calendarDetails = CalendarDetails.builder()

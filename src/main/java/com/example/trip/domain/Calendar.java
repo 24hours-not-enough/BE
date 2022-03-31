@@ -41,7 +41,8 @@ public class Calendar {
         this.is_locked = true;
     }
 
-    public void updateCalendarUnlock() {
+    public void updateCalendarUnlock(String days) {
         this.is_locked = false;
+        this.days = days;
     }
 }
