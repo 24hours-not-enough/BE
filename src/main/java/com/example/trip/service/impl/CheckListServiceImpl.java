@@ -68,6 +68,16 @@ public class CheckListServiceImpl implements CheckListService {
 
     @Override
     @Transactional
+    public void addCheckListUnLock(Long planId, Long userId) {
+        List<CheckList> findPlan = checkListRepository.findByPlanId(planId);
+        Optional<User> findUser = userRepository.findById(userId);
+        findPlan.forEach((list)->{
+            list.updateCheckListUnLock(findUser.get());
+        });
+    }
+
+    @Override
+    @Transactional
     public void removeCheckList(Long checkListsId, Long planId, Long userId) {
         planValidation(planId);
         userAndPlanValidation(planId,userId);

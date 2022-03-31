@@ -43,6 +43,15 @@ public class CheckListController {
 //        return new ResponseEntity<>(new Success(true,"체크리스트 삭제 완료!"), HttpStatus.OK);
 //    }
 
+    @PutMapping ("/plan/{planId}/checkLists")
+    public ResponseEntity<PlanResponseDto.ResponseNodata> CheckListUnLock(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        checkListService.addCheckListUnLock(planId, userDetails.getUser().getId());
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
+                .msg("체크리스트 잠금 해지 완료!")
+                .result("success")
+                .build(),HttpStatus.OK);
+    }
+
     @ApiOperation(value = "체크리스트 잠금", notes = "계획이 존재해야만 잠금 가능하며 잠금 여부 표시")
     @PutMapping("/plan/{planId}/checkLists/lock")
     public ResponseEntity<PlanResponseDto.ResponseNodata> CheckListLock(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails){

@@ -50,4 +50,9 @@ public class CheckList {
         this.is_locked = true;
         this.user = user;
     }
+
+    public void updateCheckListUnLock(User user) {
+        this.is_locked = false;
+        this.user = user;
+    }
 }
