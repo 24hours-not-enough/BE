@@ -80,6 +80,16 @@ public class CalendarServiceImpl implements CalendarService {
         calendarList.forEach((list)-> list.updateCalendarLock(findUser.get())); //(Calendar::updateCalendarLock)
     }
 
+    @Override
+    @Transactional
+    public void addCalendarUnLock(Long planId, Long userId) {
+        List<Calendar> findPlan = calendarRepository.findByPlan(planId);
+        Optional<User> findUser = userRepository.findById(userId);
+        findPlan.forEach((list)->{
+            list.CalendarUnLock(findUser.get());
+        });
+    }
+
     private void authPlanValidation(Long planId, Long userId) {
         memberRepository.findByUserAndPlanActive(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
     }

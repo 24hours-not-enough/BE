@@ -32,7 +32,7 @@ public class Calendar {
     private User user;
 
     @OneToMany(mappedBy = "calendar")
-    private List<CalendarDetails> calendarDetails = new ArrayList<>();
+    private final List<CalendarDetails> calendarDetails = new ArrayList<>();
 
     @Builder
     public Calendar(String days, Plan plan, Boolean is_locked, User user){
@@ -44,6 +44,11 @@ public class Calendar {
 
     public void updateCalendarLock(User user) {
         this.is_locked = true;
+        this.user = user;
+    }
+
+    public void CalendarUnLock(User user) {
+        this.is_locked = false;
         this.user = user;
     }
 
