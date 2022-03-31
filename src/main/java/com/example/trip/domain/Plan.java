@@ -37,12 +37,15 @@ public class Plan extends TimeStamped {
     private User user;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
     private final Set<Member> members = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
     private final Set<Calendar> calendars = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
     private final Set<CheckList> checkLists = new HashSet<>();
 
     @Builder
