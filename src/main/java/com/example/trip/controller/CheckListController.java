@@ -44,7 +44,7 @@ public class CheckListController {
 //    }
 
     @ApiOperation(value = "체크리스트 잠금", notes = "계획이 존재해야만 잠금 가능하며 잠금 여부 표시")
-    @PutMapping("/plan/{planId}/checkLists")
+    @PutMapping("/plan/{planId}/checkLists/lock")
     public ResponseEntity<PlanResponseDto.ResponseNodata> CheckListLock(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         checkListService.addCheckListLock(planId, userDetails.getUser().getId());
         return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()

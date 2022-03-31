@@ -34,6 +34,8 @@ public class CheckListServiceImpl implements CheckListService {
 
     private final UserRepository userRepository;
 
+    private final RedisServiceImpl redisServiceImpl;
+
     @Override
     @Transactional
     public void addCheckList(Long planId, List<CheckListsRequestDto> dto, Long userId) {
@@ -53,19 +55,14 @@ public class CheckListServiceImpl implements CheckListService {
                     .is_checked(checkList.getIsChecked())
                     .is_locked(false)
                     .plan(plan)
+                    .user(user)
                     .build();
             checkListRepository.save(checklist);
         });
     }
 
     @Override
-    @Transactional
-    public void modifyCheckList(Long checkListsId, CheckListsRequestDto dto, Long planId, Long userId) {
-        planValidation(planId);
-        userAndPlanValidation(planId,userId);
-        checkListValidation(checkListsId);
-        Optional<CheckList> findCheckList = checkListRepository.findById(checkListsId);
-        findCheckList.get().updateCheckList(dto);
+    public void modifyCheckList(Long planId, List<CheckListsRequestDto> dto, Long userId) {
 
     }
 
@@ -83,12 +80,16 @@ public class CheckListServiceImpl implements CheckListService {
     public void addCheckListLock(Long planId, Long id) {
         planValidation(planId);
         userAndPlanValidation(planId,id);
-        Optional<CheckList> PlanIdAndLock = checkListRepository.findByPlanIdAndLock(planId);
+        List<CheckList> findLockCheckList = checkListRepository.findByPlanIdAndLock(planId);
+        Optional<CheckList> PlanIdAndLock = findLockCheckList.stream().findFirst();
         if (PlanIdAndLock.isPresent()) {
             throw new CheckListModifyException();
         }
         List<CheckList> findPlan = checkListRepository.findByPlanId(planId);
-        findPlan.forEach((CheckList::updateCheckListLock));
+        Optional<User> findUser = userRepository.findById(id);
+        findPlan.forEach((list)->{
+           list.updateCheckListLock(findUser.get());
+        });
     }
 
     private void planValidation(Long planId) {
