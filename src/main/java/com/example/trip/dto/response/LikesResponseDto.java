@@ -2,7 +2,9 @@ package com.example.trip.dto.response;
 
 import com.example.trip.domain.Likes;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 
@@ -17,7 +19,8 @@ public class LikesResponseDto {
     }
 
     @AllArgsConstructor
-    @Getter
+    @Data
+    @NoArgsConstructor
     public static class GetUserId {
         private Long userId;
 
