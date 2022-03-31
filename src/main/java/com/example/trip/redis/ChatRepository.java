@@ -6,11 +6,8 @@ import org.springframework.data.redis.core.RedisTemplate;
 import org.springframework.data.redis.listener.ChannelTopic;
 import org.springframework.data.redis.listener.RedisMessageListenerContainer;
 import org.springframework.stereotype.Repository;
-
 import javax.annotation.PostConstruct;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @RequiredArgsConstructor
 @Repository
@@ -21,47 +18,77 @@ public class ChatRepository {
     private final RedisSubscriber redisSubscriber;
     // Redis
     private static final String CHAT_ROOMS = "CHAT_ROOM";
+    private static final String CHAT_MESSAGES = "CHAT_MESSAGES";
     private final RedisTemplate<String, Object> redisTemplate;
-    private HashOperations<String, Long, ChatRoom> opsHashChatRoom;
+    private HashOperations<String, String, ChatRoom> opsHashChatRoom;
+    private HashOperations<String, String, List<ChatMessage>> opsHashChatMsg;
     // 채팅방의 대화 메시지를 발행하기 위한 redis topic 정보. 서버별로 채팅방에 매치되는 topic정보를 Map에 넣어 planId로 찾을수 있도록 한다.
-    private Map<Long, ChannelTopic> topics;
+    private Map<String, ChannelTopic> topics;
 
     @PostConstruct
     private void init() {
         opsHashChatRoom = redisTemplate.opsForHash();
         topics = new HashMap<>();
+        //레디스 템플릿은 재사용이 가능하다.
+        opsHashChatMsg = redisTemplate.opsForHash();
     }
 
-    public List<ChatRoom> findAllRoom() {
-        return opsHashChatRoom.values(CHAT_ROOMS);
+
+    // ** 채팅 메세지 관련 기능
+
+
+    //각 채팅방마다 메세지를 조회
+    public List<ChatMessage> findMsgById(Long planId) {
+        return opsHashChatMsg.get(CHAT_MESSAGES, "CHAT" + planId.toString());
     }
 
+     // 채팅방 메세지 생성 : 채팅방마다의 메세지를 redis hash에 저장한다.
+    public void addChatMsg(Long planId, String msg) {
+        ChatMessage chatMsg = ChatMessage.builder()
+                .plan_id(planId)
+                .chatMessage(msg)
+                .build();
+
+        List<ChatMessage> chatMessages = opsHashChatMsg.get(CHAT_MESSAGES, planId.toString());
+
+        //메세지를 처음 보내는 경우에는 빈 리스트를 넣어줌
+        if(chatMessages == null){
+            chatMessages= new ArrayList<>();
+            opsHashChatMsg.put(CHAT_MESSAGES, "CHAT" + planId.toString(), chatMessages);
+        }
+        // 해당 방번호에 메세지 정보를 추가
+        chatMessages.add(chatMsg);
+        opsHashChatMsg.put(CHAT_MESSAGES, "CHAT" + planId.toString(), chatMessages);
+    }
+
+
+
+
+
+    // ** 채팅 방 관련 기능
+
+    //채팅 방별로 정보를 조회
     public ChatRoom findRoomById(Long planId) {
-        return opsHashChatRoom.get(CHAT_ROOMS, planId);
+        return opsHashChatRoom.get(CHAT_ROOMS, "CHAT"+planId.toString());
     }
 
-    /**
-     * 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
-     */
-    public ChatRoom createChatRoom(Long planId) {
+    // 채팅방 생성 : 서버간 채팅방 공유를 위해 redis hash에 저장한다.
+    public void createChatRoom(Long planId) {
         ChatRoom chatRoom = ChatRoom.create(planId);
-        opsHashChatRoom.put(CHAT_ROOMS, chatRoom.getPlan_id(), chatRoom);
-        return chatRoom;
+        opsHashChatRoom.put(CHAT_ROOMS, "CHAT"+chatRoom.getPlan_id().toString(), chatRoom);
     }
 
-    /**
-     * 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
-     */
+    // 채팅방 입장 : redis에 topic을 만들고 pub/sub 통신을 하기 위해 리스너를 설정한다.
     public void enterChatRoom(Long planId) {
-        ChannelTopic topic = topics.get(planId);
+        ChannelTopic topic = topics.get("CHAT"+planId.toString());
         if (topic == null) {
-            topic = new ChannelTopic(planId.toString());
+            topic = new ChannelTopic("CHAT"+planId.toString());
             redisMessageListener.addMessageListener(redisSubscriber, topic);
-            topics.put(planId, topic);
+            topics.put("CHAT"+planId, topic);
         }
     }
 
     public ChannelTopic getTopic(Long planId) {
-        return topics.get(planId);
+        return topics.get("CHAT"+planId);
     }
 }

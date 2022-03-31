@@ -11,16 +11,16 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 public interface BookMarkRepository extends JpaRepository<BookMark, Long> {
-//    @Transactional
-//    @Modifying
-//    @Query("DELETE FROM BookMark B WHERE B.feedDetailLoc.id = ?1 and B.user.id = ?2")
-//    void deleteBookmarkFeed(Long feedDetailLocId, Long userId);
+    @Transactional
+    @Modifying
+    @Query("DELETE FROM BookMark B WHERE B.feedLocation.id = ?1 and B.user.id = ?2")
+    void deleteBookmarkFeed(Long feedLocId, Long userId);
 
     @Query("select b from BookMark b where b.user.id = :userId")
     List<BookMark> FindBookmarkByUserId(@Param("userId") Long userId);
 
-//    @Query("SELECT B FROM BookMark B WHERE B.feedDetailLoc.id = ?1 and B.user.id = ?2")
-//    List<BookMark> findByFeedDetailLocIdAndUserId(Long feedDetailLocId, Long userId);
+    @Query("SELECT B FROM BookMark B WHERE B.feedLocation.id = ?1 and B.user.id = ?2")
+    List<BookMark> findByFeedLocIdAndUserId(Long feedLocId, Long userId);
 
     List<BookMark> findByUserId(Long userId);
 

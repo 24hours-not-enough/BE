@@ -1,8 +1,9 @@
 package com.example.trip.domain;
 
 import lombok.*;
-
+import org.springframework.data.jpa.repository.Modifying;
 import javax.persistence.*;
+import javax.transaction.Transactional;
 import java.util.List;
 
 @Entity
@@ -16,6 +17,8 @@ public class FeedDetailLoc extends TimeStamped {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "feed_detail_loc_id")
     private Long id;
+
+    private String memo;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_detail_id")
@@ -34,9 +37,11 @@ public class FeedDetailLoc extends TimeStamped {
     @JoinColumn(name = "feed_location_id")
     private  FeedLocation feedLocation;
 
-    private String memo;
-
     public FeedDetailLoc(Long id){
         this.id = id;
+    }
+
+    public void update(FeedDetailLoc feedDetailLoc){
+        this.memo = feedDetailLoc.getMemo();
     }
 }

@@ -10,9 +10,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.stream.Collectors;
 
-import static com.example.trip.domain.QMember.*;
-import static com.example.trip.domain.QPlan.*;
-import static com.example.trip.domain.QUser.*;
+
 
 public class PlanRepositoryImpl implements PlanRepositoryCustom{
 

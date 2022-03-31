@@ -3,6 +3,7 @@ package com.example.trip.dto.response;
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
 import com.example.trip.domain.User;
+import com.example.trip.redis.notification.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -120,6 +121,7 @@ public class UserResponseDto {
         private String result;
         private String msg;
         private UserResponseDto.GetUser userInfo;
+//        private List<Notification> notificationInfo;
         private List<FeedLocationResponseDto.BookMark> bookmark;
 
     }

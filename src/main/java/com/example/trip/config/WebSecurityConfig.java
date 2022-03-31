@@ -39,15 +39,29 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .formLogin().disable() // 스프링 시큐리티 login form 사용 X
                 .httpBasic().disable(); // rest api 이므로 기본 설정 사용 X -> 기본 설정은 비인증 시 로그인폼 화면으로 리다이렉트
 
-        http
-                .authorizeRequests()
-                .antMatchers("/api/kakaologin", "/api/googlelogin", "/").permitAll()
-                .anyRequest().authenticated() // 위 antMatchers 이외에는 모든 api 인증 필요
-                    .and()
-                .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+//                //여기서부터
+//                .csrf().disable() // rest api는 csrf 보안 필요 X
+//                .headers()
+//                    .frameOptions().sameOrigin()
+//                .and()
+//                    .formLogin()
+//
+//                .and()
+//                        .authorizeRequests()
+//                            .antMatchers("/chat/**").permitAll()
+//                            .anyRequest().authenticated(); // 위 antMatchers 이외에는 모든 api 인증 필요
+//                //여기까지
 
-        http.exceptionHandling()
-                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인가 관련
-                .accessDeniedHandler(new AccessDeniedHandler()); // 인증 관련
+
+        http
+               .authorizeRequests()
+               .antMatchers("/api/kakaologin", "/api/googlelogin", "/", "/api/map").permitAll()
+               .anyRequest().authenticated() // 위 antMatchers 이외에는 모든 api 인증 필요
+                    .and()
+               .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class);
+
+//        http.exceptionHandling()
+//                .authenticationEntryPoint(new CustomAuthenticationEntryPoint()) // 인가 관련
+//                .accessDeniedHandler(new AccessDeniedHandler()); // 인증 관련
     }
 }

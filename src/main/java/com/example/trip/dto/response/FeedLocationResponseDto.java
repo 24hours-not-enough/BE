@@ -2,13 +2,16 @@ package com.example.trip.dto.response;
 
 import com.example.trip.domain.FeedLocation;
 import com.example.trip.dto.response.FeedDetailLocResponseDto;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
 
 import java.util.List;
 import java.util.stream.Collectors;
 
 public class FeedLocationResponseDto {
 
-
+    @AllArgsConstructor
+    @Getter
     public static class BookMark {
         private Long placeId;
         private String placeName;

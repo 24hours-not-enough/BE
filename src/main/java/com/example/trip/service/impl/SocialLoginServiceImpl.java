@@ -1,21 +1,20 @@
-package com.example.trip.service;
+package com.example.trip.service.impl;
 
+import com.example.trip.advice.exception.AlreadyExistUsernameException;
+import com.example.trip.advice.exception.UserNotFoundException;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
 import com.example.trip.domain.User;
-import com.example.trip.dto.*;
 import com.example.trip.dto.response.UserResponseDto;
-import com.example.trip.exceptionhandling.CustomException;
 import com.example.trip.jwt.JwtTokenProvider;
 import com.example.trip.repository.UserRepository;
-import com.example.trip.service.impl.RedisServiceImpl;
-import com.example.trip.service.impl.S3UploaderServiceImpl;
+import com.example.trip.service.SocialLoginService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.Cacheable;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -39,17 +38,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-import static com.example.trip.exceptionhandling.ErrorCode.ALREADY_EXIST_USERNAME;
-import static com.example.trip.exceptionhandling.ErrorCode.USER_NOT_FOUND;
-
 
 @RequiredArgsConstructor
 @Service
 public class SocialLoginServiceImpl implements SocialLoginService {
-    String kakao_client_id = System.getenv("kakao_client_id");
-    String kakao_client_secret = System.getenv("kakao_client_secret");
-    String google_client_id = System.getenv("google_client_id");
-    String google_client_secret = System.getenv("google_client_secret");
+
+    @Value("${spring.security.oauth2.client.registration.kakao.client-id}")
+    private String kakao_client_id;
+
+    @Value("${spring.security.oauth2.client.registration.kakao.secret-key}")
+    private String kakao_client_secret;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-id}")
+    private String google_client_id;
+
+    @Value("${spring.security.oauth2.client.registration.google.client-secret}")
+    private String google_client_secret;
 
     private final UserRepository userRepository;
     private final JwtTokenProvider jwtTokenProvider;
@@ -57,13 +61,12 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     private final S3UploaderServiceImpl s3UploaderService;
     private final RedisServiceImpl redisServiceImpl;
 
+
+
+//    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
     private static final Long AccessTokenValidTime = 1 * 60 * 1000L; // 1분(test)
-    //    private static final Long AccessTokenValidTime = 30 * 60 * 1000L; // 30분
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
-
-//    private static final Long AccessTokenValidTime = 10 * 1000L; // 10초(테스트)
-//    private static final Long RefreshTokenValidTime = 3 * 60 * 1000L; // 3분(테스트)
 
     @Transactional
     public UserResponseDto.KakaoLogin kakaoLogin(String code) throws JsonProcessingException {
@@ -99,7 +102,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakao_client_id);
-        body.add("redirect_uri", "http://13.209.47.53/api/kakaologin");
+//        body.add("redirect_uri", "http://localhost:8080/api/kakaologin");
+//        body.add("redirect_uri", "http://13.209.47.53/api/kakaologin");
+        body.add("redirect_uri", "http://localhost:3000/api/kakaologin");
         body.add("code", code);
         body.add("client_secret", kakao_client_secret);
 
@@ -203,7 +208,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         body.add("code", code);
         body.add("client_id", google_client_id);
         body.add("client_secret", google_client_secret);
-        body.add("redirect_uri", "http://localhost:8080/api/googlelogin");
+        body.add("redirect_uri", "http://localhost:3000/api/googlelogin");
         body.add("grant_type", "authorization_code");
 
         // HTTP 요청 보내기
@@ -281,7 +286,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
         jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
         redisServiceImpl.setValues(refreshToken, loginRequestDto.getKakaoId());
-        return new UserResponseDto.TokenInfo(accessToken);
+        return new UserResponseDto.TokenInfo("bearer " + accessToken, "bearer " + refreshToken);
     }
 
     public UserResponseDto.TokenInfo issueGoogleJwtToken(UserResponseDto.GoogleLogin loginRequestDto, HttpServletResponse response) {
@@ -290,21 +295,27 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
         jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
         redisServiceImpl.setValues(refreshToken, loginRequestDto.getGoogleId());
-        return new UserResponseDto.TokenInfo(accessToken);
+        return new UserResponseDto.TokenInfo("bearer " + accessToken, "bearer " + refreshToken);
     }
 
     @Transactional
     public UserResponseDto.UserProfile registerMoreUserInfo(String socialaccountId, String username, MultipartFile file) throws IOException {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND));
-        Map<String, String> nameUrl = s3UploaderService.upload(file);
-        user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserResponseDto.UserProfile(username, nameUrl.get(file.getOriginalFilename()));
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
+        if (file.isEmpty()) {
+            user.get().update(username, "url", "filename");
+            return new UserResponseDto.UserProfile(user.get().getId(), username, "url");
+        } else {
+            Map<String, String> nameUrl = s3UploaderService.upload(file);
+            user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
+            return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
+        }
+
+
+
     }
 
     public boolean checkKakaoIsFirstLogin(UserResponseDto.KakaoLogin loginRequestDto) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND));
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(UserNotFoundException::new);
         User founduser = user.get();
         if (founduser.getUsername() == null) {
             return true;
@@ -324,55 +335,39 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
     public void checkUsername(String username) {
         if (userRepository.existsByUsername(username)) {
-            throw new CustomException(ALREADY_EXIST_USERNAME);
+            throw new AlreadyExistUsernameException();
         }
     }
 
     public UserResponseDto.UserProfile sendKakaoUserBasicInfo(UserResponseDto.KakaoLogin loginRequestDto) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND)
-        );
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(UserNotFoundException::new);
         if (checkKakaoIsFirstLogin(loginRequestDto)) {
-            return new UserResponseDto.UserProfile(null, null);
+            return new UserResponseDto.UserProfile(user.get().getId(), null, null);
         } else {
-            return new UserResponseDto.UserProfile(user.get().getUsername(), user.get().getImage().getFile_store_course());
+            return new UserResponseDto.UserProfile(user.get().getId(), user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
     public UserResponseDto.UserProfile sendGoogleUserBasicInfo(UserResponseDto.GoogleLogin loginRequestDto) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND)
-        );
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(UserNotFoundException::new);
         if (checkGoogleIsFirstLogin(loginRequestDto)) {
-            return new UserResponseDto.UserProfile(null, null);
+            return new UserResponseDto.UserProfile(user.get().getId(), null, null);
         } else {
-            return new UserResponseDto.UserProfile(user.get().getUsername(), user.get().getImage().getFile_store_course());
+            return new UserResponseDto.UserProfile(user.get().getId(), user.get().getUsername(), user.get().getImage().getFile_store_course());
         }
     }
 
-    // 마이페이지 유저 + 이미지 정보 전달 -> 캐싱작업 필요
-    @Cacheable(value = "userprofile")
-    public UserResponseDto.UserProfile sendUserProfileInfo(String socialaccountId) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND));
-        String imgUrl = user.get().getImage().getFile_store_course();
-        return new UserResponseDto.UserProfile(user.get().getUsername(), imgUrl);
-    }
-
     public UserResponseDto.invite searchUserInvite(String username) {
-        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND)
-        );
+        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(UserNotFoundException::new);
         User foundUser = user.get();
         return new UserResponseDto.invite(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
     }
     @Transactional
     public void deleteAccount(String socialaccountId) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(
-                () -> new CustomException(USER_NOT_FOUND)
-        );
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
         user.get().deleteAccount();
     }
 
 
 }
+
