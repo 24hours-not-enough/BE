@@ -27,22 +27,29 @@ public class Calendar {
     @JoinColumn(name = "plan_id")
     private Plan plan;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "user_id")
+    private User user;
+
     @OneToMany(mappedBy = "calendar")
     private List<CalendarDetails> calendarDetails = new ArrayList<>();
 
     @Builder
-    public Calendar(String days, Plan plan, Boolean is_locked){
+    public Calendar(String days, Plan plan, Boolean is_locked, User user){
         this.days = days;
         this.plan = plan;
         this.is_locked = is_locked;
+        this.user = user;
     }
 
-    public void updateCalendarLock() {
+    public void updateCalendarLock(User user) {
         this.is_locked = true;
+        this.user = user;
     }
 
-    public void updateCalendarUnlock(String days) {
+    public void updateCalendarUnlock(String days, User user) {
         this.is_locked = false;
         this.days = days;
+        this.user = user;
     }
 }
