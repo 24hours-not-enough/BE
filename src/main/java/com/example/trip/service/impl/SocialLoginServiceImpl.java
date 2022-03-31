@@ -298,6 +298,12 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         return new UserResponseDto.TokenInfo("bearer " + accessToken, "bearer " + refreshToken);
     }
 
+    public void checkNoSameUsername(String username) {
+        if (userRepository.existsByUsername(username)) {
+            throw new AlreadyExistUsernameException();
+        }
+    }
+
     @Transactional
     public UserResponseDto.UserProfile registerMoreUserInfo(String socialaccountId, String username, MultipartFile file) throws IOException {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
