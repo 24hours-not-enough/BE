@@ -7,12 +7,11 @@ import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.dto.response.AllLocationsDto;
 import com.example.trip.repository.*;
+import com.example.trip.repository.feedlocation.FeedLocationRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.cache.annotation.Cacheable;
-import org.springframework.cache.annotation.Caching;
 import org.springframework.stereotype.Service;
 
 import javax.transaction.Transactional;
@@ -193,22 +192,22 @@ public class FeedService {
     }
 
     public List<FeedResponseDto.GetFeed> getFeeds(Long userId) {
-        List<Feed> feeds = feedRepository.findByUserId(userId);
         ArrayList<FeedResponseDto.GetFeed> arr = new ArrayList<>();
-        for (Feed feed : feeds) {
-            FeedResponseDto.GetFeed dto = new FeedResponseDto.GetFeed(feed);
-            arr.add(dto);
-        }
+        feedRepository.findByUserId(userId).stream()
+                .map(x -> arr.add(new FeedResponseDto.GetFeed(x)))
+                .collect(Collectors.toList());
         return arr;
     }
 
     public List<Map<String, List<GetFeedDetailLoc>>> getLikeFeeds(Long userId) {
+        // 전체 좋아요한 도시의 개수
         List<FeedDetailLoc> addressList = feedDetailLocRepository.findAddressCnt(userId);
 
         ArrayList<Map<String, List<GetFeedDetailLoc>>> arr = new ArrayList<>();
 
         for(FeedDetailLoc address : addressList) {
             Map<String, List<GetFeedDetailLoc>> map = new HashMap<>();
+            // 좋아요한 도시별로 장소 나눠서 List로 보여주기
             List<FeedDetailLoc> locations = feedDetailLocRepository.findLocationsByLikes(userId, address.getFeedLocation().getPlaceAddress());
             List<GetFeedDetailLoc> oneCityLocations = locations.stream().map(GetFeedDetailLoc::new).collect(Collectors.toList());
             map.put(address.getFeedLocation().getPlaceAddress(), oneCityLocations);
