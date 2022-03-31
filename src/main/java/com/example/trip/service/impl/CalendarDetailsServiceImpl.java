@@ -3,11 +3,13 @@ package com.example.trip.service.impl;
 import com.example.trip.advice.exception.*;
 import com.example.trip.domain.Calendar;
 import com.example.trip.domain.CalendarDetails;
+import com.example.trip.domain.User;
 import com.example.trip.dto.request.CalendarDetailsRequestDto;
 import com.example.trip.dto.response.CalendarResponseDto;
 import com.example.trip.repository.CalendarDetailsRepository;
 import com.example.trip.repository.CalendarRepository;
 import com.example.trip.repository.MemberRepository;
+import com.example.trip.repository.UserRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.CalendarDetailsService;
 import lombok.RequiredArgsConstructor;
@@ -30,6 +32,8 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
     private final PlanRepository planRepository;
 
     private final MemberRepository memberRepository;
+
+    private final UserRepository userRepository;
     @Override
     @Transactional
     public void addCalendarDetails(Long calendar_id, CalendarDetailsRequestDto.Add dto, Long planId, Long userId) {
@@ -84,9 +88,10 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
         planValidation(planId);
         userAndPlanValidation(planId,userId);
         List<Calendar> byPlan = calendarRepository.findByPlan(planId);
+        Optional<User> findUser = userRepository.findById(userId);
         dto.forEach((list)->{
             byPlan.forEach((planList->{
-                planList.updateCalendarUnlock(list.getDays());
+                planList.updateCalendarUnlock(list.getDays(), findUser.get());
             }));
         });
         setCalendarDetailsList(dto);

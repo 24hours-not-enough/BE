@@ -5,9 +5,11 @@ import com.example.trip.advice.exception.CalendarModifyException;
 import com.example.trip.advice.exception.PlanNotFoundException;
 import com.example.trip.domain.Calendar;
 import com.example.trip.domain.Plan;
+import com.example.trip.domain.User;
 import com.example.trip.dto.response.CalendarResponseDto;
 import com.example.trip.repository.CalendarRepository;
 import com.example.trip.repository.MemberRepository;
+import com.example.trip.repository.UserRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.CalendarService;
 import lombok.RequiredArgsConstructor;
@@ -28,6 +30,8 @@ public class CalendarServiceImpl implements CalendarService {
     private final PlanRepository planRepository;
 
     private final MemberRepository memberRepository;
+
+    private final UserRepository userRepository;
 
     @Override
     @Transactional
@@ -66,12 +70,14 @@ public class CalendarServiceImpl implements CalendarService {
     public void addCalendarLock(Long planId, Long userId) {
         planValidation(planId);
         authPlanValidation(planId, userId);
-        Optional<Calendar> planLock = calendarRepository.findByPlanLock(planId);
+        List<Calendar> findCalendar = calendarRepository.findByPlanLock(planId);
+        Optional<Calendar> planLock = findCalendar.stream().findFirst();
         if (planLock.isPresent()) {
             throw new CalendarModifyException();
         }
         List<Calendar> calendarList = calendarRepository.findByPlan(planId);
-        calendarList.forEach((Calendar::updateCalendarLock));
+        Optional<User> findUser = userRepository.findById(userId);
+        calendarList.forEach((list)-> list.updateCalendarLock(findUser.get())); //(Calendar::updateCalendarLock)
     }
 
     private void authPlanValidation(Long planId, Long userId) {
