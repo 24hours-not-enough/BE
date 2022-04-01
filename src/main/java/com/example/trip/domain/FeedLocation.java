@@ -24,9 +24,9 @@ public class FeedLocation {
     @Column(name = "location_name")
     private String name;
 
-    private String latitude;
+    private Long latitude;
 
-    private String longitude;
+    private Long longitude;
 
     private String placeAddress;
 

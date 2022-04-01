@@ -18,9 +18,9 @@ public class AllLocationsDto {
 
     private String locationName;
 
-    private String latitude;
+    private Long latitude;
 
-    private String longitude;
+    private Long longitude;
 
     private List<FeedPerLocationDto> feedPerLocations;
 
