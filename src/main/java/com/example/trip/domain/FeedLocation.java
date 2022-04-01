@@ -1,18 +1,15 @@
 package com.example.trip.domain;
 
 
-import com.example.trip.dto.request.FeedRequestDto;
-import lombok.AccessLevel;
-import com.example.trip.dto.request.FeedRequestDto;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import javax.persistence.*;
 import java.util.List;
 
 @Entity
 @Getter
 @Setter
+@Builder
+@AllArgsConstructor
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 public class FeedLocation {
 
