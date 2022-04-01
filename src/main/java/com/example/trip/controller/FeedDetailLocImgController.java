@@ -26,11 +26,10 @@ public class FeedDetailLocImgController {
 //            @CacheEvict(value = "feed", key = "#feedId"),
 //            @CacheEvict(value = "feeddetailloc", key = "#feeddetaillocId")
 //    })
-    @PostMapping("/feed/image/{feedDetailLocId}")
+    @PostMapping("/feed/image")
     public ResponseEntity<FeedResponseDto.FeedResponseOptional> registerFeedImage(
-            @PathVariable Long feedDetailLocId,
             @RequestPart(value="imgFiles") List<MultipartFile> imgFiles) {
-        Map<String, String> nameAndUrl = feedDetailLocImgService.registerFeedImage(feedDetailLocId, imgFiles);
+        Map<String, String> nameAndUrl = feedDetailLocImgService.registerFeedImage(imgFiles);
         return new ResponseEntity<>(FeedResponseDto.FeedResponseOptional.builder()
                 .result("success")
                 .msg("피드 이미지 등록 성공하였습니다.")
