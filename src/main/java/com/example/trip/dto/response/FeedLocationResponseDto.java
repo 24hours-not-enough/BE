@@ -3,7 +3,9 @@ package com.example.trip.dto.response;
 import com.example.trip.domain.FeedLocation;
 import com.example.trip.dto.response.FeedDetailLocResponseDto;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -11,7 +13,8 @@ import java.util.stream.Collectors;
 public class FeedLocationResponseDto {
 
     @AllArgsConstructor
-    @Getter
+    @Data
+    @NoArgsConstructor
     public static class BookMark {
         private Long placeId;
         private String placeName;

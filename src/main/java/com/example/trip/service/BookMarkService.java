@@ -2,6 +2,7 @@ package com.example.trip.service;
 
 import com.example.trip.domain.User;
 import com.example.trip.dto.response.FeedLocationResponseDto;
+
 import java.util.List;
 
 public interface BookMarkService {

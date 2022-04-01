@@ -45,4 +45,6 @@ public interface SocialLoginService {
     UserResponseDto.invite searchUserInvite(String username);
 
     void deleteAccount(String socialaccountId);
+
+    void checkNoSameUsername(String username);
 }

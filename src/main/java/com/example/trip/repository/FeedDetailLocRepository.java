@@ -1,6 +1,7 @@
 package com.example.trip.repository;
 
 import com.example.trip.domain.FeedDetailLoc;
+import com.example.trip.domain.FeedLocation;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -31,5 +32,4 @@ public interface FeedDetailLocRepository extends JpaRepository<FeedDetailLoc, Lo
 
     @Query("SELECT F FROM FeedDetailLoc  F WHERE F.feedDetail.id = ?1")
     List<FeedDetailLoc> findByFeedDetailId(Long feedDetailID);
-
 }
