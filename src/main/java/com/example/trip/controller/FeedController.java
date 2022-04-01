@@ -29,7 +29,6 @@ public class FeedController {
             @AuthenticationPrincipal UserDetailsImpl user,
             @Valid @RequestBody FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
         List<Long> feedDetailLocs = feedService.registerFeed(user.getUser(), feedRequestRegisterDto);
-        System.out.println("여행 날짜"+feedRequestRegisterDto.getTravelStart());
         return new ResponseEntity<>(FeedResponseDto.FeedResponseOptional.builder()
                 .result("success")
                 .msg("피드 등록 성공하였습니다.")
