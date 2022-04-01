@@ -21,4 +21,6 @@ public interface FeedLocationRepository extends JpaRepository<FeedLocation, Long
 //            "left join feed_comment com on com.feed_detail_loc_id = fdl.feed_detail_loc_id " +
 //            "left join user user1 on user1.user_id = com.user_id", nativeQuery = true)
 //    List<FeedLocation> findBookMarkLocation(Long userId);
+@Query("SELECT L FROM FeedLocation L WHERE L.latitude >= ?1 and L.latitude <= ?2 and L.longitude >= ?3 and L.longitude <= ?4")
+List<FeedLocation> findLocations(Long x1, Long x2, Long y1, Long y2);
 }
