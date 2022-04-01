@@ -2,7 +2,9 @@ package com.example.trip.dto.response;
 
 import com.example.trip.domain.FeedComment;
 import lombok.AllArgsConstructor;
+import lombok.Data;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @AllArgsConstructor
 @Getter
@@ -11,7 +13,8 @@ public class FeedCommentResponseDto {
     private String content;
 
     @AllArgsConstructor
-    @Getter
+    @Data
+    @NoArgsConstructor
     public static class GetComment {
 
         private Long commentId;

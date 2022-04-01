@@ -1,6 +1,7 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
+import com.example.trip.domain.FeedDetailLoc;
 import com.example.trip.dto.request.UserRequestDto;
 import com.example.trip.dto.response.FeedLocationResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
@@ -24,7 +25,9 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -61,6 +64,7 @@ public class UserController {
     public ResponseEntity<UserResponseDto.Response> registerMoreUserInfo(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                         @RequestPart String username,
                                                                         @RequestPart MultipartFile file) throws IOException {
+        socialLoginService.checkNoSameUsername(username);
         UserResponseDto.UserProfile userBasicInfo = socialLoginService.registerMoreUserInfo(userDetails.getUser().getSocialaccountId(), username, file);
         return new ResponseEntity<>(UserResponseDto.Response.builder()
                                                         .result("success")

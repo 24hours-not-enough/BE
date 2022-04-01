@@ -9,5 +9,5 @@ import java.util.List;
 
 public interface CommentRepository extends JpaRepository<FeedComment, Long> {
     @Query("select c from FeedComment c where c.id = ?1 and c.user.id = ?2")
-    List<FeedComment> findByIdAndUserId(Long commentId, Long userId);
+    FeedComment findByIdAndUserId(Long commentId, Long userId);
 }

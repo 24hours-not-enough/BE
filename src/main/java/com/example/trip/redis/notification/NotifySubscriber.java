@@ -23,7 +23,7 @@ public class NotifySubscriber implements MessageListener {
     public void onMessage(Message message, byte[] pattern) {
         try{
             String publishNotification = (String) redisTemplate.getStringSerializer().deserialize(message.getBody());
-            NotifySendDto notifySendDto = objectMapper.readValue(publishNotification,NotifySendDto.class);
+            NotifySendDto notifySendDto = objectMapper.readValue(publishNotification, NotifySendDto.class);
             messagingTemplate.convertAndSend("/queue/1", notifySendDto);
         } catch(Exception e){
             log.error(e.getMessage());

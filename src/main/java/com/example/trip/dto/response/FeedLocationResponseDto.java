@@ -1,7 +1,6 @@
 package com.example.trip.dto.response;
 
 import com.example.trip.domain.FeedLocation;
-import com.example.trip.dto.response.FeedDetailLocResponseDto;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 
@@ -25,9 +24,10 @@ public class FeedLocationResponseDto {
             this.placeId = feedLocation.getId();
             this.placeName = feedLocation.getName();
             this.placeAddress = feedLocation.getPlaceAddress();
-            this.latitude = feedLocation.getLatitude();
-            this.longitude = feedLocation.getLongitude();
+            this.latitude = feedLocation.getLatitude().toString();
+            this.longitude = feedLocation.getLongitude().toString();
             this.feedDetailLoc = feedLocation.getFeedDetailLocs().stream().map(FeedDetailLocResponseDto.GetFeedDetailLoc::new).collect(Collectors.toList());
         }
     }
 }
+
