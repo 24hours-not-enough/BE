@@ -2,9 +2,8 @@ package com.example.trip.dto.request;
 
 import com.example.trip.domain.FeedDetail;
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.sun.istack.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import org.springframework.format.annotation.DateTimeFormat;
 
 import javax.validation.constraints.NotBlank;
 import java.time.LocalDateTime;
@@ -14,6 +13,7 @@ import java.util.List;
 public class FeedRequestDto {
 
     @Getter
+    @AllArgsConstructor
     public static class FeedRequestRegisterDto {
         @NotBlank
         private String title;
@@ -30,6 +30,7 @@ public class FeedRequestDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class FeedRequestModifyDto {
         @NotBlank
         private String title;
