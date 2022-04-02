@@ -1,30 +1,24 @@
 package com.example.trip.service.impl;
 
-import com.example.trip.advice.exception.AlreadyLikeException;
-import com.example.trip.advice.exception.FeedDetailLocNotFoundException;
 import com.example.trip.domain.*;
-import com.example.trip.dto.request.FeedRequestDto;
-import com.example.trip.dto.response.LikesResponseDto;
 import com.example.trip.repository.FeedDetailLocRepository;
 import com.example.trip.repository.LikeRepository;
 import com.example.trip.repository.UserRepository;
-import org.aspectj.lang.annotation.Before;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.test.util.ReflectionTestUtils;
 
-import java.time.LocalDateTime;
 import java.util.ArrayList;
-import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import static com.example.trip.domain.Role.USER;
 import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
 @ExtendWith(MockitoExtension.class)
@@ -55,8 +49,14 @@ class LikeServiceImplTest {
                 .image(Image.builder().build())
                 .build();
 
+        Long userExpectedId = 12345L;
 
-        when(userRepository.save(any(User.class))).thenReturn(user);
+        Mockito.lenient().doAnswer(invocation -> {
+            ReflectionTestUtils.setField((User) invocation.getArgument(0), "id", userExpectedId);
+            return null;
+        }).when(userRepository).save(user);
+
+        when(userRepository.save(user)).thenReturn(user);
         userRepository.save(user);
 
         List<FeedDetailLoc> detailLocs = new ArrayList<>();
@@ -66,6 +66,13 @@ class LikeServiceImplTest {
                 .build();
 
         detailLocs.add(feedDetailLoc);
+
+        Long detailLocExpectedId = 6789L;
+
+        Mockito.lenient().doAnswer(invocation -> {
+            ReflectionTestUtils.setField((FeedDetailLoc) invocation.getArgument(0), "id", detailLocExpectedId);
+            return null;
+        }).when(feedDetailLocRepository).save(feedDetailLoc);
 
         when(feedDetailLocRepository.saveAll(detailLocs)).thenReturn(detailLocs);
         feedDetailLocRepository.saveAll(detailLocs);
@@ -97,7 +104,21 @@ class LikeServiceImplTest {
     @DisplayName("좋아요 취소 - 정상 케이스")
     void cancelLike_normal() {
 
+        // given
+        Likes like = Likes.builder()
+                .feedDetailLoc(feedDetailLoc)
+                .user(user)
+                .build();
 
+
+        when(likeRepository.save(like)).thenReturn(like);
+        likeRepository.save(like);
+
+        // when
+        likeRepository.deleteLikeFeed(6789L, 12345L);
+
+        // then
+        assertEquals(Collections.emptyList(), likeRepository.findByFeedDetailLocIdAndUserId(6789L, 12345L));
 
     }
 
