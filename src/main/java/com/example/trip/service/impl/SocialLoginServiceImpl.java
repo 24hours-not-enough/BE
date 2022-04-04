@@ -17,6 +17,7 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
@@ -41,7 +42,7 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
 
-
+@Slf4j
 @RequiredArgsConstructor
 @Service
 public class SocialLoginServiceImpl implements SocialLoginService {
@@ -399,6 +400,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
         Optional<User> bySocialaccountId = Optional.ofNullable(userRepository.findBySocialaccountId(authentication.getName()))
                 .orElseThrow(UserNotFoundException::new);
+        log.debug("refreshtoken의 value값 : " + redisServiceImpl.getValues(refreshToken));
         if (redisServiceImpl.getValues(refreshToken) == null) {
             throw new RefreshTokenNotFoundException();
         }
