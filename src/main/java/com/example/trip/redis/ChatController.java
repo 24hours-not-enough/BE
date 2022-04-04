@@ -8,7 +8,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.messaging.handler.annotation.Header;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.stereotype.Controller;
-
 import java.util.List;
 
 @RequiredArgsConstructor
@@ -27,6 +26,8 @@ public class ChatController {
 //            System.out.println(token);
 //        String nickName = jwtTokenProvider.getUserPk(token);
 //        chatRoomService.handleMsg(message.getPlan_id(), message, nickName);
+
+        //메세지를 핸들링하는 함수 호출
         chatRoomService.handleMsg(message.getPlan_id(), message);
     }
 }
