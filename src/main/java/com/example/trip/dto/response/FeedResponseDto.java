@@ -3,7 +3,6 @@ package com.example.trip.dto.response;
 import com.example.trip.domain.Feed;
 import com.example.trip.dto.response.FeedDetailLocResponseDto.GetFeedDetailLoc;
 import lombok.*;
-
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
