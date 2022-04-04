@@ -14,7 +14,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.CacheManager;
 import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -36,10 +35,14 @@ public class FeedServiceImpl implements FeedService {
     @Override
     @Cacheable(value = "allFeeds")
     public List<AllLocationsDto> findEachLocations(FeedRequestDto.FeedRequestMainGetDto feedRequestMainGetDto) {
+        // x,y좌표 범위 내에 있는 feeD LOCATION을 모두 가져온다.
         List<FeedLocation> feedLocations = feedLocationRepository.findLocations(
                 feedRequestMainGetDto.getLeftX(), feedRequestMainGetDto.getRightX(),
                 feedRequestMainGetDto.getTopY(), feedRequestMainGetDto.getBottomY());
+
         List<AllLocationsDto> allLocationsDtos = new ArrayList<>();
+
+        //가져온 정보들에서 필요한 정보들을 Dto에 담아준다.
         for (FeedLocation feedLocation : feedLocations) {
             AllLocationsDto allLocationsDto = AllLocationsDto.builder()
                     .placeId(feedLocation.getId())
@@ -47,15 +50,21 @@ public class FeedServiceImpl implements FeedService {
                     .latitude(feedLocation.getLatitude())
                     .longitude(feedLocation.getLongitude())
                     .build();
+            //Dto에 자식 엔티티 정보들도 매핑 해준다.
+            //아래 함수에서는 자식함수들을 타고 들어가며 부모와 자식 엔티티들을 매핑해준다.
             allLocationsDto.toFeedPerLocation(feedLocation.getFeedDetailLocs());
+            
+            //리스트에 만들어준 데이터를 담아준다.
             allLocationsDtos.add(allLocationsDto);
         }
         return allLocationsDtos;
     }
 
+    //피드 등록
     @Override
     @Transactional
     public List<Long> registerFeed(User user, FeedRequestDto.FeedRequestRegisterDto feedRequestRegisterDto) {
+        // 피드 데이터를 조회해올 때 정보가 변동이 생기므로 캐시에서 삭제해준다.
         cacheManager.getCache("allFeeds").clear();
 
         // feed 저장
@@ -66,10 +75,12 @@ public class FeedServiceImpl implements FeedService {
                 .travelEnd(feedRequestRegisterDto.getTravelEnd())
                 .build();
 
+        //피드 정보 저장
         Feed newFeed = feedRepository.save(feed);
 
         //feed Detail 저장
         // Collection.forEach를 사용하지않고, stream.forEach()를 쓰는 이유는, 리스트가 반복을 하면서 변경이 되기 떄문에,
+        //stream 객체를 활용하여 반복 도중 데이터가 변경이 되어도 오류가 나지않게 한다.
         // 병렬적으로 진행하기 위해서
         feedRequestRegisterDto.getFeedDetail().stream()
                 .forEach(x -> x.setFeed(newFeed));
@@ -117,17 +128,18 @@ public class FeedServiceImpl implements FeedService {
             throw new AuthFeedNotFoundException();
         }
 
-//Feed 수정
+        //Feed 수정
 
         Feed feed = feedRepository.findById(feedId).orElseThrow(() -> new FeedNotFoundException());
         feed.update(feedRequestModifyDto);
 
+        //피드 디테일 수정
         List<FeedDetail> feedDetails = feed.getFeedDetail();
         feedDetails.forEach(x -> x.update(
                 feedRequestModifyDto.getFeedDetail().get(feedDetails.indexOf(x))
         ));
 
-
+        // 피드 디테일 로케이션 수정
         List<FeedDetailLoc> feedDetailLocs = feedDetails.stream()
                 .map(FeedDetail::getFeedDetailLoc)
                 .flatMap(Collection::stream)
@@ -140,6 +152,8 @@ public class FeedServiceImpl implements FeedService {
                         .get(feedDetailLocs.indexOf(x)
 
                         )));
+
+        //피드 로케이션 수정
         List<FeedLocation> feedLocations = feedDetailLocs.stream()
                 .map(FeedDetailLoc::getFeedLocation)
                 .collect(Collectors.toList());
@@ -154,7 +168,7 @@ public class FeedServiceImpl implements FeedService {
 
         );
 
-
+        //피드디테일로케이션이미지 수정
         List<FeedDetailLocImg> feedDetailLocImgs = feedDetailLocs.stream()
                 .map(FeedDetailLoc::getFeedDetailLocImg)
                 .flatMap(List<FeedDetailLocImg>::stream)
@@ -180,12 +194,14 @@ public class FeedServiceImpl implements FeedService {
         if (myFeed.isEmpty()) {
             throw new AuthFeedNotFoundException();
         }
+        //피드 번호로 피드 삭제
         feedRepository.deleteById(feedId);
     }
 
     @Override
     public List<FeedResponseDto.GetFeed> getFeeds(Long userId) {
         ArrayList<FeedResponseDto.GetFeed> arr = new ArrayList<>();
+        //User Id로 피드 찾기
         feedRepository.findByUserId(userId).stream()
                 .map(x -> arr.add(new FeedResponseDto.GetFeed(x)))
                 .collect(Collectors.toList());
