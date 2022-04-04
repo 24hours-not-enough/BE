@@ -134,5 +134,6 @@ public class UserResponseDto {
     @Getter
     public static class reissueToken {
         private String accessToken;
+        private String refreshToken;
     }
 }

@@ -1,8 +1,10 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
+import com.example.trip.dto.request.TokenRequestDto;
 import com.example.trip.dto.request.UserRequestDto;
 import com.example.trip.dto.response.FeedLocationResponseDto;
+import com.example.trip.dto.response.TokenResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.dto.response.queryprojection.UserInfo;
 import com.example.trip.redis.notification.Notification;
@@ -116,6 +118,7 @@ public class UserController {
                 , HttpStatus.OK);
     }
 
+    // 유저 알림 정보 조회
     @GetMapping("/api/notification")
     public ResponseEntity<UserResponseDto.Notification> getNotification(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<Notification> notification = userService.getNotification(userDetails.getUser().getId());
@@ -123,6 +126,16 @@ public class UserController {
                 .result("success")
                 .msg("알림 정보입니다.")
                 .notification(notification)
+                .build(), HttpStatus.OK);
+    }
+
+    // 토큰 재발급
+    @PostMapping("/api/token")
+    public ResponseEntity<UserResponseDto.reissueToken> reissueToken(@RequestBody TokenRequestDto requestDto) {
+        TokenResponseDto dto = socialLoginService.reissueToken(requestDto);
+        return new ResponseEntity<>(UserResponseDto.reissueToken.builder()
+                .accessToken(dto.getAccessToken())
+                .refreshToken(dto.getRefreshToken())
                 .build(), HttpStatus.OK);
     }
 }
