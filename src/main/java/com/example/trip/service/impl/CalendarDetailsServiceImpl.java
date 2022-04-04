@@ -89,14 +89,18 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
         userAndPlanValidation(planId,userId);
         List<Calendar> byPlan = calendarRepository.findByPlan(planId);
         Optional<User> findUser = userRepository.findById(userId);
-        dto.forEach((list)-> byPlan.forEach((planList-> planList.updateCalendarUnlock(list.getDays(), findUser.get()))));
+        final int[] i = {0};
+        byPlan.forEach((planList -> {
+            planList.updateCalendarUnlock(dto.get(i[0]).getDays(), findUser.get());
+            i[0] +=1;
+        }));
         setCalendarDetailsList(dto);
     }
 
     private void setCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
         dto.forEach((details)->{
             Optional<Calendar> findCalendar = Optional.ofNullable(calendarRepository.findById(details.getCalendarId()).orElseThrow(CalendarNotFoundException::new));
-            List<CalendarDetails> findCalendarDetailsByCalendarId = calendarDetailsRepository.findByPlanIdAndCalendarId(details.getCalendarId());
+            List<CalendarDetails> findCalendarDetailsByCalendarId = calendarDetailsRepository.findByCalendarId(details.getCalendarId());
             Optional<CalendarDetails> calendarDetail = findCalendarDetailsByCalendarId.stream().findFirst();
             if(calendarDetail.isPresent()){
                 throw new CalendarDetailsAlreadyExistException();
