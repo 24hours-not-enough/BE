@@ -1,9 +1,6 @@
 package com.example.trip.service.impl;
 
-import com.example.trip.advice.exception.AuthPlanNotFoundException;
-import com.example.trip.advice.exception.CheckListModifyException;
-import com.example.trip.advice.exception.CheckListNotFoundException;
-import com.example.trip.advice.exception.PlanNotFoundException;
+import com.example.trip.advice.exception.*;
 import com.example.trip.domain.CheckList;
 import com.example.trip.domain.Plan;
 import com.example.trip.domain.User;
@@ -41,11 +38,14 @@ public class CheckListServiceImpl implements CheckListService {
     public void addCheckList(Long planId, List<CheckListsRequestDto> dto, Long userId) {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
         memberRepository.findByUserAndPlanActive(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
-        List<CheckList> byPlanId = checkListRepository.findByPlanId(planId);
         Optional<User> byId = userRepository.findById(userId);
-        checkListRepository.deleteByPlanId(planId);
-        setCheckList(findPlan.get(),dto, byId.get());
-
+        List<CheckList> findCheckList = checkListRepository.findByPlanId(planId);
+        Optional<CheckList> findCheckListOne = findCheckList.stream().findFirst();
+        if (!findCheckListOne.isPresent()) {
+            setCheckList(findPlan.get(),dto, byId.get());
+        }else {
+            throw new CheckListAlreadyExistException();
+        }
     }
 
     private void setCheckList(Plan plan, List<CheckListsRequestDto> dto, User user) {
@@ -63,6 +63,7 @@ public class CheckListServiceImpl implements CheckListService {
 
     @Override
     public void modifyCheckList(Long planId, List<CheckListsRequestDto> dto, Long userId) {
+        Optional<Plan> findPlan = planRepository.findById(planId);
 
     }
 
