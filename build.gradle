@@ -43,6 +43,9 @@ dependencies {
     implementation platform('com.amazonaws:aws-java-sdk-bom:1.11.837')
     implementation 'com.amazonaws:aws-java-sdk-s3'
     implementation 'org.springframework.boot:spring-boot-starter-validation'
+    compile group: 'ch.qos.logback', name: 'logback-classic', version: '1.3.0-alpha5'
+    compile group: 'org.slf4j', name: 'slf4j-api', version: '2.0.0-alpha1'
+    compile group: 'ch.qos.logback', name: 'logback-core', version: '1.3.0-alpha5'
 }
 
 //querydsl 추가 시작
