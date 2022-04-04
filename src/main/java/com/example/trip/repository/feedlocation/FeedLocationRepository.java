@@ -1,6 +1,7 @@
 package com.example.trip.repository.feedlocation;
 
 import com.example.trip.domain.FeedLocation;
+import com.example.trip.dto.response.FeedLocationResponseDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -21,4 +22,6 @@ public interface FeedLocationRepository extends JpaRepository<FeedLocation, Long
 //            "left join feed_comment com on com.feed_detail_loc_id = fdl.feed_detail_loc_id " +
 //            "left join user user1 on user1.user_id = com.user_id", nativeQuery = true)
 //    List<FeedLocation> findBookMarkLocation(Long userId);
+
+    List<FeedLocationResponseDto.BookMark> findBookMarkLocation(Long userId);
 }

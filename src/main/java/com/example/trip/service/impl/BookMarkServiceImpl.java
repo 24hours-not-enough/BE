@@ -47,7 +47,7 @@ public class BookMarkServiceImpl implements BookMarkService {
     }
     @Override
     public List<FeedLocationResponseDto.BookMark> findBookMarkPlaces(Long userId) {
-        //        ArrayList<FeedLocationResponseDto.BookMark> arr = new ArrayList<>();
+//                ArrayList<FeedLocationResponseDto.BookMark> arr = new ArrayList<>();
 
         // Step 1
 //        bookMarkRepository.findByUserId(userId).stream()
@@ -56,9 +56,10 @@ public class BookMarkServiceImpl implements BookMarkService {
 //                .collect(Collectors.toList());
 
         // Step 2
-//        feedLocationRepository.findBookMarkLocation(userId).stream()
+//        feedLocationRepository.findFeedLocationByBookMarkByUser(userId).stream()
 //                .map(x -> arr.add(new FeedLocationResponseDto.BookMark(x)))
 //                .collect(Collectors.toList());
+//        return arr;
 
         // Step 3
         return feedLocationRepository.findBookMarkLocation(userId);
