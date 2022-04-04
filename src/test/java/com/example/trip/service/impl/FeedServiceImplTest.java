@@ -212,15 +212,15 @@ class FeedServiceImplTest {
         FeedLocation feedLocation_1 = FeedLocation.builder()
                 .name("감귤농장")
                 .placeAddress("제주도 서귀포시")
-                .latitude("100.684")
-                .longitude("59.666")
+                .latitude(1006L)
+                .longitude(1054L)
                 .build();
 
         FeedLocation feedLocation_2 = FeedLocation.builder()
                 .name("해산물 시장")
                 .placeAddress("제주도 제주시")
-                .latitude("102.555")
-                .longitude("80.666")
+                .latitude(100L)
+                .longitude(1000L)
                 .build();
 
         locations.add(feedLocation_1);

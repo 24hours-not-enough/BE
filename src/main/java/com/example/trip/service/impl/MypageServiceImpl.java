@@ -104,7 +104,7 @@ public class MypageServiceImpl implements MypageService {
 //    }
 
     // 마이페이지 프로필 수정(완료)
-    @CacheEvict(value = "userprofile")
+//    @CacheEvict(value = "userprofile")
     @Transactional
     public UserResponseDto.UserProfile changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername()).orElseThrow(UserNotFoundException::new));
