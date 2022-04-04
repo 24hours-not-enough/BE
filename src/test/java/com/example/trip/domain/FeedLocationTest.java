@@ -12,8 +12,8 @@ class FeedLocationTest {
     void createFeedLocation_normal() {
         //given
         String name = "롯데월드";
-        String latitude = "127.668";
-        String longitude = "87.667";
+        Long latitude = 1050L;
+        Long longitude = 2000L;
         String placeAddress = "서울특별시 잠실";
 
         //when
