@@ -103,6 +103,7 @@ public class UserController {
                 .msg("회원 탈퇴되었습니다.").build(), HttpStatus.OK);
     }
 
+    // 유저 정보 조회
     @GetMapping("/api/user")
     public ResponseEntity<UserResponseDto.Responsev2> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         UserInfo user = userService.findUser(userDetails.getUser().getId());
@@ -116,12 +117,12 @@ public class UserController {
     }
 
     @GetMapping("/api/notification")
-    public ResponseEntity<UserResponseDto.alarmcheck> getNotification(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+    public ResponseEntity<UserResponseDto.Notification> getNotification(@AuthenticationPrincipal UserDetailsImpl userDetails) {
         List<Notification> notification = userService.getNotification(userDetails.getUser().getId());
-        return new ResponseEntity<>(UserResponseDto.alarmcheck.builder()
+        return new ResponseEntity<>(UserResponseDto.Notification.builder()
                 .result("success")
                 .msg("알림 정보입니다.")
-                .noti(notification)
+                .notification(notification)
                 .build(), HttpStatus.OK);
     }
 }

@@ -127,7 +127,7 @@ public class UserResponseDto {
     public static class Notification {
         private String result;
         private String msg;
-        private List<Notification> notification;
+        private List<com.example.trip.redis.notification.Notification> notification;
     }
 
     @Builder
