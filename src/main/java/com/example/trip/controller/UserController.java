@@ -1,13 +1,13 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.domain.FeedDetailLoc;
+import com.example.trip.dto.request.TokenRequestDto;
 import com.example.trip.dto.request.UserRequestDto;
 import com.example.trip.dto.response.FeedLocationResponseDto;
+import com.example.trip.dto.response.TokenResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
+import com.example.trip.dto.response.queryprojection.UserInfo;
 import com.example.trip.redis.notification.Notification;
-import com.example.trip.redis.notification.NotifyRepository;
-import com.example.trip.response.*;
 import com.example.trip.service.BookMarkService;
 import com.example.trip.service.RedisService;
 import com.example.trip.service.SocialLoginService;
@@ -25,9 +25,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -107,9 +105,10 @@ public class UserController {
                 .msg("회원 탈퇴되었습니다.").build(), HttpStatus.OK);
     }
 
+    // 유저 정보 조회
     @GetMapping("/api/user")
     public ResponseEntity<UserResponseDto.Responsev2> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserResponseDto.GetUser user = userService.findUser(userDetails.getUser().getId());
+        UserInfo user = userService.findUser(userDetails.getUser().getId());
         List<FeedLocationResponseDto.BookMark> bookMarkPlaces = bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
         return new ResponseEntity<>(UserResponseDto.Responsev2.builder()
                 .result("success")
@@ -117,5 +116,26 @@ public class UserController {
                 .userInfo(user)
                 .bookmark(bookMarkPlaces).build()
                 , HttpStatus.OK);
+    }
+
+    // 유저 알림 정보 조회
+    @GetMapping("/api/notification")
+    public ResponseEntity<UserResponseDto.Notification> getNotification(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<Notification> notification = userService.getNotification(userDetails.getUser().getId());
+        return new ResponseEntity<>(UserResponseDto.Notification.builder()
+                .result("success")
+                .msg("알림 정보입니다.")
+                .notification(notification)
+                .build(), HttpStatus.OK);
+    }
+
+    // 토큰 재발급
+    @PostMapping("/api/token")
+    public ResponseEntity<UserResponseDto.reissueToken> reissueToken(@RequestBody TokenRequestDto requestDto) {
+        TokenResponseDto dto = socialLoginService.reissueToken(requestDto);
+        return new ResponseEntity<>(UserResponseDto.reissueToken.builder()
+                .accessToken(dto.getAccessToken())
+                .refreshToken(dto.getRefreshToken())
+                .build(), HttpStatus.OK);
     }
 }

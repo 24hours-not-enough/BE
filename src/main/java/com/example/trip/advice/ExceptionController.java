@@ -129,5 +129,14 @@ public class ExceptionController {
         return new ResponseEntity<>(new Fail("중복된 유저명입니다."), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(TitleNotFoundException.class)
+    public ResponseEntity<Fail> TitleNotFoundException(TitleNotFoundException e) {
+        return new ResponseEntity<>(new Fail("제목이 빈 값입니다."), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(RefreshTokenNotFoundException.class)
+    public ResponseEntity<Fail> RefreshTokenNotFoundException(RefreshTokenNotFoundException e) {
+        return new ResponseEntity<>(new Fail("리프레시 토큰이 존재하지 않습니다."), HttpStatus.BAD_REQUEST);
+    }
 
 }
