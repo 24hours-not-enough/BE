@@ -1,6 +1,7 @@
 package com.example.trip.repository.feedlocation;
 
 import com.example.trip.dto.response.*;
+import com.example.trip.dto.response.queryprojection.QUserInfo;
 import com.querydsl.core.types.Projections;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import org.springframework.stereotype.Repository;
@@ -32,41 +33,39 @@ public class FeedLocationCustomRepositoryImpl implements FeedLocationCustomRepos
     public List<FeedLocationResponseDto.BookMark> findBookMarkLocation(Long userId) {
         return jpaQueryFactory
                 .select(Projections.constructor(FeedLocationResponseDto.BookMark.class,
-                                feedLocation.id,
-                                feedLocation.name,
-                                feedLocation.placeAddress,
-                                feedLocation.latitude,
-                                feedLocation.longitude,
-                                Projections.list(Projections.constructor(FeedDetailLocResponseDto.GetFeedDetailLoc.class,
-                                                feedDetailLoc.id,
-                                                feedDetailLoc.createdAt,
-                                                feedDetailLoc.feedLocation.name,
-                                                // String 으로만 받는 방법이 없을까? -> 팀원들과 논의하기
-                                                Projections.list(Projections.constructor(FeedDetailLocImgResponseDto.ImgUrl.class, feedDetailLocImg.imgUrl)),
-                                                Projections.list(Projections.constructor(LikesResponseDto.GetUserId.class,
-                                                                likes.user.id)
-                                                        ),
-                                                // 왜 되는 건지 고민해보기
-                                                Projections.constructor(UserResponseDto.GetUser.class, feedComment.user),
-                                                feedDetailLoc.memo,
-                                                Projections.list(Projections.constructor(FeedCommentResponseDto.GetComment.class,
-                                                                feedComment.id,
-                                                                // 왜 되는 건지 고민해보기
-                                                                Projections.constructor(UserResponseDto.GetUser.class, feedComment.user),
-                                                                feedComment.content)
-                                                        ))
-                                        ))
-                        )
+                        feedLocation.id,
+                        feedLocation.name,
+                        feedLocation.placeAddress,
+                        feedLocation.latitude,
+                        feedLocation.longitude,
+                        Projections.list(Projections.constructor(FeedDetailLocResponseDto.GetFeedDetailLoc.class,
+                                feedDetailLoc.id,
+                                feedDetailLoc.createdAt,
+                                feedDetailLoc.feedLocation.name,
+                                Projections.list(Projections.constructor(FeedDetailLocImgResponseDto.ImgUrl.class, feedDetailLocImg.imgUrl)),
+                                Projections.list(Projections.constructor(LikesResponseDto.GetUserId.class,
+                                        likes.user.id)
+                                ),
+//                                Projections.constructor(QUserInfo.class, feedDetailLoc.feedDetail.feed.user),
+                                feedDetailLoc.memo,
+                                Projections.list(Projections.constructor(FeedCommentResponseDto.GetComment.class,
+                                        feedComment.id,
+//                                        new QUserInfo(feedComment.user),
+                                        feedComment.content)
+                                ))
+                        ))
+                )
                 .from(feedLocation)
-                .innerJoin(bookMark).on(feedLocation.id.eq(bookMark.feedLocation.id), bookMark.user.id.eq(userId))
-                .innerJoin(feedDetailLoc) .on(feedLocation.id.eq(feedDetailLoc.feedLocation.id))
-                .leftJoin(feedDetailLocImg).on(feedDetailLoc.id.eq(feedDetailLocImg.feedDetailLoc.id))
-                .innerJoin(feedDetail).on(feedDetail.id.eq(feedDetailLoc.feedDetail.id))
-                .innerJoin(feed).on(feed.id.eq(feedDetail.feed.id))
-                .leftJoin(likes).on(likes.feedDetailLoc.id.eq(feedDetailLoc.id))
-                .leftJoin(user).on(user.id.eq(likes.user.id))
-                .leftJoin(feedComment).on(feedComment.feedDetailLoc.id.eq(feedDetailLoc.id))
-                .leftJoin(user).on(user.id.eq(feedComment.user.id))
+                .innerJoin(feedLocation.bookMarks, bookMark).on(feedLocation.id.eq(bookMark.feedLocation.id), bookMark.user.id.eq(userId))
+                .innerJoin(feedLocation.feedDetailLocs, feedDetailLoc).on(feedDetailLoc.feedLocation.id.eq(feedLocation.id))
+                .leftJoin(feedDetailLoc.feedDetailLocImg, feedDetailLocImg).on(feedDetailLoc.id.eq(feedDetailLocImg.feedDetailLoc.id))
+                .innerJoin(feedDetailLoc.feedDetail, feedDetail).on(feedDetailLoc.feedDetail.id.eq(feedDetail.id))
+                .innerJoin(feedDetail.feed, feed).on(feedDetail.feed.id.eq(feed.id))
+                .innerJoin(feed.user, user).on(feed.user.id.eq(user.id))
+                .leftJoin(feedDetailLoc.likes, likes).on(feedDetailLoc.id.eq(likes.feedDetailLoc.id))
+                .leftJoin(likes.user, user).on(likes.user.id.eq(user.id))
+                .leftJoin(feedDetailLoc.feedComments, feedComment).on(feedDetailLoc.id.eq(feedComment.feedDetailLoc.id))
+                .leftJoin(feedComment.user, user).on(feedComment.user.id.eq(user.id))
                 .fetch();
     }
 }

@@ -2,6 +2,7 @@ package com.example.trip.dto.response;
 
 
 import com.example.trip.domain.FeedDetailLoc;
+import com.example.trip.dto.response.queryprojection.UserInfo;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.Getter;
@@ -26,7 +27,7 @@ public class FeedDetailLocResponseDto {
         private List<FeedDetailLocImgResponseDto.ImgUrl> images;
 //        private List<String> images;
         private List<LikesResponseDto.GetUserId> like;
-        private UserResponseDto.GetUser creator;
+//        private UserInfo creator;
         private String content;
         private List<FeedCommentResponseDto.GetComment> comments;
 
@@ -38,7 +39,7 @@ public class FeedDetailLocResponseDto {
 //            this.images = feedDetailLoc.getFeedDetailLocImg().stream().map(x -> x.getImgUrl()).collect(Collectors.toList());
             this.images = feedDetailLoc.getFeedDetailLocImg().stream().map(FeedDetailLocImgResponseDto.ImgUrl::new).collect(Collectors.toList());
             this.like = feedDetailLoc.getLikes().stream().map(LikesResponseDto.GetUserId::new).collect(Collectors.toList());
-            this.creator = new UserResponseDto.GetUser(feedDetailLoc.getFeedDetail().getFeed().getUser());
+//            this.creator = feedDetailLoc.getFeedDetail().getFeed().getUser()
             this.content = feedDetailLoc.getMemo();
             this.comments = feedDetailLoc.getFeedComments().stream().map(FeedCommentResponseDto.GetComment::new).collect(Collectors.toList());
 

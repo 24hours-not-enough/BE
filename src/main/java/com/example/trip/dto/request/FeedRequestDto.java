@@ -45,12 +45,14 @@ public class FeedRequestDto {
     }
 
     @Getter
+    @AllArgsConstructor
     public static class FeedRequestCommentRegisterDto {
         @NotBlank
         private String content;
     }
 
     @Getter
+    @AllArgsConstructor
     public static class FeedRequestCommentModifyDto {
         @NotBlank
         private String content;
