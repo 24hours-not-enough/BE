@@ -1,13 +1,11 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.domain.FeedDetailLoc;
 import com.example.trip.dto.request.UserRequestDto;
 import com.example.trip.dto.response.FeedLocationResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
+import com.example.trip.dto.response.queryprojection.UserInfo;
 import com.example.trip.redis.notification.Notification;
-import com.example.trip.redis.notification.NotifyRepository;
-import com.example.trip.response.*;
 import com.example.trip.service.BookMarkService;
 import com.example.trip.service.RedisService;
 import com.example.trip.service.SocialLoginService;
@@ -25,9 +23,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.validation.Valid;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @RequiredArgsConstructor
 @Controller
@@ -109,7 +105,7 @@ public class UserController {
 
     @GetMapping("/api/user")
     public ResponseEntity<UserResponseDto.Responsev2> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserResponseDto.GetUser user = userService.findUser(userDetails.getUser().getId());
+        UserInfo user = userService.findUser(userDetails.getUser().getId());
         List<FeedLocationResponseDto.BookMark> bookMarkPlaces = bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
         return new ResponseEntity<>(UserResponseDto.Responsev2.builder()
                 .result("success")
@@ -117,5 +113,15 @@ public class UserController {
                 .userInfo(user)
                 .bookmark(bookMarkPlaces).build()
                 , HttpStatus.OK);
+    }
+
+    @GetMapping("/api/notification")
+    public ResponseEntity<UserResponseDto.alarmcheck> getNotification(@AuthenticationPrincipal UserDetailsImpl userDetails) {
+        List<Notification> notification = userService.getNotification(userDetails.getUser().getId());
+        return new ResponseEntity<>(UserResponseDto.alarmcheck.builder()
+                .result("success")
+                .msg("알림 정보입니다.")
+                .noti(notification)
+                .build(), HttpStatus.OK);
     }
 }
