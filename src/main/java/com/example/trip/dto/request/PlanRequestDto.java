@@ -30,8 +30,10 @@ public class PlanRequestDto {
         private List<MemberRequestDto.join> memberList;
     }
 
-    @NoArgsConstructor
     @Getter
+    @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
     public static class Modify{
         private String title;
 

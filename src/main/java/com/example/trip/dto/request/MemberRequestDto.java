@@ -1,5 +1,7 @@
 package com.example.trip.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -19,6 +21,8 @@ public class MemberRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
     public static class invite{
         private List<MemberRequestDto> memberList;
     }
