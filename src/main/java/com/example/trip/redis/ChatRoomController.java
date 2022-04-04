@@ -21,9 +21,8 @@ public class ChatRoomController {
     public LoginInfo getUser(HttpServletRequest request){
         Authentication auth = SecurityContextHolder.getContext().getAuthentication();
         String accessToken = jwtTokenProvider.resolveAccessToken(request);
-        String refreshToken = jwtTokenProvider.resolveRefreshToken(request);
 /// 리프레시 토큰으로 sns계정 아이디 정보 가져오기
-        String snsaccountId = jwtTokenProvider.getUserPk(refreshToken);
+        String snsaccountId = jwtTokenProvider.getUserPk(accessToken);
         /// 토큰 발급
         String newAccessToken = jwtTokenProvider.createToken(snsaccountId, 30 * 60 * 1000L);
 

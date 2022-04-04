@@ -12,7 +12,7 @@ public interface FeedRepository extends JpaRepository<Feed, Long>, FeedCustomRep
     Optional<Feed> FindFeedByUserId(Long userId, Long feedId);
 
 //    List<Feed> findByUserId(Long userId, Pageable pageable);
-//    List<Feed> findByUserId(Long userId);
+    List<Feed> findByUserId(Long userId);
 
     @Query("select f from Feed f where f.id = ?1 and f.user.id = ?2")
     List<Feed> findByIdAndUserId(Long feedId, Long userId);
