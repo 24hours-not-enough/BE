@@ -2,7 +2,6 @@ package com.example.trip.domain;
 
 import com.example.trip.dto.request.FeedRequestDto;
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -27,6 +26,7 @@ public class FeedComment extends TimeStamped{
     @JoinColumn(name = "user_id")
     private User user;
 
+    //피드 댓글 수정
     public void update(FeedRequestDto.FeedRequestCommentModifyDto feedRequestCommentModifyDto){
         this.content = feedRequestCommentModifyDto.getContent();
 

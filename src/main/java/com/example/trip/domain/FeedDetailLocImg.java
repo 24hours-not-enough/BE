@@ -1,9 +1,7 @@
 package com.example.trip.domain;
 
 import lombok.*;
-import org.springframework.data.jpa.repository.Modifying;
 import javax.persistence.*;
-import javax.transaction.Transactional;
 
 @Entity
 @Getter
@@ -25,6 +23,7 @@ public class FeedDetailLocImg {
 
     private String imgUrl;
 
+    //피드 디테일 로케이션 이미지 수정
     public void update(FeedDetailLocImg feedDetailLocImg){
         this.fileName = feedDetailLocImg.getFileName();
         this.imgUrl = feedDetailLocImg.getImgUrl();

@@ -1,9 +1,7 @@
 package com.example.trip.domain;
 
 
-import com.example.trip.dto.request.FeedRequestDto;
 import lombok.AccessLevel;
-import com.example.trip.dto.request.FeedRequestDto;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -36,6 +34,7 @@ public class FeedLocation {
     @OneToMany(cascade = CascadeType.ALL, mappedBy = "feedLocation")
     private List<BookMark> bookMarks;
 
+    //피드 로케이션 수정
     public void update(FeedLocation feedLocation){
         this.name = feedLocation.getName();
         this.latitude = feedLocation.getLatitude();
