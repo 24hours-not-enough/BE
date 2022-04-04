@@ -32,17 +32,20 @@ public class PlanRequestDto {
 
     @NoArgsConstructor
     @Getter
+    @AllArgsConstructor
     public static class Modify{
+        @NotBlank
         private String title;
 
+        @NotBlank
         private String travelDestination;
 
+        @NotBlank
         private LocalDateTime travelStart;
 
+        @NotBlank
         private LocalDateTime travelEnd;
 
         private List<MemberRequestDto.join> memberList;
-
-        private Boolean delFl;
     }
 }

@@ -7,6 +7,6 @@ import java.util.List;
 import java.util.Map;
 
 public interface FeedDetailLocImgService {
-    Map<String, String> registerFeedImage(Long feedDetailLocId, List<MultipartFile> imgFiles);
+    Map<String, String> registerFeedImage(List<MultipartFile> imgFiles);
     void deleteFeedImage(FeedRequestDto.FeedRequestDeleteImgDto FeedRequestDeleteImgDto);
 }

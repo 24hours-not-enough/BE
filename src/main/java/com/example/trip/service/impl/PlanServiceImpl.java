@@ -65,13 +65,9 @@ public class PlanServiceImpl implements PlanService {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
         authMemberValidation(user_id,planId);
         authPlanValidation(planId,user_id);
-        if(modify.getDelFl()==null){
             findPlan.get().updatePlan(modify);
             memberRepository.deleteByPlanId(planId);
             setMember(modify.getMemberList(),findPlan.get());
-        }else{
-            findPlan.get().updatePlan(modify);
-        }
     }
 
     @Override
@@ -108,6 +104,16 @@ public class PlanServiceImpl implements PlanService {
         log.info("planDetails.size() = {}", planDetails.size());
         log.info("===========================");
         return planRepository.findPlanDetails(userId);
+    }
+
+    @Override
+    @Transactional
+    public Boolean modifyDelPlan(Long userId, Long planId) {
+        Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
+        authMemberValidation(userId, planId);
+        Boolean planDel = findPlan.get().getDel_tc();
+        findPlan.get().deletePlan(!planDel);
+        return !planDel;
     }
 
     //회원가입쪽 완료 시 동일 이메일 예외처리 넣어줘야함

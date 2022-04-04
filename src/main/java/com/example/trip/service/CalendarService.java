@@ -6,4 +6,6 @@ public interface CalendarService {
     CalendarResponseDto.CalendarAdd addDays(Long planId, Long userId);
 
     void addCalendarLock(Long planId, Long userId);
+
+    void addCalendarUnLock(Long planId, Long userId);
 }

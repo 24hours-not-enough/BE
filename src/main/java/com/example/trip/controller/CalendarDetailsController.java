@@ -26,7 +26,7 @@ public class CalendarDetailsController {
     public ResponseEntity<PlanResponseDto.ResponseNodata> CalendarDetailsAdd(@PathVariable Long calendarId, @RequestBody CalendarDetailsRequestDto.Add dto, @PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         calendarDetailsService.addCalendarDetails(calendarId, dto, planId, userDetails.getUser().getId());
         return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
-                .msg("계획 나가기 성공!")
+                .msg("상세계획 내용 등록 완료!")
                 .result("success")
                 .build(),HttpStatus.OK);
     }

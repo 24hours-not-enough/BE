@@ -7,6 +7,7 @@ import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.dto.response.AllLocationsDto;
 import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.repository.*;
+import com.example.trip.repository.feed.FeedRepository;
 import com.example.trip.repository.feedlocation.FeedLocationRepository;
 import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
@@ -35,8 +36,10 @@ public class FeedServiceImpl implements FeedService {
 
     @Override
     @Cacheable(value = "allFeeds")
-    public List<AllLocationsDto> findAll() {
-        List<FeedLocation> feedLocations = feedLocationRepository.findAll();
+    public List<AllLocationsDto> findEachLocations(FeedRequestDto.FeedRequestMainGetDto feedRequestMainGetDto) {
+        List<FeedLocation> feedLocations = feedLocationRepository.findLocations(
+                feedRequestMainGetDto.getLeftX(), feedRequestMainGetDto.getRightX(),
+                feedRequestMainGetDto.getTopY(), feedRequestMainGetDto.getBottomY());
         List<AllLocationsDto> allLocationsDtos = new ArrayList<>();
         for (FeedLocation feedLocation : feedLocations) {
             AllLocationsDto allLocationsDto = AllLocationsDto.builder()

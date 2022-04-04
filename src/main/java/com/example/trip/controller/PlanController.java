@@ -1,13 +1,8 @@
 package com.example.trip.controller;
 
-import com.example.trip.advice.*;
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.domain.Image;
-import com.example.trip.domain.Role;
-import com.example.trip.domain.User;
 import com.example.trip.dto.request.PlanRequestDto;
 import com.example.trip.dto.response.PlanResponseDto;
-import com.example.trip.repository.UserRepository;
 import com.example.trip.service.PlanService;
 import io.swagger.annotations.ApiOperation;
 import lombok.RequiredArgsConstructor;
@@ -18,7 +13,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.web.bind.annotation.*;
 
-import javax.annotation.PostConstruct;
 import java.util.List;
 
 @RestController
@@ -27,8 +21,6 @@ import java.util.List;
 public class PlanController {
 
     private final PlanService planService;
-
-    private final UserRepository userRepository;
 
     @ApiOperation(value = "계획 등록", notes = "로그인 사용자만 가능")
     @PostMapping("/plan")
@@ -52,20 +44,26 @@ public class PlanController {
                 .build(),HttpStatus.OK);
     }
 
-    @ApiOperation(value = "여행 계획 수정, 복구, 삭제", notes = "계획을 등록한 사람만 가능")
+    @ApiOperation(value = "여행 계획 수정", notes = "계획을 등록한 사람만 가능")
     @PutMapping("/plan/{planId}")
-    public ResponseEntity<PlanResponseDto.ResponseNodata> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId, @RequestBody PlanRequestDto.Modify modify) {
+    public ResponseEntity<PlanResponseDto.ResponseNodata> planModify(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId,@RequestBody PlanRequestDto.Modify modify) {
         planService.modifyPlan(userDetails.getUser().getId(), planId, modify);
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
+                .result("success")
+                .msg("계획 수정 성공!")
+                .build(),HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "여행 계획 복구, 삭제", notes = "계획을 등록한 사람만 가능")
+    @PutMapping("/plan/{planId}/storage")
+    public ResponseEntity<PlanResponseDto.ResponseNodata> planStorage(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long planId){
+        Boolean modifyDelPlan = planService.modifyDelPlan(userDetails.getUser().getId(), planId);
         String msg;
-        if(modify.getTitle()!=null){
-            msg = "계획 수정 성공!";
-        }
-        else if(modify.getDelFl()==true){
+        if(modifyDelPlan){
             msg = "계획 복구 성공!";
         }else{
             msg = "계획 삭제 성공!";
         }
-
         return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
                 .result("success")
                 .msg(msg)
