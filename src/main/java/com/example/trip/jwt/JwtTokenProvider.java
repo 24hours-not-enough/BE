@@ -3,7 +3,6 @@ package com.example.trip.jwt;
 
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.config.security.UserDetailsServiceImpl;
-import com.example.trip.repository.UserRepository;
 import com.example.trip.service.impl.RedisServiceImpl;
 import io.jsonwebtoken.*;
 import lombok.RequiredArgsConstructor;
@@ -56,20 +55,18 @@ public class JwtTokenProvider {
 
     // 토큰에서 회원 정보 추출
     public String getUserPk(String token) {
-        // UserPK 즉 User의 이메일을 반환
-        return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        try {
+            // UserPK 즉 User의 snsId를 반환
+            return Jwts.parser().setSigningKey(secretKey).parseClaimsJws(token).getBody().getSubject();
+        } catch (ExpiredJwtException exception) {
+            return exception.getClaims().getSubject();
+        }
     }
 
     // Request의 Header에서 AccessToken 값을 가져옵니다. "authorization" : "token'
     public String resolveAccessToken(HttpServletRequest request) {
         if(request.getHeader("authorization") != null )
-            return request.getHeader("authorization").substring(7); // .substring(7) 삭제 -> 영향 X 확인
-        return null;
-    }
-    // Request의 Header에서 RefreshToken 값을 가져옵니다. "authorization" : "token'
-    public String resolveRefreshToken(HttpServletRequest request) {
-        if(request.getHeader("refreshToken") != null )
-            return request.getHeader("refreshToken").substring(7);
+            return request.getHeader("authorization");
         return null;
     }
 
@@ -77,28 +74,19 @@ public class JwtTokenProvider {
     public boolean validateToken(String jwtToken) {
         try {
             Jws<Claims> claims = Jwts.parser().setSigningKey(secretKey).parseClaimsJws(jwtToken);
-            System.out.println(claims.getBody().getExpiration());
-            System.out.println(claims.getBody().getSubject());
             return !claims.getBody().getExpiration().before(new Date());
-        } catch (ExpiredJwtException e) {
-            return false;
-        } catch (JwtException e) {
-            throw new RuntimeException("유효하지 않은 토큰입니다.");
+        } catch (ExpiredJwtException exception) {
+            throw exception;
         }
     }
 
     // 어세스 토큰 헤더 설정
     public void setHeaderAccessToken(HttpServletResponse response, String accessToken) {
-        response.setHeader("authorization", "bearer "+ accessToken);
+        response.setHeader("authorization", accessToken);
     }
 
     // 리프레시 토큰 헤더 설정
     public void setHeaderRefreshToken(HttpServletResponse response, String refreshToken) {
-        response.setHeader("refreshToken", "bearer "+ refreshToken);
-    }
-
-    // refresh token 존재유무 확인
-    public boolean existsRefreshToken(String refreshtoken) {
-        return redisServiceImpl.getValues(refreshtoken) != null;
+        response.setHeader("refreshToken", refreshToken);
     }
 }

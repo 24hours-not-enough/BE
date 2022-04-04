@@ -1,8 +1,11 @@
 package com.example.trip.service;
 
 import com.example.trip.domain.User;
+import com.example.trip.dto.request.TokenRequestDto;
+import com.example.trip.dto.response.TokenResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
+import jdk.nashorn.internal.parser.Token;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -47,4 +50,6 @@ public interface SocialLoginService {
     void deleteAccount(String socialaccountId);
 
     void checkNoSameUsername(String username);
+
+    TokenResponseDto reissueToken(TokenRequestDto requestDto);
 }

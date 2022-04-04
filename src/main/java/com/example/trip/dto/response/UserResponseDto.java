@@ -2,7 +2,7 @@ package com.example.trip.dto.response;
 
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
-import com.example.trip.domain.User;
+import com.example.trip.dto.response.queryprojection.UserInfo;
 import com.example.trip.redis.notification.Notification;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -101,26 +101,12 @@ public class UserResponseDto {
         private Long userId;
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class GetUser {
-        private Long userId;
-        private String userName;
-        private String userProfileImage;
-
-        public GetUser(User user) {
-            this.userId = user.getId();
-            this.userName = user.getUsername();
-            this.userProfileImage = user.getImage().getFile_store_course();
-        }
-    }
-
     @Builder
     @Getter
     public static class Responsev2 {
         private String result;
         private String msg;
-        private UserResponseDto.GetUser userInfo;
+        private UserInfo userInfo;
 //        private List<Notification> notificationInfo;
         private List<FeedLocationResponseDto.BookMark> bookmark;
 
@@ -134,5 +120,20 @@ public class UserResponseDto {
         private boolean first;
         private TokenInfo tokens;
         private UserProfile userInfo;
+    }
+
+    @Builder
+    @Getter
+    public static class Notification {
+        private String result;
+        private String msg;
+        private List<com.example.trip.redis.notification.Notification> notification;
+    }
+
+    @Builder
+    @Getter
+    public static class reissueToken {
+        private String accessToken;
+        private String refreshToken;
     }
 }

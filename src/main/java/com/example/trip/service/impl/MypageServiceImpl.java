@@ -6,6 +6,7 @@ import com.example.trip.domain.*;
 import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.repository.*;
 import com.example.trip.repository.BookMarkRepository;
+import com.example.trip.repository.feed.FeedRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.MypageService;
 import lombok.RequiredArgsConstructor;

@@ -5,9 +5,11 @@ import com.example.trip.advice.exception.CalendarModifyException;
 import com.example.trip.advice.exception.PlanNotFoundException;
 import com.example.trip.domain.Calendar;
 import com.example.trip.domain.Plan;
+import com.example.trip.domain.User;
 import com.example.trip.dto.response.CalendarResponseDto;
 import com.example.trip.repository.CalendarRepository;
 import com.example.trip.repository.MemberRepository;
+import com.example.trip.repository.UserRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.CalendarService;
 import lombok.RequiredArgsConstructor;
@@ -29,6 +31,8 @@ public class CalendarServiceImpl implements CalendarService {
 
     private final MemberRepository memberRepository;
 
+    private final UserRepository userRepository;
+
     @Override
     @Transactional
     public CalendarResponseDto.CalendarAdd addDays(Long planId, Long userId) {
@@ -38,14 +42,14 @@ public class CalendarServiceImpl implements CalendarService {
         Optional<Calendar> first = daysByPlanId.stream().findFirst();
         Optional<Plan> findPlan = planRepository.findById(planId);
         Optional<Calendar> calendarList = calendarRepository.findAll(Sort.by(Sort.Direction.DESC,"id")).stream().findFirst();
-
+        Calendar save;
         if(!first.isPresent()){
             Calendar calendar = Calendar.builder()
                     .days("1일차")
                     .plan(findPlan.get())
                     .is_locked(false)
                     .build();
-            calendarRepository.save(calendar);
+            save = calendarRepository.save(calendar);
         }else {
             String day = first.get().getDays();
             int intDay = Integer.parseInt(day.replaceAll("[^0-9]", ""));
@@ -55,10 +59,10 @@ public class CalendarServiceImpl implements CalendarService {
                     .plan(findPlan.get())
                     .is_locked(false)
                     .build();
-            calendarRepository.save(calendar);
+            save = calendarRepository.save(calendar);
         }
             return CalendarResponseDto.CalendarAdd.builder()
-                    .calendarId(calendarList.get().getId()+1).build();
+                    .calendarId(save.getId()).build();
     }
 
     @Override
@@ -66,12 +70,24 @@ public class CalendarServiceImpl implements CalendarService {
     public void addCalendarLock(Long planId, Long userId) {
         planValidation(planId);
         authPlanValidation(planId, userId);
-        Optional<Calendar> planLock = calendarRepository.findByPlanLock(planId);
+        List<Calendar> findCalendar = calendarRepository.findByPlanLock(planId);
+        Optional<Calendar> planLock = findCalendar.stream().findFirst();
         if (planLock.isPresent()) {
             throw new CalendarModifyException();
         }
         List<Calendar> calendarList = calendarRepository.findByPlan(planId);
-        calendarList.forEach((Calendar::updateCalendarLock));
+        Optional<User> findUser = userRepository.findById(userId);
+        calendarList.forEach((list)-> list.updateCalendarLock(findUser.get())); //(Calendar::updateCalendarLock)
+    }
+
+    @Override
+    @Transactional
+    public void addCalendarUnLock(Long planId, Long userId) {
+        List<Calendar> findPlan = calendarRepository.findByPlan(planId);
+        Optional<User> findUser = userRepository.findById(userId);
+        findPlan.forEach((list)->{
+            list.CalendarUnLock(findUser.get());
+        });
     }
 
     private void authPlanValidation(Long planId, Long userId) {
