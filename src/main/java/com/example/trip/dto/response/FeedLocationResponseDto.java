@@ -15,8 +15,8 @@ public class FeedLocationResponseDto {
         private Long placeId;
         private String placeName;
         private String placeAddress;
-        private String latitude;
-        private String longitude;
+        private Long latitude;
+        private Long longitude;
         private List<FeedDetailLocResponseDto.GetFeedDetailLoc> feedDetailLoc;
 
 
@@ -24,8 +24,8 @@ public class FeedLocationResponseDto {
             this.placeId = feedLocation.getId();
             this.placeName = feedLocation.getName();
             this.placeAddress = feedLocation.getPlaceAddress();
-            this.latitude = feedLocation.getLatitude().toString();
-            this.longitude = feedLocation.getLongitude().toString();
+            this.latitude = feedLocation.getLatitude();
+            this.longitude = feedLocation.getLongitude();
             this.feedDetailLoc = feedLocation.getFeedDetailLocs().stream().map(FeedDetailLocResponseDto.GetFeedDetailLoc::new).collect(Collectors.toList());
         }
     }

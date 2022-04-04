@@ -43,8 +43,8 @@ class FeedCommentTest {
 
         FeedLocation feedLocation = FeedLocation.builder()
                 .name("감귤농장")
-                .latitude("100.356")
-                .longitude("46.87")
+                .latitude(1006L)
+                .longitude(1054L)
                 .placeAddress("서귀포시")
                 .build();
 
