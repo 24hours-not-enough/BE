@@ -26,18 +26,18 @@ public class FeedDetailLocImgServiceImpl implements FeedDetailLocImgService {
 
     @Override
     @Transactional
-    public Map<String, String> registerFeedImage(Long feedDetailLocId, List<MultipartFile> imgFiles) {
+    public Map<String, String> registerFeedImage(List<MultipartFile> imgFiles) {
         //s3에 이미지 파일 업로드
         Map<String, String> nameAndUrl = awsS3Service.uploadFile(imgFiles);
-        // 해당 피드 상세 위치 값이 있는지 체크
-        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId)
-                .orElseThrow(() -> new FeedDetailLocNotFoundException());
-        //FeedDetailLocImg 에 관련 정보 담아서 저장
-        nameAndUrl.entrySet().forEach(x -> feedDetailLocImgRepository.save(FeedDetailLocImg.builder()
-                .feedDetailLoc(feedDetailLoc)
-                .fileName(x.getKey())
-                .imgUrl(x.getValue())
-                .build()));
+//        // 해당 피드 상세 위치 값이 있는지 체크
+//        FeedDetailLoc feedDetailLoc = feedDetailLocRepository.findById(feedDetailLocId)
+//                .orElseThrow(() -> new FeedDetailLocNotFoundException());
+//        //FeedDetailLocImg 에 관련 정보 담아서 저장
+//        nameAndUrl.entrySet().forEach(x -> feedDetailLocImgRepository.save(FeedDetailLocImg.builder()
+//                .feedDetailLoc(feedDetailLoc)
+//                .fileName(x.getKey())
+//                .imgUrl(x.getValue())
+//                .build()));
 
         return nameAndUrl;
     }

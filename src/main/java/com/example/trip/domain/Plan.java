@@ -37,12 +37,15 @@ public class Plan extends TimeStamped {
     private User user;
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
     private final Set<Member> members = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
     private final Set<Calendar> calendars = new HashSet<>();
 
     @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OrderBy("id asc")
     private final Set<CheckList> checkLists = new HashSet<>();
 
     @Builder
@@ -69,23 +72,13 @@ public class Plan extends TimeStamped {
     }
 
     public void updatePlan(PlanRequestDto.Modify modify) {
-        if (modify.getTitle() != null) {
             this.title = modify.getTitle();
-        }
-        if (modify.getTitle() != null) {
             this.travel_destination = modify.getTravelDestination();
-        }
-        if (modify.getTitle() != null) {
             this.travel_start = modify.getTravelStart();
-        }
-        if (modify.getTitle() != null) {
             this.travel_end = modify.getTravelEnd();
-        }else {
-            this.del_tc = modify.getDelFl();
-        }
     }
 
-    public void deletePlan(PlanRequestDto.Modify modify) {
-        this.del_tc = modify.getDelFl();
+    public void deletePlan(Boolean del_tc) {
+        this.del_tc = del_tc;
     }
 }

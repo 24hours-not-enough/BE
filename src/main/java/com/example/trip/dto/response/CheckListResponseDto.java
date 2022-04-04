@@ -1,6 +1,7 @@
 package com.example.trip.dto.response;
 
 import com.example.trip.domain.CheckList;
+import com.example.trip.domain.User;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -20,5 +21,18 @@ public class CheckListResponseDto {
         this.checkListId = checkList.getId();
         this.checkItem = checkList.getCheck_item();
         this.isChecked = checkList.getIs_checked();
+    }
+    @AllArgsConstructor
+    @Getter
+    @NoArgsConstructor
+    public static class CheckListLock{
+        private Boolean isLocked;
+
+        private String nickName;
+
+        public CheckListLock(CheckList checkList){
+            this.isLocked = checkList.getIs_locked();
+            this.nickName = checkList.getUser().getUsername();
+        }
     }
 }
