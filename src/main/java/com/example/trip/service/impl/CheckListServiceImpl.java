@@ -11,7 +11,6 @@ import com.example.trip.repository.UserRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.CheckListService;
 import lombok.RequiredArgsConstructor;
-import org.hibernate.annotations.Check;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -42,14 +41,14 @@ public class CheckListServiceImpl implements CheckListService {
         List<CheckList> findCheckList = checkListRepository.findByPlanId(planId);
         Optional<CheckList> findCheckListOne = findCheckList.stream().findFirst();
         if (!findCheckListOne.isPresent()) {
-            setCheckList(findPlan.get(),dto, byId.get());
-        }else {
+            setCheckList(findPlan.get(), dto, byId.get());
+        } else {
             throw new CheckListAlreadyExistException();
         }
     }
 
     private void setCheckList(Plan plan, List<CheckListsRequestDto> dto, User user) {
-        dto.forEach((checkList)->{
+        dto.forEach((checkList) -> {
             CheckList checklist = CheckList.builder()
                     .check_item(checkList.getCheckName())
                     .is_checked(checkList.getIsChecked())
@@ -62,8 +61,30 @@ public class CheckListServiceImpl implements CheckListService {
     }
 
     @Override
+    @Transactional
     public void modifyCheckList(Long planId, List<CheckListsRequestDto> dto, Long userId) {
-        Optional<Plan> findPlan = planRepository.findById(planId);
+        Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
+        Optional<User> findUser = userRepository.findById(userId);
+        List<CheckList> checkListByPlanId = checkListRepository.findByPlanId(planId);
+        final int[] i = {0};
+        checkListByPlanId.forEach((list)->{
+                list.updateCheckList(dto.get(i[0]));
+                i[0] +=1;
+        });
+        dto.forEach((checkList) -> {
+            List<CheckList> byPlanIdAndCheckName = checkListRepository.findByPlanIdAndCheckName(checkList.getCheckName(), planId);
+            Optional<CheckList> findCheckList = byPlanIdAndCheckName.stream().findFirst();
+            if(!findCheckList.isPresent()){
+                CheckList checklist = CheckList.builder()
+                        .check_item(checkList.getCheckName())
+                        .is_checked(checkList.getIsChecked())
+                        .is_locked(false)
+                        .plan(findPlan.get())
+                        .user(findUser.get())
+                        .build();
+                checkListRepository.save(checklist);
+            }
+        });
 
     }
 
@@ -72,7 +93,7 @@ public class CheckListServiceImpl implements CheckListService {
     public void addCheckListUnLock(Long planId, Long userId) {
         List<CheckList> findPlan = checkListRepository.findByPlanId(planId);
         Optional<User> findUser = userRepository.findById(userId);
-        findPlan.forEach((list)->{
+        findPlan.forEach((list) -> {
             list.updateCheckListUnLock(findUser.get());
         });
     }
@@ -81,7 +102,7 @@ public class CheckListServiceImpl implements CheckListService {
     @Transactional
     public void removeCheckList(Long checkListsId, Long planId, Long userId) {
         planValidation(planId);
-        userAndPlanValidation(planId,userId);
+        userAndPlanValidation(planId, userId);
         checkListValidation(checkListsId);
         checkListRepository.deleteById(checkListsId);
     }
@@ -90,7 +111,7 @@ public class CheckListServiceImpl implements CheckListService {
     @Transactional
     public void addCheckListLock(Long planId, Long id) {
         planValidation(planId);
-        userAndPlanValidation(planId,id);
+        userAndPlanValidation(planId, id);
         List<CheckList> findLockCheckList = checkListRepository.findByPlanIdAndLock(planId);
         Optional<CheckList> PlanIdAndLock = findLockCheckList.stream().findFirst();
         if (PlanIdAndLock.isPresent()) {
@@ -98,8 +119,8 @@ public class CheckListServiceImpl implements CheckListService {
         }
         List<CheckList> findPlan = checkListRepository.findByPlanId(planId);
         Optional<User> findUser = userRepository.findById(id);
-        findPlan.forEach((list)->{
-           list.updateCheckListLock(findUser.get());
+        findPlan.forEach((list) -> {
+            list.updateCheckListLock(findUser.get());
         });
     }
 
@@ -107,11 +128,11 @@ public class CheckListServiceImpl implements CheckListService {
         planRepository.findById(planId).orElseThrow(PlanNotFoundException::new);
     }
 
-    private void userAndPlanValidation(Long planId,Long userId){
+    private void userAndPlanValidation(Long planId, Long userId) {
         memberRepository.findByUserAndPlanActive(planId, userId).orElseThrow(AuthPlanNotFoundException::new);
     }
 
-    private void checkListValidation(Long checkListsId){
+    private void checkListValidation(Long checkListsId) {
         checkListRepository.findById(checkListsId).orElseThrow(CheckListNotFoundException::new);
     }
 

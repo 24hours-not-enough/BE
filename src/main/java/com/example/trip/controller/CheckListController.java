@@ -30,6 +30,16 @@ public class CheckListController {
                 .build(),HttpStatus.OK);
     }
 
+    @ApiOperation(value = "체크리스트 수정", notes = "계획이 존재해야만 등록 가능")
+    @PutMapping("/plan/{planId}/checkLists")
+    public ResponseEntity<PlanResponseDto.ResponseNodata> CheckListModify(@PathVariable Long planId, @RequestBody List<CheckListsRequestDto> dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        checkListService.modifyCheckList(planId,dto,userDetails.getUser().getId());
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
+                .msg("체크리스트 수정 완료!")
+                .result("success")
+                .build(),HttpStatus.OK);
+    }
+
 
 //    @PutMapping("/plan/{planId}/checkLists/{checkListsId}")
 //    public ResponseEntity<Success> CheckListModify(@PathVariable Long checkListsId, @RequestBody CheckListsRequestDto dto, @PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails){
