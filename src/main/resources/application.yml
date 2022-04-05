@@ -57,8 +57,7 @@ cloud:
   aws:
     s3:
       bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
-      region:
-        static: ${{ secrets.AWS_REGION }}
+      region: ${{ secrets.AWS_REGION }}
       stack:
         auto: false
     credentials:

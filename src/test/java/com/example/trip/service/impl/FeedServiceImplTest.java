@@ -3,7 +3,7 @@ package com.example.trip.service.impl;
 import com.example.trip.domain.*;
 import com.example.trip.dto.request.FeedRequestDto;
 import com.example.trip.repository.*;
-import com.example.trip.repository.feed.FeedRepository;
+import com.example.trip.repository.FeedRepository;
 import com.example.trip.repository.feedlocation.FeedLocationRepository;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.DisplayName;
