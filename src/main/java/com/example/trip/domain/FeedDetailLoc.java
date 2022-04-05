@@ -44,5 +44,3 @@ public class FeedDetailLoc extends TimeStamped {
         this.memo = feedDetailLoc.getMemo();
     }
 }
-
-}
