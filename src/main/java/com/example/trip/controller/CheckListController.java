@@ -20,12 +20,22 @@ public class CheckListController {
 
     private final CheckListService checkListService;
 
-    @ApiOperation(value = "체크리스트 등록 및 수정", notes = "계획이 존재해야만 등록 가능")
+    @ApiOperation(value = "체크리스트 등록", notes = "계획이 존재해야만 등록 가능")
     @PostMapping("/plan/{planId}/checkLists")
     public ResponseEntity<PlanResponseDto.ResponseNodata> CheckListAdd(@PathVariable Long planId, @RequestBody List<CheckListsRequestDto> dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
         checkListService.addCheckList(planId,dto,userDetails.getUser().getId());
         return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
                 .msg("체크리스트 등록 완료!")
+                .result("success")
+                .build(),HttpStatus.OK);
+    }
+
+    @ApiOperation(value = "체크리스트 수정", notes = "계획이 존재해야만 등록 가능")
+    @PutMapping("/plan/{planId}/checkLists")
+    public ResponseEntity<PlanResponseDto.ResponseNodata> CheckListModify(@PathVariable Long planId, @RequestBody List<CheckListsRequestDto> dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        checkListService.modifyCheckList(planId,dto,userDetails.getUser().getId());
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
+                .msg("체크리스트 수정 완료!")
                 .result("success")
                 .build(),HttpStatus.OK);
     }
@@ -43,7 +53,7 @@ public class CheckListController {
 //        return new ResponseEntity<>(new Success(true,"체크리스트 삭제 완료!"), HttpStatus.OK);
 //    }
 
-    @PutMapping ("/plan/{planId}/checkLists")
+    @PutMapping ("/plan/{planId}/checkLists/unlock")
     public ResponseEntity<PlanResponseDto.ResponseNodata> CheckListUnLock(@PathVariable Long planId, @AuthenticationPrincipal UserDetailsImpl userDetails){
         checkListService.addCheckListUnLock(planId, userDetails.getUser().getId());
         return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()

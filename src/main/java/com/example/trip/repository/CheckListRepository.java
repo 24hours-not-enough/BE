@@ -17,4 +17,7 @@ public interface CheckListRepository extends JpaRepository<CheckList,Long> {
 
     @Query("select c from CheckList c where c.plan.id =:planId and c.is_locked = true ")
     List<CheckList> findByPlanIdAndLock(@Param("planId") Long planId);
+
+    @Query("select c from CheckList c where c.plan.id =:planId and c.check_item =:checkName")
+    List<CheckList> findByPlanIdAndCheckName(String checkName, Long planId);
 }
