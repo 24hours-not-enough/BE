@@ -16,7 +16,7 @@ public interface PlanRepository extends JpaRepository<Plan, Long>, PlanRepositor
     @Query("select distinct p from Plan p left join fetch p.user left join fetch p.members where p.id =:planId")
     PlanResponseDto findPlanAndMemberOne(@Param("planId") Long planId);
 
-    @Query("select distinct p from Plan p inner join fetch p.members m left join fetch p.checkLists left join fetch p.calendars inner join fetch p.user  where m.user.id =:userId") //where p.id=:planId
+    @Query("select distinct p from Plan p inner join fetch p.members m left join fetch p.checkLists ch left join fetch p.calendars c inner join fetch p.user u  where p.user.id=:userId order by p.id asc ") //where p.id=:planId
     List<PlanResponseDto.DetailAll> findPlanDetails(@Param("userId") Long userId);
 
     @Query("select p from Plan p where p.uuid =:roomId")
