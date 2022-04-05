@@ -20,6 +20,7 @@ public class RedisConfig {
     @Value("${spring.redis.port}")
     private int redisPort;
 
+    //Redis 서버와의 통신을 위한 low level 추상화 제공
     @Bean
     public RedisConnectionFactory redisConnectionFactory() {
         return new LettuceConnectionFactory(redisHost, redisPort);
@@ -31,6 +32,8 @@ public class RedisConfig {
         return container;
     }
 
+    //Redis Template을 활용하여 Redis 서버에 Redis Command를 수행하기 위한 high-level 추상화를 제공
+    //채팅에 활용
     @Bean
     public RedisTemplate<String, Object> redisTemplate(RedisConnectionFactory connectionFactory) {
         RedisTemplate<String, Object> redisTemplate = new RedisTemplate<>();
@@ -40,6 +43,7 @@ public class RedisConfig {
         return redisTemplate;
     }
 
+    //알림에 활용
     @Bean
     public RedisTemplate<?, ?> redisTemplate() {
         RedisTemplate<byte[], byte[]> redisTemplate = new RedisTemplate<>();
@@ -50,3 +54,4 @@ public class RedisConfig {
         return redisTemplate;
     }
 }
+

@@ -1,9 +1,7 @@
 package com.example.trip.domain;
 
 import lombok.*;
-import org.springframework.data.jpa.repository.Modifying;
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Entity
@@ -28,6 +26,7 @@ public class FeedDetail{
 
     private String day;
 
+    //피드 디테일 수정
     public void update(FeedDetail feedDetails){
         this.day = feedDetails.day;
     }

@@ -18,6 +18,7 @@ public class CommentPerFeedDto {
 
     private String content;
 
+    //피드별 댓글의 사용자 정보를 업데이트한다.
     public void updateUser(User user){
         this.creator = UserDataDto.builder()
                 .userId(user.getId())
@@ -27,3 +28,4 @@ public class CommentPerFeedDto {
     }
 
 }
+

@@ -1,7 +1,6 @@
 package com.example.trip.domain;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity

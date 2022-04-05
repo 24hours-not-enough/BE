@@ -67,8 +67,8 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
 
 
-    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
-//    private static final Long AccessTokenValidTime = 1 * 60 * 1000L; // 1분(test)
+//    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
+    private static final Long AccessTokenValidTime = 1 * 60 * 1000L; // 1분(test)
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
 
@@ -400,7 +400,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
         Optional<User> bySocialaccountId = Optional.ofNullable(userRepository.findBySocialaccountId(authentication.getName()))
                 .orElseThrow(UserNotFoundException::new);
-        log.debug("refreshtoken의 value값 : " + redisServiceImpl.getValues(refreshToken));
         if (redisServiceImpl.getValues(refreshToken) == null) {
             throw new RefreshTokenNotFoundException();
         }
@@ -409,7 +408,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         String snsId = bySocialaccountId.get().getSocialaccountId();
         String newAccessToken = jwtTokenProvider.createToken(snsId, AccessTokenValidTime);
         String newRefreshToken = jwtTokenProvider.createToken(snsId, RefreshTokenValidTime);
-        redisServiceImpl.setValues(refreshToken, snsId);
+        redisServiceImpl.setValues(newRefreshToken, snsId);
 
         return new TokenResponseDto(newAccessToken, newRefreshToken);
     }
