@@ -1,7 +1,6 @@
 package com.example.trip.redis;
 
 import lombok.*;
-
 import java.io.Serializable;
 import java.util.List;
 
@@ -10,8 +9,9 @@ import java.util.List;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
+//도메인 객체가 세션에 저장되기 위해서는 직렬화를 통해야하기 때문에 구현하여 준다.
 public class ChatMessage implements Serializable {
-//    private Long user_id;
+    //    private Long user_id;
     private Long plan_id;
     private String chatMessage;
 
@@ -23,3 +23,4 @@ public class ChatMessage implements Serializable {
 //        return this;
 //    }
 }
+
