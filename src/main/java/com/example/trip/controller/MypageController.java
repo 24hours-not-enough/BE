@@ -85,7 +85,7 @@ public class MypageController {
     public ResponseEntity<MypageResponseDto.Response> changeProfile(@AuthenticationPrincipal UserDetailsImpl userDetails,
                                                                     @RequestPart String username,
                                                                     @RequestPart MultipartFile file) throws IOException {
-        UserResponseDto.UserProfile info = mypageService.changeProfile(userDetails, username, file);
+        UserResponseDto.UserInfo info = mypageService.changeProfile(userDetails, username, file);
         return new ResponseEntity<>(MypageResponseDto.Response.builder()
                                                         .result("success")
                                                         .msg("마이페이지 수정 완료입니다.")

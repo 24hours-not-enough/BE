@@ -18,7 +18,7 @@ public interface MypageService {
 //
 ////    FeedResponseDto.ReadOneTrip readOneTrip(Long userId, Long feedId);
 //
-    UserResponseDto.UserProfile changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException;
+    UserResponseDto.UserInfo changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException;
 //
 //    MypageResponseDto.GetPlan getPlan(Long planId, Long userId);
 }
