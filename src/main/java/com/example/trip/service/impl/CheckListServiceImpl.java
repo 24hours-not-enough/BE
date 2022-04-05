@@ -66,25 +66,22 @@ public class CheckListServiceImpl implements CheckListService {
         Optional<Plan> findPlan = Optional.ofNullable(planRepository.findById(planId).orElseThrow(PlanNotFoundException::new));
         Optional<User> findUser = userRepository.findById(userId);
         List<CheckList> checkListByPlanId = checkListRepository.findByPlanId(planId);
-        final int[] i = {0};
-        checkListByPlanId.forEach((list)->{
-                list.updateCheckList(dto.get(i[0]));
-                i[0] +=1;
-        });
-        dto.forEach((checkList) -> {
-            List<CheckList> byPlanIdAndCheckName = checkListRepository.findByPlanIdAndCheckName(checkList.getCheckName(), planId);
-            Optional<CheckList> findCheckList = byPlanIdAndCheckName.stream().findFirst();
-            if(!findCheckList.isPresent()){
-                CheckList checklist = CheckList.builder()
-                        .check_item(checkList.getCheckName())
-                        .is_checked(checkList.getIsChecked())
-                        .is_locked(false)
-                        .plan(findPlan.get())
-                        .user(findUser.get())
-                        .build();
-                checkListRepository.save(checklist);
-            }
-        });
+        checkListRepository.deleteByPlanId(planId);
+        setCheckList(findPlan.get(), dto, findUser.get());
+//        dto.forEach((checkList) -> {
+//            List<CheckList> byPlanIdAndCheckName = checkListRepository.findByPlanIdAndCheckName(checkList.getCheckName(), planId);
+//            Optional<CheckList> findCheckList = byPlanIdAndCheckName.stream().findFirst();
+//            if(!findCheckList.isPresent()){
+//                CheckList checklist = CheckList.builder()
+//                        .check_item(checkList.getCheckName())
+//                        .is_checked(checkList.getIsChecked())
+//                        .is_locked(false)
+//                        .plan(findPlan.get())
+//                        .user(findUser.get())
+//                        .build();
+//                checkListRepository.save(checklist);
+//            }
+//        });
 
     }
 
