@@ -39,6 +39,7 @@ public class CalendarServiceImpl implements CalendarService {
         planValidation(planId);
         authPlanValidation(planId, userId);
         List<Calendar> daysByPlanId = calendarRepository.findDaysByPlanId(planId);
+        Optional<User> findUser = userRepository.findById(userId);
         Optional<Calendar> first = daysByPlanId.stream().findFirst();
         Optional<Plan> findPlan = planRepository.findById(planId);
         Optional<Calendar> calendarList = calendarRepository.findAll(Sort.by(Sort.Direction.DESC,"id")).stream().findFirst();
@@ -48,6 +49,7 @@ public class CalendarServiceImpl implements CalendarService {
                     .days("1일차")
                     .plan(findPlan.get())
                     .is_locked(false)
+                    .user(findUser.get())
                     .build();
             save = calendarRepository.save(calendar);
         }else {
@@ -58,6 +60,7 @@ public class CalendarServiceImpl implements CalendarService {
                     .days(intDay + 1 + "일차")
                     .plan(findPlan.get())
                     .is_locked(false)
+                    .user(findUser.get())
                     .build();
             save = calendarRepository.save(calendar);
         }

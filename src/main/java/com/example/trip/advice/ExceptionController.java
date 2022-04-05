@@ -84,6 +84,11 @@ public class ExceptionController {
         return new ResponseEntity<>(new Fail("존재하지 않는 일정입니다."), HttpStatus.BAD_REQUEST);
     }
 
+    @ExceptionHandler(CalendarDetailsAlreadyExistException.class)
+    public ResponseEntity<Fail> CalendarDetailsAlreadyExistException(CalendarDetailsAlreadyExistException e) {
+        return new ResponseEntity<>(new Fail("이미 존재하는 상세일정입니다."), HttpStatus.BAD_REQUEST);
+    }
+
     @ExceptionHandler(LocationNotFoundException.class)
     public ResponseEntity<Fail> LocationNotFoundException(LocationNotFoundException e) {
         return new ResponseEntity<>(new Fail("존재하지 않는 위치정보 입니다."), HttpStatus.BAD_REQUEST);
@@ -107,6 +112,11 @@ public class ExceptionController {
     @ExceptionHandler(CheckListModifyException.class)
     public ResponseEntity<Fail> CheckListModifyException(CheckListModifyException e) {
         return new ResponseEntity<>(new Fail("수정중인 체크리스트입니다."), HttpStatus.BAD_REQUEST);
+    }
+
+    @ExceptionHandler(CheckListAlreadyExistException.class)
+    public ResponseEntity<Fail> CheckListAlreadyExistException(CheckListAlreadyExistException e) {
+        return new ResponseEntity<>(new Fail("이미 존재하는 체크리스트입니다."), HttpStatus.BAD_REQUEST);
     }
 
 //    @ExceptionHandler(Exception.class)
