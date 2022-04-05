@@ -1,7 +1,6 @@
 package com.example.trip.domain;
 
 import lombok.*;
-
 import javax.persistence.*;
 
 @Entity
@@ -23,4 +22,6 @@ public class BookMark {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feedlocation_id")
     private FeedLocation feedLocation;
+}
+
 }
