@@ -13,11 +13,15 @@ import org.springframework.stereotype.Service;
 public class RedisPublisher {
     private final RedisTemplate<String,Object> redisTemplate;
 
+    //채팅 메세지를 pubgkf Eo tkdyd
     public void publish(ChannelTopic topic, ChatSendDto chatSendDto){
+        //Dto를 해당 토픽으로 보내기
         redisTemplate.convertAndSend(topic.getTopic(),chatSendDto);
     }
 
+    //알림을 publish할 때 사용
     public void publicMsg(ChannelTopic topic, NotifySendDto dto) {
         redisTemplate.convertAndSend(topic.getTopic(), dto);
     }
 }
+

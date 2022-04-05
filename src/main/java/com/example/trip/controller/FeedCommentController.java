@@ -19,7 +19,9 @@ public class FeedCommentController {
 
     @PostMapping("/feed/comment/{feedDetailLocId}")
     public ResponseEntity<FeedResponseDto.FeedResponseOptional> registerFeedComment(@AuthenticationPrincipal UserDetailsImpl userDetails, @PathVariable Long feedDetailLocId, @RequestBody FeedRequestDto.FeedRequestCommentRegisterDto feedRequestCommentRegisterDto) {
+        //서비스단 댓글 등록 함수 호출
         Long commentId = feedCommentService.registerFeedComment(userDetails.getUser(), feedDetailLocId, feedRequestCommentRegisterDto);
+        //약속한 리스펀스 엔티티 형태로 만들어서 리턴
         return new ResponseEntity<>(FeedResponseDto.FeedResponseOptional.builder()
                 .result("success")
                 .msg("댓글 등록 성공하였습니다.")
@@ -32,7 +34,9 @@ public class FeedCommentController {
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @PathVariable Long commentId,
             @RequestBody FeedRequestDto.FeedRequestCommentModifyDto feedRequestCommentModifyDto) {
+        //서비스단 댓글 수정 함수 호출
         feedCommentService.modifyFeedComment(userDetails.getUser(), commentId, feedRequestCommentModifyDto);
+        //약속한 리스펀스 엔티티 형태로 만들어서 리턴
         return new ResponseEntity<>(FeedResponseDto.FeedResponseDefault.builder()
                 .result("success")
                 .msg("댓글 수정 성공하였습니다.")
@@ -50,3 +54,4 @@ public class FeedCommentController {
                 .build(), HttpStatus.OK);
     }
 }
+
