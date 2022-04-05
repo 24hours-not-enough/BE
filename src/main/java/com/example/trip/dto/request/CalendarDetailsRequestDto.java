@@ -1,5 +1,7 @@
 package com.example.trip.dto.request;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -21,6 +23,8 @@ public class CalendarDetailsRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
     public static class Add{
         private String location;
 
@@ -31,6 +35,8 @@ public class CalendarDetailsRequestDto {
 
     @Getter
     @NoArgsConstructor
+    @Builder
+    @AllArgsConstructor
     public static class Modify{
         List<CalendarDetailsRequestDto> detailsList;
     }
@@ -45,3 +51,4 @@ public class CalendarDetailsRequestDto {
         private List<CalendarDetailsRequestDto> calendarDetails;
     }
 }
+

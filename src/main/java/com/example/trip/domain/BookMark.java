@@ -23,5 +23,3 @@ public class BookMark {
     @JoinColumn(name = "feedlocation_id")
     private FeedLocation feedLocation;
 }
-
-}

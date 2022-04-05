@@ -31,5 +31,3 @@ public class FeedDetail{
         this.day = feedDetails.day;
     }
 }
-
-}
