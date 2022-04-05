@@ -95,14 +95,6 @@ public class PlanServiceImpl implements PlanService {
 
     @Override
     public List<PlanResponseDto.DetailAll> findPlanAllAndMember(Long userId) {
-        List<PlanResponseDto.DetailAll> planDetails = planRepository.findPlanDetails(userId);
-        planDetails.forEach((list)->{
-            log.info("list.getTitle() = {} ", list.getTitle());
-            log.info("list.getPlanId() = {} ", list.getPlanId());
-            log.info("list.getRoomId() = {} ", list.getRoomId());
-        });
-        log.info("planDetails.size() = {}", planDetails.size());
-        log.info("===========================");
         return planRepository.findPlanDetails(userId);
     }
 
