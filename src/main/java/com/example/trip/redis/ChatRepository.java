@@ -55,7 +55,7 @@ public class ChatRepository {
                 .build();
 
         // 메세지를 추가해줄 레포지토리를 찾는다.
-        List<ChatMessage> chatMessages = opsHashChatMsg.get(CHAT_MESSAGES, planId.toString());
+        List<ChatMessage> chatMessages = opsHashChatMsg.get(CHAT_MESSAGES, "CHAT" + planId.toString());
 
         //메세지를 처음 보내는 경우에는 빈 리스트를 넣어줌
         if(chatMessages == null){
@@ -98,6 +98,7 @@ public class ChatRepository {
     }
 
     public ChannelTopic getTopic(Long planId) {
+        System.out.println(topics.get("CHAT"+planId));
         return topics.get("CHAT"+planId);
     }
 }
