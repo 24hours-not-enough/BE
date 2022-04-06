@@ -29,9 +29,13 @@ public class WebSocketConfig implements WebSocketMessageBrokerConfigurer {
     public void registerStompEndpoints(StompEndpointRegistry registry) {
         // 클라이언트에서 websocket을 연결할 api를 설정
         // 채팅 포인트
-        registry.addEndpoint("/endpoint").withSockJS();
+        registry.addEndpoint("/endpoint")
+                .setAllowedOrigins("*")
+                .withSockJS();
         // 알림 포인트
-        registry.addEndpoint("/alarmpoint").withSockJS();
+        registry.addEndpoint("/alarmpoint")
+                .setAllowedOrigins("*")
+                .withSockJS();
     }
 
     @Override
