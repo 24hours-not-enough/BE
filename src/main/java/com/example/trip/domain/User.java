@@ -1,6 +1,5 @@
 package com.example.trip.domain;
 
-import com.querydsl.core.annotations.QueryInit;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -36,7 +35,6 @@ public class User extends TimeStamped {
     @Enumerated(value = EnumType.STRING)
     private Role role;
 
-    @QueryInit("*")
     @Embedded
     private Image image;
 
