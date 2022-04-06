@@ -7,12 +7,14 @@ import com.example.trip.domain.FeedLocation;
 import com.example.trip.domain.User;
 import com.example.trip.dto.response.FeedLocationResponseDto;
 import com.example.trip.repository.BookMarkRepository;
-import com.example.trip.repository.feedlocation.FeedLocationRepository;
+import com.example.trip.repository.FeedLocationRepository;
 import com.example.trip.service.BookMarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 
 @RequiredArgsConstructor
@@ -34,6 +36,7 @@ public class BookMarkServiceImpl implements BookMarkService {
         //북마크 저장
         bookMarkRepository.save(bookmark);
     }
+
     @Override
     public void unbookmarkFeed(Long feedLocId, User user) {
         // 북마크를 한 사람만 권한이 있어야함
@@ -45,23 +48,15 @@ public class BookMarkServiceImpl implements BookMarkService {
         //북마크 삭제
         bookMarkRepository.deleteBookmarkFeed(feedLocId, user.getId());
     }
+
     @Override
     public List<FeedLocationResponseDto.BookMark> findBookMarkPlaces(Long userId) {
-//                ArrayList<FeedLocationResponseDto.BookMark> arr = new ArrayList<>();
+        ArrayList<FeedLocationResponseDto.BookMark> arr = new ArrayList<>();
 
-        // Step 1
-//        bookMarkRepository.findByUserId(userId).stream()
-//                .map(x -> arr.add(new FeedLocationResponseDto.BookMark(
-//                        feedLocationRepository.findById(x.getFeedLocation().getId()).get())))
-//                .collect(Collectors.toList());
+        feedLocationRepository.findFeedLocationByBookMarkByUser(userId).stream()
+                .map(x -> arr.add(new FeedLocationResponseDto.BookMark(x)))
+                .collect(Collectors.toList());
 
-        // Step 2
-//        feedLocationRepository.findFeedLocationByBookMarkByUser(userId).stream()
-//                .map(x -> arr.add(new FeedLocationResponseDto.BookMark(x)))
-//                .collect(Collectors.toList());
-//        return arr;
-
-        // Step 3
-        return feedLocationRepository.findBookMarkLocation(userId);
+        return arr;
     }
 }

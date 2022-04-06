@@ -2,7 +2,6 @@ package com.example.trip.dto.response;
 
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
-import com.example.trip.domain.User;
 import com.example.trip.dto.response.FeedLocationResponseDto.BookMark;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -38,7 +37,7 @@ public class UserResponseDto {
     public static class User {
         private String result;
         private String msg;
-        private com.example.trip.dto.response.queryprojection.UserInfo userInfo;
+        private UserBasic userInfo;
         private List<BookMark> bookmark;
 
     }
@@ -127,5 +126,19 @@ public class UserResponseDto {
     public static class reissueToken {
         private String accessToken;
         private String refreshToken;
+    }
+
+    @NoArgsConstructor
+    @Getter
+    public static class UserBasic {
+        private Long userId;
+        private String userName;
+        private String userProfileImage;
+
+        public UserBasic(com.example.trip.domain.User user) {
+            this.userId = user.getId();
+            this.userName = user.getUsername();
+            this.userProfileImage = user.getImage().getFile_store_course();
+        }
     }
 }

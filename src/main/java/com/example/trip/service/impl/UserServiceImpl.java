@@ -3,9 +3,7 @@ package com.example.trip.service.impl;
 import com.example.trip.advice.exception.UserNotFoundException;
 import com.example.trip.domain.LoginLog;
 import com.example.trip.domain.User;
-import com.example.trip.dto.response.UserResponseDto;
-import com.example.trip.dto.response.UserResponseDto.KakaoLogin;
-import com.example.trip.dto.response.queryprojection.UserInfo;
+import com.example.trip.dto.response.UserResponseDto.UserBasic;
 import com.example.trip.redis.notification.Notification;
 import com.example.trip.repository.LoginLogRepository;
 import com.example.trip.repository.UserRepository;
@@ -30,9 +28,9 @@ public class UserServiceImpl implements UserService {
     private final RedisTemplate<String, Object> redisTemplate;
     private HashOperations<String, String, List<Notification>> opsHashNotification;
 
-    public UserInfo findUser(Long userId) {
+    public UserBasic findUser(Long userId) {
         Optional<User> user = Optional.ofNullable(userRepository.findById(userId).orElseThrow(UserNotFoundException::new));
-        return new UserInfo(user.get());
+        return new UserBasic(user.get());
     }
 
     public void registerLog(HttpServletRequest request, User user) {
