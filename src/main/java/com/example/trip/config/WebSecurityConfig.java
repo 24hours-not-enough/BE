@@ -68,6 +68,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
+        configuration.setAllowCredentials(true);
 
         final UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
         source.registerCorsConfiguration("/**", configuration);
