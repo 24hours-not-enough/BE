@@ -2,8 +2,8 @@ package com.example.trip.dto.response;
 
 import com.example.trip.domain.Image;
 import com.example.trip.domain.Role;
-import com.example.trip.dto.response.queryprojection.UserInfo;
-import com.example.trip.redis.notification.Notification;
+import com.example.trip.domain.User;
+import com.example.trip.dto.response.FeedLocationResponseDto.BookMark;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,44 +33,56 @@ public class UserResponseDto {
 
     private Image image;
 
+    @Builder
     @Getter
-    @AllArgsConstructor
-    public static class GetKakaoUserInfo {
-        private String kakaoId;
-        private String email;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class GetGoogleUserInfo {
-        private String googleId;
-        private String email;
+    public static class User {
+        private String result;
+        private String msg;
+        private com.example.trip.dto.response.queryprojection.UserInfo userInfo;
+        private List<BookMark> bookmark;
 
     }
 
-    @AllArgsConstructor
+    @Builder
     @Getter
-    public static class KakaoLogin {
-        private String email;
-        private String kakaoId;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class GoogleLogin {
-        private String email;
-        private String googleId;
-    }
-
-    @AllArgsConstructor
-    @Getter
-    public static class UserProfile {
+    public static class UserInfo {
         private Long userId;
         private String userName;
         private String userProfileImg;
     }
 
+    @Getter
+    @Builder
+    public static class KakaoUser {
+        private String kakaoId;
+        private String email;
+    }
+
+    @Getter
+    @Builder
+    public static class KakaoLogin {
+        private String kakaoId;
+        private String email;
+        private com.example.trip.domain.User user;
+    }
+
+    @Builder
+    @Getter
+    public static class GoogleUser {
+        private String googleId;
+        private String email;
+    }
+
+    @Getter
+    @Builder
     @AllArgsConstructor
+    public static class GoogleLogin {
+        private String googleId;
+        private String email;
+        private com.example.trip.domain.User user;
+    }
+
+    @Builder
     @Getter
     public static class TokenInfo {
         private String access_token;
@@ -85,7 +97,6 @@ public class UserResponseDto {
         private Object data;
     }
 
-    @AllArgsConstructor
     @Getter
     @Builder
     public static class ResponseNoData {
@@ -93,33 +104,14 @@ public class UserResponseDto {
         private String msg;
     }
 
-    @AllArgsConstructor
-    @Getter
-    public static class invite {
-        private String userProfileImg;
-        private String userName;
-        private Long userId;
-    }
-
     @Builder
-    @Getter
-    public static class Responsev2 {
-        private String result;
-        private String msg;
-        private UserInfo userInfo;
-//        private List<Notification> notificationInfo;
-        private List<FeedLocationResponseDto.BookMark> bookmark;
-
-    }
-
-    @AllArgsConstructor
     @Getter
     public static class LoginSuccess {
         private String result;
         private String msg;
         private boolean first;
         private TokenInfo tokens;
-        private UserProfile userInfo;
+        private UserInfo userInfo;
     }
 
     @Builder
