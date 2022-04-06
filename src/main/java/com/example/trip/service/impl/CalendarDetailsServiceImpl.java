@@ -187,7 +187,7 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
                 details.getCalendarDetails().forEach((detailsList) -> {
                     CalendarDetails calendarDetails = CalendarDetails.builder()
                             .calendar(findCalendar.get())
-                            .name(detailsList.getLocation())
+                            .name(detailsList.getLocationName())
                             .latitude(detailsList.getLatitude())
                             .longitude(detailsList.getLongitude())
                             .memo(detailsList.getLocationMemo())
@@ -203,7 +203,7 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
         dto.getDetailsList().forEach((detailsList)->{
             CalendarDetails calendarDetails = CalendarDetails.builder()
                     .calendar(calendar)
-                    .name(detailsList.getLocation())
+                    .name(detailsList.getLocationName())
                     .latitude(detailsList.getLatitude())
                     .longitude(detailsList.getLongitude())
                     .memo(detailsList.getLocationMemo())
