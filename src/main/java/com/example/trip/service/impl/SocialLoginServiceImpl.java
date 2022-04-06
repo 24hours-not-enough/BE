@@ -10,6 +10,8 @@ import com.example.trip.domain.User;
 import com.example.trip.dto.request.TokenRequestDto;
 import com.example.trip.dto.response.TokenResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
+import com.example.trip.dto.response.UserResponseDto.GoogleUser;
+import com.example.trip.dto.response.UserResponseDto.KakaoUser;
 import com.example.trip.jwt.JwtTokenProvider;
 import com.example.trip.repository.UserRepository;
 import com.example.trip.service.SocialLoginService;
@@ -68,7 +70,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
 
 //    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
-    private static final Long AccessTokenValidTime = 1 * 60 * 1000L; // 1분(test)
+    private static final Long AccessTokenValidTime = 10000000 * 60 * 1000L; // 1분(test)
     private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
 
 
@@ -78,24 +80,25 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         // 인가 코드로 액세스 토큰 요청
         String accessToken = getKakaoAccessToken(code);
         // 토큰으로 카카오 API 호출
-        UserResponseDto.GetKakaoUserInfo kakaoUserInfo = getKaKaoUserInfo(accessToken);
+        KakaoUser info = getKaKaoUserInfo(accessToken);
 
         // DB 에 중복된 Kakao Id 있는지 확인
-        String kakaoId = kakaoUserInfo.getKakaoId();
-        User kakaoUser = userRepository.findBySocialaccountId(kakaoId)
-                .orElse(null);
-        if (kakaoUser == null) {
+        User user = userRepository.findBySocialaccountId(info.getKakaoId()).orElse(null);
+        if (user == null) {
             // 회원가입
-            kakaoUser = kakaoRegister(kakaoUserInfo);
+            user = kakaoRegister(info);
         }
 
         // 강제 로그인 처리
-        UserDetails userDetails = new UserDetailsImpl(kakaoUser);
+        UserDetails userDetails = new UserDetailsImpl(user);
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new UserResponseDto.KakaoLogin(kakaoUserInfo.getEmail(), kakaoId);
-
+        return UserResponseDto.KakaoLogin.builder()
+                .kakaoId(info.getKakaoId())
+                .email(info.getEmail())
+                .user(user)
+                .build();
     }
 
     @Override
@@ -108,8 +111,6 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakao_client_id);
-//        body.add("redirect_uri", "http://localhost:8080/api/kakaologin");
-//        body.add("redirect_uri", "http://13.209.47.53/api/kakaologin");
         body.add("redirect_uri", "http://localhost:3000/api/kakaologin");
         body.add("code", code);
         body.add("client_secret", kakao_client_secret);
@@ -133,7 +134,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     }
 
     @Override
-    public UserResponseDto.GetKakaoUserInfo getKaKaoUserInfo(String accessToken) throws JsonProcessingException {
+    public KakaoUser getKaKaoUserInfo(String accessToken) throws JsonProcessingException {
         HttpHeaders headers = new HttpHeaders();
         // HTTP Header 생성
         headers.add("Authorization", "Bearer " + accessToken);
@@ -148,38 +149,35 @@ public class SocialLoginServiceImpl implements SocialLoginService {
                 kakaoUserInfoRequest,
                 String.class
         );
-
         String responseBody = response.getBody();
 
         ObjectMapper objectMapper = new ObjectMapper();
-
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         String kakaoId = "KAKAO_" + jsonNode.get("id").asText();
-        String email = jsonNode.get("kakao_account")
-                .get("email").asText();
-        return new UserResponseDto.GetKakaoUserInfo(kakaoId, email);
+        String email = jsonNode.get("kakao_account").get("email").asText();
+
+        return KakaoUser.builder()
+                .kakaoId(kakaoId)
+                .email(email)
+                .build();
     }
 
 
     @Override
-    public User kakaoRegister(UserResponseDto.GetKakaoUserInfo kakaoUserInfo) {
-        String email = kakaoUserInfo.getEmail();
-        String kakaoId = kakaoUserInfo.getKakaoId();
+    public User kakaoRegister(KakaoUser userInfo) {
+
         String password = UUID.randomUUID().toString();
         String encodedPassword = passwordEncoder.encode(password);
 
-        // Image는 Embedded라서 null값이 들어갈 수 없다. 따라서 임의의 값 생성 후 저장
-        Image image = new Image("url", "filename");
-
-        Role role = Role.USER;
         User user = User.builder()
-                .email(email)
+                .email(userInfo.getEmail())
                 .password(encodedPassword)
-                .socialaccountId(kakaoId)
+                .socialaccountId(userInfo.getKakaoId())
                 .memberstatus(true)
-                .image(image)
-                .role(role)
+                .image(new Image("imgUrl", "imgName"))
+                .role(Role.USER)
                 .build();
+
         userRepository.save(user);
         return user;
     }
@@ -188,14 +186,11 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     @Transactional
     public UserResponseDto.GoogleLogin googleLogin(String code) throws JsonProcessingException {
         String accessToken = getGoogleAccessToken(code);
-        UserResponseDto.GetGoogleUserInfo googleUserInfo = getGoogleUserInfo(accessToken);
-        String googleId = googleUserInfo.getGoogleId();
-        User googleUser = userRepository.findBySocialaccountId(googleId)
-                .orElse(null);
+        GoogleUser info = getGoogleUserInfo(accessToken);
+        User googleUser = userRepository.findBySocialaccountId(info.getGoogleId()).orElse(null);
 
         if (googleUser == null) {
-            // 회원가입
-            googleUser = googleRegister(googleUserInfo);
+            googleUser = googleRegister(info);
         }
 
         // 강제 로그인 처리
@@ -203,7 +198,11 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         Authentication authentication = new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
         SecurityContextHolder.getContext().setAuthentication(authentication);
 
-        return new UserResponseDto.GoogleLogin(googleUserInfo.getEmail(), googleId);
+        return UserResponseDto.GoogleLogin.builder()
+                .googleId(info.getGoogleId())
+                .email(info.getEmail())
+                .user(googleUser)
+                .build();
     }
 
     @Override
@@ -231,16 +230,14 @@ public class SocialLoginServiceImpl implements SocialLoginService {
                 String.class
         );
 
-        // HTTP 응답 (JSON) -> 액세스 토큰 파싱
         String responseBody = response.getBody();
-        // JSON 형식을 JAVA에서 사용하기 위해 objectMapper
         ObjectMapper objectMapper = new ObjectMapper();
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         return jsonNode.get("access_token").asText();
     }
 
     @Override
-    public UserResponseDto.GetGoogleUserInfo getGoogleUserInfo(String accessToken) throws JsonProcessingException {
+    public GoogleUser getGoogleUserInfo(String accessToken) throws JsonProcessingException {
 
         HttpHeaders headers = new HttpHeaders();
         // HTTP Header 생성
@@ -263,54 +260,47 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         JsonNode jsonNode = objectMapper.readTree(responseBody);
         String googleId = "GOOGLE_" + jsonNode.get("id").asText();
         String email = jsonNode.get("email").asText();
-        return new UserResponseDto.GetGoogleUserInfo(googleId, email);
+        return GoogleUser.builder()
+                .googleId(googleId)
+                .email(email)
+                .build();
     }
 
     @Override
-    public User googleRegister(UserResponseDto.GetGoogleUserInfo googleUserInfo) {
-        String email = googleUserInfo.getEmail();
-        String googleId = googleUserInfo.getGoogleId();
+    public User googleRegister(GoogleUser googleUserInfo) {
 
         String password = UUID.randomUUID().toString();
         String encodedPassword = passwordEncoder.encode(password);
 
-        Image image = new Image("url", "filename");
-
-        Role role = Role.USER;
         User user = User.builder()
-                .email(email)
+                .email(googleUserInfo.getEmail())
                 .password(encodedPassword)
-                .socialaccountId(googleId)
-                .image(image)
+                .socialaccountId(googleUserInfo.getGoogleId())
+                .image(new Image("imgUrl", "imgName"))
                 .memberstatus(true)
-                .role(role)
+                .role(Role.USER)
                 .build();
+
         userRepository.save(user);
+
         return user;
     }
 
     @Override
-    public UserResponseDto.TokenInfo issueKakaoJwtToken(UserResponseDto.KakaoLogin loginRequestDto, HttpServletResponse response) {
-        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), AccessTokenValidTime);
-        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getKakaoId(), RefreshTokenValidTime);
+    public UserResponseDto.TokenInfo issueToken(User user, HttpServletResponse response) {
+        String accessToken = jwtTokenProvider.createToken(user.getSocialaccountId(), AccessTokenValidTime);
+        String refreshToken = jwtTokenProvider.createToken(user.getSocialaccountId(), RefreshTokenValidTime);
         jwtTokenProvider.setHeaderAccessToken(response, accessToken);
         jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
-        redisServiceImpl.setValues(refreshToken, loginRequestDto.getKakaoId());
-        return new UserResponseDto.TokenInfo(accessToken, refreshToken);
+        redisServiceImpl.setValues(refreshToken, user.getSocialaccountId());
+        return UserResponseDto.TokenInfo.builder()
+                .access_token(accessToken)
+                .refresh_token(refreshToken)
+                .build();
     }
 
     @Override
-    public UserResponseDto.TokenInfo issueGoogleJwtToken(UserResponseDto.GoogleLogin loginRequestDto, HttpServletResponse response) {
-        String accessToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), AccessTokenValidTime);
-        String refreshToken = jwtTokenProvider.createToken(loginRequestDto.getGoogleId(), RefreshTokenValidTime);
-        jwtTokenProvider.setHeaderAccessToken(response, accessToken);
-        jwtTokenProvider.setHeaderRefreshToken(response, refreshToken);
-        redisServiceImpl.setValues(refreshToken, loginRequestDto.getGoogleId());
-        return new UserResponseDto.TokenInfo(accessToken, refreshToken);
-    }
-
-    @Override
-    public void checkNoSameUsername(String username) {
+    public void checkSameUsername(String username) {
         if (userRepository.existsByUsername(username)) {
             throw new AlreadyExistUsernameException();
         }
@@ -318,33 +308,29 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
     @Override
     @Transactional
-    public UserResponseDto.UserProfile registerMoreUserInfo(String socialaccountId, String username, MultipartFile file) throws IOException {
+    public UserResponseDto.UserInfo registerProfile(String socialaccountId, String username, MultipartFile file) throws IOException {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
         if (file.isEmpty()) {
-            user.get().update(username, "url", "filename");
-            return new UserResponseDto.UserProfile(user.get().getId(), username, "url");
+            user.get().update(username, "imgUrl", "imgName");
+            return UserResponseDto.UserInfo.builder()
+                    .userId(user.get().getId())
+                    .userName(username)
+                    .userProfileImg("imgUrl")
+                    .build();
         } else {
-            Map<String, String> nameUrl = s3UploaderService.upload(file);
-            user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-            return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
+            Map<String, String> imgUrl = s3UploaderService.upload(file);
+            user.get().update(username, imgUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
+            return UserResponseDto.UserInfo.builder()
+                    .userId(user.get().getId())
+                    .userName(username)
+                    .userProfileImg(imgUrl.get(file.getOriginalFilename()))
+                    .build();
         }
     }
 
     @Override
-    public boolean checkKakaoIsFirstLogin(UserResponseDto.KakaoLogin loginRequestDto) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(UserNotFoundException::new);
-        User founduser = user.get();
-        if (founduser.getUsername() == null) {
-            return true;
-        } else {
-            return false;
-        }
-    }
-
-    @Override
-    public boolean checkGoogleIsFirstLogin(UserResponseDto.GoogleLogin loginRequestDto) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(() -> new NullPointerException("해당 사용자가 존재하지 않습니다."));
-        if (user.get().getUsername() == null) {
+    public boolean checkLoginFirst(User user) {
+        if (user.getUsername() == null) {
             return true;
         } else {
             return false;
@@ -358,31 +344,26 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         }
     }
 
+
     @Override
-    public UserResponseDto.UserProfile sendKakaoUserBasicInfo(UserResponseDto.KakaoLogin loginRequestDto) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(UserNotFoundException::new);
-        if (checkKakaoIsFirstLogin(loginRequestDto)) {
-            return new UserResponseDto.UserProfile(user.get().getId(), null, null);
-        } else {
-            return new UserResponseDto.UserProfile(user.get().getId(), user.get().getUsername(), user.get().getImage().getFile_store_course());
-        }
+    public UserResponseDto.UserInfo sendUserInfo(User user) {
+            return UserResponseDto.UserInfo.builder()
+                    .userId(user.getId())
+                    .userName(user.getUsername())
+                    .userProfileImg(user.getImage().getFile_store_course())
+                    .build();
+
     }
 
     @Override
-    public UserResponseDto.UserProfile sendGoogleUserBasicInfo(UserResponseDto.GoogleLogin loginRequestDto) {
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getGoogleId())).orElseThrow(UserNotFoundException::new);
-        if (checkGoogleIsFirstLogin(loginRequestDto)) {
-            return new UserResponseDto.UserProfile(user.get().getId(), null, null);
-        } else {
-            return new UserResponseDto.UserProfile(user.get().getId(), user.get().getUsername(), user.get().getImage().getFile_store_course());
-        }
-    }
-
-    @Override
-    public UserResponseDto.invite searchUserInvite(String username) {
-        Optional<User> user = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(UserNotFoundException::new);
-        User foundUser = user.get();
-        return new UserResponseDto.invite(foundUser.getImage().getFile_store_course(), foundUser.getUsername(), foundUser.getId());
+    public UserResponseDto.UserInfo searchUser(String username) {
+        Optional<User> byUsername = Optional.ofNullable(userRepository.findByUsername(username)).orElseThrow(UserNotFoundException::new);
+        User user = byUsername.get();
+        return UserResponseDto.UserInfo.builder()
+                .userId(user.getId())
+                .userName(user.getUsername())
+                .userProfileImg(user.getImage().getFile_store_course())
+                .build();
     }
 
     @Override
@@ -393,16 +374,19 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     }
 
     @Override
+    public User getUser(String socialaccountId) {
+        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
+        return user.get();
+    }
+
+    @Override
     @Transactional
     public TokenResponseDto reissueToken(TokenRequestDto requestDto) {
         String accessToken = requestDto.getAccessToken();
         String refreshToken = requestDto.getRefreshToken();
         Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-        Optional<User> bySocialaccountId = Optional.ofNullable(userRepository.findBySocialaccountId(authentication.getName()))
-                .orElseThrow(UserNotFoundException::new);
-        if (redisServiceImpl.getValues(refreshToken) == null) {
-            throw new RefreshTokenNotFoundException();
-        }
+        Optional<User> bySocialaccountId = Optional.ofNullable(userRepository.findBySocialaccountId(authentication.getName())).orElseThrow(UserNotFoundException::new);
+        if (redisServiceImpl.getValues(refreshToken) == null) { throw new RefreshTokenNotFoundException(); }
         redisServiceImpl.delValues(refreshToken);
 
         String snsId = bySocialaccountId.get().getSocialaccountId();

@@ -5,7 +5,6 @@ import com.example.trip.dto.request.TokenRequestDto;
 import com.example.trip.dto.response.TokenResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
 import com.fasterxml.jackson.core.JsonProcessingException;
-import jdk.nashorn.internal.parser.Token;
 import org.springframework.web.multipart.MultipartFile;
 
 import javax.servlet.http.HttpServletResponse;
@@ -17,39 +16,35 @@ public interface SocialLoginService {
 
     String getKakaoAccessToken(String code) throws JsonProcessingException;
 
-    UserResponseDto.GetKakaoUserInfo getKaKaoUserInfo(String accessToken) throws JsonProcessingException;
+    UserResponseDto.KakaoUser getKaKaoUserInfo(String accessToken) throws JsonProcessingException;
 
-    User kakaoRegister(UserResponseDto.GetKakaoUserInfo kakaoUserInfo);
+    User kakaoRegister(UserResponseDto.KakaoUser kakaoUserInfo);
 
     UserResponseDto.GoogleLogin googleLogin(String code) throws JsonProcessingException;
 
     String getGoogleAccessToken(String code) throws JsonProcessingException;
 
-    UserResponseDto.GetGoogleUserInfo getGoogleUserInfo(String accessToken) throws JsonProcessingException;
+    UserResponseDto.GoogleUser getGoogleUserInfo(String accessToken) throws JsonProcessingException;
 
-    User googleRegister(UserResponseDto.GetGoogleUserInfo googleUserInfo);
+    User googleRegister(UserResponseDto.GoogleUser googleUserInfo);
 
-    UserResponseDto.TokenInfo issueKakaoJwtToken(UserResponseDto.KakaoLogin loginRequestDto, HttpServletResponse response);
+    UserResponseDto.TokenInfo issueToken(User user, HttpServletResponse response);
 
-    UserResponseDto.TokenInfo issueGoogleJwtToken(UserResponseDto.GoogleLogin loginRequestDto, HttpServletResponse response);
+    UserResponseDto.UserInfo registerProfile(String socialaccountId, String username, MultipartFile file) throws IOException;
 
-    UserResponseDto.UserProfile registerMoreUserInfo(String socialaccountId, String username, MultipartFile file) throws IOException;
-
-    boolean checkKakaoIsFirstLogin(UserResponseDto.KakaoLogin loginRequestDto);
-
-    boolean checkGoogleIsFirstLogin(UserResponseDto.GoogleLogin loginRequestDto);
+    boolean checkLoginFirst(User user);
 
     void checkUsername(String username);
 
-    UserResponseDto.UserProfile sendKakaoUserBasicInfo(UserResponseDto.KakaoLogin loginRequestDto);
+    UserResponseDto.UserInfo sendUserInfo(User user);
 
-    UserResponseDto.UserProfile sendGoogleUserBasicInfo(UserResponseDto.GoogleLogin loginRequestDto);
-
-    UserResponseDto.invite searchUserInvite(String username);
+    UserResponseDto.UserInfo searchUser(String username);
 
     void deleteAccount(String socialaccountId);
 
-    void checkNoSameUsername(String username);
+    void checkSameUsername(String username);
 
     TokenResponseDto reissueToken(TokenRequestDto requestDto);
+
+    User getUser(String socialaccountId);
 }

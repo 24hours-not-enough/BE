@@ -4,13 +4,13 @@ import com.example.trip.advice.exception.UserNotFoundException;
 import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.*;
 import com.example.trip.dto.response.UserResponseDto;
+import com.example.trip.dto.response.UserResponseDto.UserInfo;
 import com.example.trip.repository.*;
 import com.example.trip.repository.BookMarkRepository;
 import com.example.trip.repository.FeedRepository;
 import com.example.trip.repository.plan.PlanRepository;
 import com.example.trip.service.MypageService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
@@ -106,12 +106,16 @@ public class MypageServiceImpl implements MypageService {
     // 마이페이지 프로필 수정(완료)
 //    @CacheEvict(value = "userprofile")
     @Transactional
-    public UserResponseDto.UserProfile changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
+    public UserInfo changeProfile(UserDetailsImpl userDetails, String username, MultipartFile file) throws IOException {
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(userDetails.getUsername()).orElseThrow(UserNotFoundException::new));
         Map<String, String> nameUrl = s3UploaderService.upload(file);
         s3UploaderService.deleteFile(user.get().getImage().getFilename());
         user.get().update(username, nameUrl.get(file.getOriginalFilename()), file.getOriginalFilename());
-        return new UserResponseDto.UserProfile(user.get().getId(), username, nameUrl.get(file.getOriginalFilename()));
+        return UserInfo.builder()
+                .userId(user.get().getId())
+                .userName(username)
+                .userProfileImg(nameUrl.get(file.getOriginalFilename()))
+                .build();
     }
 
 //    private Feed authFeedValidation(Long userId, Long feedId) {

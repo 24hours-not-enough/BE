@@ -4,6 +4,7 @@ import com.example.trip.advice.exception.UserNotFoundException;
 import com.example.trip.domain.LoginLog;
 import com.example.trip.domain.User;
 import com.example.trip.dto.response.UserResponseDto;
+import com.example.trip.dto.response.UserResponseDto.KakaoLogin;
 import com.example.trip.dto.response.queryprojection.UserInfo;
 import com.example.trip.redis.notification.Notification;
 import com.example.trip.repository.LoginLogRepository;
@@ -34,13 +35,12 @@ public class UserServiceImpl implements UserService {
         return new UserInfo(user.get());
     }
 
-    public void registerLog(HttpServletRequest request, UserResponseDto.KakaoLogin loginRequestDto) {
+    public void registerLog(HttpServletRequest request, User user) {
         String remoteAddr = request.getRemoteAddr();
-        Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(loginRequestDto.getKakaoId())).orElseThrow(UserNotFoundException::new);
         LoginLog log = LoginLog.builder()
-                .email(loginRequestDto.getEmail())
+                .email(user.getEmail())
                 .login_ip(remoteAddr)
-                .user(user.get()).build();
+                .user(user).build();
         loginLogRepository.save(log);
     }
 
