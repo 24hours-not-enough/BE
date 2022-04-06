@@ -9,7 +9,7 @@ import java.util.List;
 @Getter
 public class CalendarDetailsRequestDto {
 
-    private String location;
+    private String locationName;
 
     private String locationMemo;
 
