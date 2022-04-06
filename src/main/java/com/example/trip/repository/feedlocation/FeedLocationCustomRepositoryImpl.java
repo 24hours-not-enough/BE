@@ -19,7 +19,6 @@ import static com.example.trip.domain.QUser.user;
 import static com.example.trip.domain.QFeedComment.feedComment;
 
 
-
 @Repository
 public class FeedLocationCustomRepositoryImpl implements FeedLocationCustomRepository {
 
@@ -33,27 +32,27 @@ public class FeedLocationCustomRepositoryImpl implements FeedLocationCustomRepos
     public List<FeedLocationResponseDto.BookMark> findBookMarkLocation(Long userId) {
         return jpaQueryFactory
                 .select(Projections.constructor(FeedLocationResponseDto.BookMark.class,
-                        feedLocation.id,
-                        feedLocation.name,
-                        feedLocation.placeAddress,
-                        feedLocation.latitude,
-                        feedLocation.longitude,
-                        Projections.list(Projections.constructor(FeedDetailLocResponseDto.GetFeedDetailLoc.class,
-                                feedDetailLoc.id,
-                                feedDetailLoc.createdAt,
-                                feedDetailLoc.feedLocation.name,
-                                Projections.list(Projections.constructor(FeedDetailLocImgResponseDto.ImgUrl.class, feedDetailLocImg.imgUrl)),
-                                Projections.list(Projections.constructor(LikesResponseDto.GetUserId.class,
-                                        likes.user.id)
-                                ),
-//                                Projections.constructor(QUserInfo.class, feedDetailLoc.feedDetail.feed.user),
-                                feedDetailLoc.memo,
-                                Projections.list(Projections.constructor(FeedCommentResponseDto.GetComment.class,
-                                        feedComment.id,
-//                                        new QUserInfo(feedComment.user),
-                                        feedComment.content)
+                                feedLocation.id,
+                                feedLocation.name,
+                                feedLocation.placeAddress,
+                                feedLocation.latitude,
+                                feedLocation.longitude,
+                                Projections.list(Projections.constructor(FeedDetailLocResponseDto.GetFeedDetailLoc.class,
+                                                feedDetailLoc.id,
+                                                feedDetailLoc.createdAt,
+                                                feedDetailLoc.feedLocation.name,
+                                                Projections.list(Projections.constructor(FeedDetailLocImgResponseDto.ImgUrl.class, feedDetailLocImg.imgUrl)),
+                                                Projections.list(Projections.constructor(LikesResponseDto.GetUserId.class,
+                                                        likes.user.id)
+                                                ),
+                                                new QUserInfo(feedDetailLoc.feedDetail.feed.user),
+                                                feedDetailLoc.memo,
+                                                Projections.list(Projections.constructor(FeedCommentResponseDto.GetComment.class,
+                                                                feedComment.id,
+                                                                new QUserInfo(feedComment.user),
+                                                                feedComment.content)
+                                                ))
                                 ))
-                        ))
                 )
                 .from(feedLocation)
                 .innerJoin(feedLocation.bookMarks, bookMark).on(feedLocation.id.eq(bookMark.feedLocation.id), bookMark.user.id.eq(userId))
@@ -65,7 +64,7 @@ public class FeedLocationCustomRepositoryImpl implements FeedLocationCustomRepos
                 .leftJoin(feedDetailLoc.likes, likes).on(feedDetailLoc.id.eq(likes.feedDetailLoc.id))
                 .leftJoin(likes.user, user).on(likes.user.id.eq(user.id))
                 .leftJoin(feedDetailLoc.feedComments, feedComment).on(feedDetailLoc.id.eq(feedComment.feedDetailLoc.id))
-                .leftJoin(feedComment.user, user).on(feedComment.user.id.eq(user.id))
+                .innerJoin(feedComment.user, user).on(feedComment.user.id.eq(user.id))
                 .fetch();
     }
 }
