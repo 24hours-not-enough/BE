@@ -8,7 +8,7 @@ import com.example.trip.dto.response.AllLocationsDto;
 import com.example.trip.dto.response.FeedResponseDto;
 import com.example.trip.repository.*;
 import com.example.trip.repository.FeedRepository;
-import com.example.trip.repository.feedlocation.FeedLocationRepository;
+import com.example.trip.repository.FeedLocationRepository;
 import com.example.trip.service.FeedService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -206,6 +206,7 @@ public class FeedServiceImpl implements FeedService {
         feedRepository.findByUserId(userId).stream()
                 .map(x -> arr.add(new FeedResponseDto.GetFeed(x)))
                 .collect(Collectors.toList());
+
         return arr;
     }
 

@@ -7,7 +7,7 @@ import com.example.trip.domain.FeedLocation;
 import com.example.trip.domain.User;
 import com.example.trip.dto.response.FeedLocationResponseDto;
 import com.example.trip.repository.BookMarkRepository;
-import com.example.trip.repository.feedlocation.FeedLocationRepository;
+import com.example.trip.repository.FeedLocationRepository;
 import com.example.trip.service.BookMarkService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
