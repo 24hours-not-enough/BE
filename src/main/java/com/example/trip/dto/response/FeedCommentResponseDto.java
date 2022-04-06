@@ -19,12 +19,12 @@ public class FeedCommentResponseDto {
     public static class GetComment {
 
         private Long commentId;
-//        private UserInfo creator;
+        private UserInfo creator;
         private String content;
 
         public GetComment(FeedComment feedComment) {
             this.commentId = feedComment.getId();
-//            this.creator = new UserInfo(feedComment.getUser());
+            this.creator = new UserInfo(feedComment.getUser());
             this.content = feedComment.getContent();
         }
     }

@@ -1,5 +1,6 @@
 package com.example.trip.domain;
 
+import com.querydsl.core.annotations.QueryInit;
 import lombok.*;
 import javax.persistence.*;
 import java.util.List;
@@ -18,6 +19,7 @@ public class FeedDetailLoc extends TimeStamped {
 
     private String memo;
 
+    @QueryInit("feed.*")
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "feed_detail_id")
     private FeedDetail feedDetail;
