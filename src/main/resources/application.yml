@@ -2,6 +2,10 @@ server:
   port: 8081
 
 spring:
+  servlet:
+    multipart:
+      maxFileSize: 100MB
+      maxRequestSize: 100MB
   redis:
     host: localhost
     port: 6379
@@ -63,4 +67,3 @@ cloud:
     credentials:
       accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
       secretKey: ${{ secrets.AWS_S3_SECRET_KEY }}
-
