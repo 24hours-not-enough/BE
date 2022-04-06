@@ -17,4 +17,10 @@ public interface CalendarDetailsRepository extends JpaRepository<CalendarDetails
 
     @Query("select distinct c from CalendarDetails c left join fetch c.calendar where c.calendar.plan.id =:planId")
     List<CalendarDetails> findByPlanIdAndCalendarId(@Param("planId") Long planId);
+
+    @Query("select c from CalendarDetails c where c.calendar.id =:calendarId")
+    List<CalendarDetails> findByCalendarId(Long calendarId);
+
+    @Query("select c from CalendarDetails c where c.name =:location and c.memo=:locationMemo and c.latitude =:latitude and c.longitude =:longitude and c.sort =:sort")
+    List<CalendarDetails> findByLocationAndLocationMemo(String location, String locationMemo, String latitude, String longitude, int sort);
 }

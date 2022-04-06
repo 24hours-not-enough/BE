@@ -15,4 +15,6 @@ public interface CalendarDetailsService {
     List<CalendarResponseDto> findCalendarDetails(Long planId, Long calendarId, Long userId);
 
     void addCalendarDetailsAll(Long planId, List<CalendarDetailsRequestDto.AddAll> dto, Long id);
+
+    void modifyCalendarDetailsAll(Long planId, List<CalendarDetailsRequestDto.AddAll> dto, Long userId);
 }

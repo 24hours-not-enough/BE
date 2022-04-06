@@ -71,4 +71,14 @@ public class CalendarDetailsController {
                 .result("success")
                 .build(),HttpStatus.OK);
     }
+
+    @ApiOperation(value = "가고 싶은 곳 상세 계획 전체 한번에 수정", notes = "계획 및 일정이 존재해야만 등록 가능")
+    @PutMapping("/plan/{planId}/days/calendar")
+    public ResponseEntity<PlanResponseDto.ResponseNodata> CalendarDetailsModifyAll(@PathVariable Long planId, @RequestBody List<CalendarDetailsRequestDto.AddAll> dto, @AuthenticationPrincipal UserDetailsImpl userDetails){
+        calendarDetailsService.modifyCalendarDetailsAll(planId, dto, userDetails.getUser().getId());
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
+                .msg("상세계획 내용 전체수정 완료!")
+                .result("success")
+                .build(),HttpStatus.OK);
+    }
 }

@@ -21,10 +21,13 @@ public class HomeController {
     public ResponseEntity<AllLocationsListDto>   getEveryFeed(
             @RequestBody FeedRequestDto.FeedRequestMainGetDto feedRequestMainGetDto)
     {
+        //약속한 리스펀스 엔티티 형태로 만들어서 리턴
         return new ResponseEntity<>(
                 AllLocationsListDto.builder()
+                        //지역별 피드 정보 조회
                         .allLocationsDtoList(feedService.findEachLocations(feedRequestMainGetDto))
                         .build(), HttpStatus.OK);
     }
 }
+
 

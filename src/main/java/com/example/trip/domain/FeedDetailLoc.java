@@ -1,9 +1,7 @@
 package com.example.trip.domain;
 
 import lombok.*;
-import org.springframework.data.jpa.repository.Modifying;
 import javax.persistence.*;
-import javax.transaction.Transactional;
 import java.util.List;
 
 @Entity
@@ -41,6 +39,7 @@ public class FeedDetailLoc extends TimeStamped {
         this.id = id;
     }
 
+    //피드 디테일 로케이션 수정
     public void update(FeedDetailLoc feedDetailLoc){
         this.memo = feedDetailLoc.getMemo();
     }

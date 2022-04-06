@@ -89,31 +89,113 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
         userAndPlanValidation(planId,userId);
         List<Calendar> byPlan = calendarRepository.findByPlan(planId);
         Optional<User> findUser = userRepository.findById(userId);
-        dto.forEach((list)->{
-            byPlan.forEach((planList->{
-                planList.updateCalendarUnlock(list.getDays(), findUser.get());
-            }));
-        });
+        final int[] i = {0};
+        byPlan.forEach((planList -> {
+            planList.updateCalendarUnlock(dto.get(i[0]).getDays(), findUser.get());
+            i[0] +=1;
+        }));
         setCalendarDetailsList(dto);
-
-
     }
+
+    @Override
+    @Transactional
+    public void modifyCalendarDetailsAll(Long planId, List<CalendarDetailsRequestDto.AddAll> dto, Long userId) {
+        planValidation(planId);
+        dto.forEach((detailList)->{
+            calendarDetailsRepository.deleteByCalendarId(detailList.getCalendarId());
+            calendarValidation(detailList.getCalendarId());
+        });
+
+        userAndPlanValidation(planId,userId);
+        setCalendarDetailsList(dto);
+    }
+
+    private void updateCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
+        dto.forEach((details)->{
+            calendarDetailsRepository.deleteByCalendarId(details.getCalendarId());
+            setCalendarDetails(dto);
+
+        });
+    }
+
+    private void setCalendarDetails(List<CalendarDetailsRequestDto.AddAll> dto) {
+    }
+
+
+//    @Override
+//    @Transactional
+//    public void modifyCalendarDetailsAll(Long planId, List<CalendarDetailsRequestDto.AddAll> dto, Long userId) {
+//        planValidation(planId);
+//        userAndPlanValidation(planId,userId);
+//        List<Calendar> findPlan = calendarRepository.findByPlan(planId);
+//        Optional<User> findUser = userRepository.findById(userId);
+//        final int[] i = {0};
+//        findPlan.forEach((list)-> {
+//            list.updateCalendarUnlock(dto.get(i[0]).getDays(), findUser.get());
+//            i[0] +=1;
+//        });
+//        updateCalendarDetailsList(dto);
+//    }
+//    private void updateCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
+//        dto.forEach((details)->{
+//            List<CalendarDetails> findCalendarDetailsByCalendarId = calendarDetailsRepository.findByCalendarId(details.getCalendarId());
+//            System.out.println("findCalendarDetailsByCalendarId = " + findCalendarDetailsByCalendarId.size());
+//            Optional<Calendar> findCalendar = calendarRepository.findById(details.getCalendarId());
+//            final int[] i = {0};
+//            findCalendarDetailsByCalendarId.forEach((list)->{
+//                System.out.println("details.getCalendarDetails().size() = " + details.getCalendarDetails().size());
+//                list.updateCalendarDetails(details.getCalendarDetails().get(i[0]));
+//                if(details.getCalendarDetails().size()-1>i[0]){
+//                    i[0]+=1;
+//                }
+//
+//            });
+//
+//            //System.out.println("calendarDetail = " + calendarDetail);
+//            details.getCalendarDetails().forEach((list)->{
+//                List<CalendarDetails> findCalendarDetails = calendarDetailsRepository.findByLocationAndLocationMemo(list.getLocation(),list.getLocationMemo(),list.getLatitude(),list.getLongitude(), list.getSort());
+//                Optional<CalendarDetails> calendarDetail = findCalendarDetails.stream().findFirst();
+//                System.out.println("list = " +list);
+//                System.out.println("findCalendarDetails = " + findCalendarDetails.size());
+//                if(!calendarDetail.isPresent()){
+//                    System.out.println("aaaaaaaaaaa");
+//                    CalendarDetails calendarDetails = CalendarDetails.builder()
+//                            .calendar(findCalendar.get())
+//                            .name(list.getLocation())
+//                            .memo(list.getLocationMemo())
+//                            .longitude(list.getLongitude())
+//                            .latitude(list.getLatitude())
+//                            .sort(list.getSort())
+//                            .build();
+//                    calendarDetailsRepository.save(calendarDetails);
+//                    //findCalendarDetails.stream().
+//                }else if(calendarDetail.isPresent()){
+//                    //calendarDetailsRepository.deleteById(calendarDetail.get().getId());
+//                }
+//            });
+//        });
+//    }
 
     private void setCalendarDetailsList(List<CalendarDetailsRequestDto.AddAll> dto) {
         dto.forEach((details)->{
             Optional<Calendar> findCalendar = Optional.ofNullable(calendarRepository.findById(details.getCalendarId()).orElseThrow(CalendarNotFoundException::new));
-            calendarDetailsRepository.deleteByCalendarId(details.getCalendarId());
-            details.getCalendarDetails().forEach((detailsList)->{
-                CalendarDetails calendarDetails = CalendarDetails.builder()
-                        .calendar(findCalendar.get())
-                        .name(detailsList.getLocation())
-                        .latitude(detailsList.getLatitude())
-                        .longitude(detailsList.getLongitude())
-                        .memo(detailsList.getLocationMemo())
-                        .sort(detailsList.getSort())
-                        .build();
-                calendarDetailsRepository.save(calendarDetails);
-            });
+            List<CalendarDetails> findCalendarDetailsByCalendarId = calendarDetailsRepository.findByCalendarId(details.getCalendarId());
+            Optional<CalendarDetails> calendarDetail = findCalendarDetailsByCalendarId.stream().findFirst();
+            if(calendarDetail.isPresent()){
+                throw new CalendarDetailsAlreadyExistException();
+            }else {
+                details.getCalendarDetails().forEach((detailsList) -> {
+                    CalendarDetails calendarDetails = CalendarDetails.builder()
+                            .calendar(findCalendar.get())
+                            .name(detailsList.getLocation())
+                            .latitude(detailsList.getLatitude())
+                            .longitude(detailsList.getLongitude())
+                            .memo(detailsList.getLocationMemo())
+                            .sort(detailsList.getSort())
+                            .build();
+                    calendarDetailsRepository.save(calendarDetails);
+                });
+            }
         });
     }
 

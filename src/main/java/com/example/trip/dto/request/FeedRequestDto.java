@@ -17,11 +17,10 @@ public class FeedRequestDto {
         @NotBlank
         private String title;
 
-        //        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
+        //ResponseBody에서는 JsonFormat을 사용, @DateTimeForamt은 스프링의 어노테이션. 따라서 Jackson 라이브러리를 활용
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime travelStart;
 
-        //        @DateTimeFormat(pattern = "yyyy-MM-dd'T'HH:mm:ss")
         @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd'T'HH:mm:ss", timezone = "Asia/Seoul")
         private LocalDateTime travelEnd;
 
@@ -80,4 +79,5 @@ public class FeedRequestDto {
 
     }
 }
+
 
