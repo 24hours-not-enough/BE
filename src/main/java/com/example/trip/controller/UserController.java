@@ -1,14 +1,12 @@
 package com.example.trip.controller;
 
 import com.example.trip.config.security.UserDetailsImpl;
-import com.example.trip.domain.User;
 import com.example.trip.dto.request.TokenRequestDto;
 import com.example.trip.dto.request.UserRequestDto;
 import com.example.trip.dto.response.FeedLocationResponseDto.BookMark;
 import com.example.trip.dto.response.TokenResponseDto;
 import com.example.trip.dto.response.UserResponseDto;
 import com.example.trip.dto.response.UserResponseDto.*;
-import com.example.trip.dto.response.queryprojection.UserInfo;
 import com.example.trip.redis.notification.Notification;
 import com.example.trip.service.BookMarkService;
 import com.example.trip.service.SocialLoginService;
@@ -117,7 +115,7 @@ public class UserController {
     // 유저 정보 조회
     @GetMapping("/api/user")
     public ResponseEntity<UserResponseDto.User> userInfo(@AuthenticationPrincipal UserDetailsImpl userDetails) {
-        UserInfo user = userService.findUser(userDetails.getUser().getId());
+        UserBasic user = userService.findUser(userDetails.getUser().getId());
         List<BookMark> bookMarkPlaces = bookMarkService.findBookMarkPlaces(userDetails.getUser().getId());
         return new ResponseEntity<>(UserResponseDto.User.builder()
                 .result("success")
