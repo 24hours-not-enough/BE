@@ -52,7 +52,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/api/kakaologin", "/api/googlelogin", "/", "/api/map").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/token").permitAll()
-                .antMatchers("/alarmpoint/**","/endpoint/**", "/webjars/sockjs-client/sockjs.min.js", "/webjars/stomp-websocket/stomp.min.js").permitAll()
+                .antMatchers("/alarmpoint/**","/endpoint/**", "/webjars/sockjs-client/sockjs.min.js", "/webjars/stomp-websocket/stomp.min.js", "/index.html","/app.js").permitAll()
 //                .antMatchers("**").permitAll()
                 .anyRequest().authenticated() // 위 antMatchers 이외에는 모든 api 인증 필요
                 .and()
