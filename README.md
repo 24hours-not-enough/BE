@@ -1,5 +1,5 @@
 # <p align="center">항해99 실전프로젝트, TriPlan [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhaesoo9410&count_bg=%23EB8B10&title_bg=%23684327&icon=&icon_color=%23E7E7E7&title=VISIT&edge_flat=false)](https://github.com/24hours-not-enough) </p> 
-<h4 align="center">📆 2022.03.10 ~ 2022.01.13</h4>
+<h4 align="center">📆 2022.03.04 ~ 2022.04.08</h4>
 <br>
 <br>
 
