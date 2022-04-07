@@ -36,15 +36,15 @@ public class Plan extends TimeStamped {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @OrderBy("id asc")
     private final Set<Member> members = new HashSet<>();
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @OrderBy("id asc")
     private final Set<Calendar> calendars = new HashSet<>();
 
-    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL, orphanRemoval = true)
+    @OneToMany(mappedBy = "plan", cascade = CascadeType.ALL)
     @OrderBy("id asc")
     private final Set<CheckList> checkLists = new HashSet<>();
 
