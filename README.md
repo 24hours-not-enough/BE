@@ -95,13 +95,21 @@
  기능  |      Method     | URL |  request   |        response       |
 | :-: | :----------: | :----: | :-------------: | :--------------: |
 |  메인페이지   |  GET |  /api/map  |x좌표 최소, 최댓값, y좌표 최소, 최댓값 | 지역별 피드 조회 정보  |
-|  이미지 업로드  |  PUT |  /api/feed/image |  Multipart 형태의 이미지 파일들 |  "피드 이미지 등록 성공하였습니다."     |
+|  이미지 업로드  |  POST |  /api/feed/image |  Multipart 형태의 이미지 파일들 |  "피드 이미지 등록 성공하였습니다."     |
+|  이미지 삭제  |  DELETE |  /api/feed/image |  이미지 파일 이름들 |  "피드 이미지 삭제 성공하였습니다."     |
+|  피드 등록  |  POST |  /api/feed |  피드 정보 |  "피드 등록 성공하였습니다."     |
+|  피드 수정  |  PUT |  /api/feed/{feedId} |  피드 정보 |  "피드 수정 성공하였습니다."     |
+|  피드 삭제  |  DELETE |  /api/feed/{feedId} |  없음 |  "피드 삭제 성공하였습니다."     |
+|  피드 좋아요  |  POST |  /api/feed/{feedDetailLocId}/like |  없음 |  "피드 좋아요 등록에 성공하였습니다."     |
+|  피드 좋아요 삭제  |  DELETE |  /api/feed/{feedDetailLocId}/like |  없음 |  "피드 좋아요 취소에 성공하였습니다."     |
+|  피드 댓글 등록  |  POST |  /api/feed/comment/{feedDetailLocId} |  댓글 내용 |  "댓글 등록 성공하였습니다."     |
+|  피드 댓글 수정  |  PUT |  /api/feed/comment/{feedDetailLocId} |  댓글 내용 |  "댓글 수정 성공하였습니다."     |
+|  피드 댓글 삭제  |  DELETE |  /api/feed/comment/{feedDetailLocId} |  없음 |  "댓글 삭제 성공하였습니다."     |
+|  북마크 등록  |  POST |  /api/feed/{feedLocId}/bookmark |  없음 |  "피드 북마크 등록에 성공하였습니다."     |
+|  북마크 해제  |  DELETE |  /api/feed/{feedLocId}/unbookmark |  없음 |  "피드 북마크 취소에 성공하였습니다."     |
+|  채팅방 입장  |  POST |  /topic/{planId}      |  없음 |  입장한 방 번호     |
+|  채팅방 메세지 보내기  |  POST |  /app/chat/{planId}    |  메세지, user_id, 보내는 채팅 방 번호 |  "메세지 내용"     |
 
-#### Movie Crawling (❗️최초 1회만 실행)
-
-기능  |      Method     | URL |  request   |        response       |
-| :-: | :----------: | :----: | :-------------: | :--------------: |
-|  영화 크롤링  | GET  |  /save_movies   |                 |   성공     |
 
 
 <br><br>
