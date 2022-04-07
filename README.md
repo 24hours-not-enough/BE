@@ -73,13 +73,22 @@
 <h3 align="center"><b>🏷 API Table 🏷</b></h3>
 
 #### User
-|기능|Method|URL|request|response|
-|:--:|:--:|:--:|:--:|:--:|
-|로그인|POST|/login| id,pw  |    |
-|회원가입|POST|/register|  id,pw  |  가입 완료 메세지  |
-|로그아웃|GET|/logout|    |    |
-|즐겨찾기 추가|POST|/api/addfavorite|movie_title|추가된 영화제목|
-|즐겨찾기 삭제|POST|/api/delfavorite|movie_title|삭제된 영화제목|
+ 기능  |      Method     | URL |  request   |        response       |
+| :-: | :----------: | :----: | :-------------: | :--------------: |
+|  카카오로그인  |  GET |  /api/kakaologin | authorization code |  "카카오 로그인 성공"     |
+|  구글로그인  |  GET |  /api/googlelogin |  authorization code  |  "구글 로그인 성공"     |
+|  회원가입추가정보  |  POST |  /api/login/userinfo |  닉네임, 이미지파일 |  "정식 회원가입 완료되었습니다."     |
+|  닉네임중복확인  |  POST |  /api/username | 닉네임  |  "사용가능한 닉네임입니다."     |
+|  사용자초대  |  GET |  /api/user/{nickname} |  닉네임 |  "해당 사용자를 초대할 수 있습니다."     |
+|  로그아웃  |  GET |  /api/logout |  없음 |  "로그아웃 성공입니다."     |
+|  회원탈퇴  |  POST |  /api/withdrawal |  없음 |  "회원 탈퇴되었습니다."     |
+|  유저정보조회  | GET |  /api/user |  없음 |  "유저 정보입니다."     |
+|  토큰 재발급  |  POST |  /api/token | accessToken, refreshToken  |  newAccessToken, newRefreshToken    |
+|  마이페이지수정  |  PUT |  /api/mypage | 닉네임, 이미지파일 |  "마이페이지 수정완료입니다."   |
+|  알림내용조회   |  GET |  /api/notification  | 없음 | 해당 유저의 전체 알림 정보 |
+|  알림생성  | POST |  /app/notification/{receiveuserId}  | 알림 내용 관련 정보 | 없음 |
+|  알림내용전달  |  GET |  /queue/{receiveuserId} | 없음 |  알림 내용 관련 정보   |
+
 
 #### Plan
 
@@ -97,6 +106,7 @@
 |  메인페이지   |  GET |  /api/map  |x좌표 최소, 최댓값, y좌표 최소, 최댓값 | 지역별 피드 조회 정보  |
 |  이미지 업로드  |  POST |  /api/feed/image |  Multipart 형태의 이미지 파일들 |  "피드 이미지 등록 성공하였습니다."     |
 |  이미지 삭제  |  DELETE |  /api/feed/image |  이미지 파일 이름들 |  "피드 이미지 삭제 성공하였습니다."     |
+|  전체 피드 조회  |  GET |  /api/feed |  이미지 파일 이름들 |  내가 작성한 피드 + 좋아요 한 피드 정보   |
 |  피드 등록  |  POST |  /api/feed |  피드 정보 |  "피드 등록 성공하였습니다."     |
 |  피드 수정  |  PUT |  /api/feed/{feedId} |  피드 정보 |  "피드 수정 성공하였습니다."     |
 |  피드 삭제  |  DELETE |  /api/feed/{feedId} |  없음 |  "피드 삭제 성공하였습니다."     |
