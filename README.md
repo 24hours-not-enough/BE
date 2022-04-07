@@ -1,46 +1,44 @@
 # <p align="center">항해99 실전프로젝트, TriPlan [![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fhaesoo9410&count_bg=%23EB8B10&title_bg=%23684327&icon=&icon_color=%23E7E7E7&title=VISIT&edge_flat=false)](https://github.com/24hours-not-enough) </p> 
-<h4 align="center">📆 2022.01.10 ~ 2022.01.13</h4>
+<h4 align="center">📆 2022.03.10 ~ 2022.01.13</h4>
 <br>
 <br>
 
 ## 📌 팀원 소개
 
-|[팀장] 장윤철|[팀원] 손성진|[팀원] 임현우|
-|:----:|:-----:|:----:|
-|<img src="https://avatars.githubusercontent.com/u/46017029?v=4" alt="avatar" height="150px" width="150px" /> | <img src="https://avatars.githubusercontent.com/u/48196352?v=4" alt="avatar" height="150px" width="150px" /> | <img src="https://avatars.githubusercontent.com/u/76833697?v=4" alt="avatar" height="150px" width="150px" /> |
-|[name8965](https://github.com/name8965)|[ssj9398](https://github.com/ssj9398)|[hyunwoome](https://github.com/hyunwoome)|
+|[팀장] 김선주|[팀원] 손성진|[팀원] 김효신|[팀원] 김윤민|
+|:----:|:-----:|:----:|:----:|
+|<img src="https://avatars.githubusercontent.com/u/66668478?v=4" alt="avatar" height="150px" width="150px" /> | <img src="https://avatars.githubusercontent.com/u/48196352?v=4" alt="avatar" height="150px" width="150px" /> | <img src="https://avatars.githubusercontent.com/u/96279734?v=4" alt="avatar" height="150px" width="150px" /> | <img src="https://avatars.githubusercontent.com/u/66665210?v=4" alt="avatar" height="150px" width="150px" /> |
+|[sunny-yo](https://github.com/sunny-yo)|[ssj9398](https://github.com/ssj9398)|[Shinnybest](https://github.com/Shinnybest)|[JerryAllMighty](https://github.com/JerryAllMighty)|
 
 <br>
 
 ---
 
 <h3><b>🎫 프로젝트 소개 🎫</b></h3>
-- "이 넷플릭스 유명하던데 재미있나?" <br>
-- 사람들과 넷플릭스의 드라마/영화의 한줄평을 공유해보자!!
+- "여행과 계획을 한 번에" <br>
+- 함께하는 여행, 계획과 기록도 한 번에 같이 !
 <br><br> 
 
 <h3><b>🎞 프로젝트 시연영상 🎞</b></h3>
 
-[![Video Label](https://media-sparta.s3.amazonaws.com/media/tempvideos/20220113/KakaoTalk_20220113_164019842_997.png)](https://youtu.be/-lMBHvXTHxU)
+[![Video Label]()]()
 
 ---
 
 <br>
 <h3 align="center"><b>🛠 Tech Stack 🛠</b></h3>
 <p align="center">
-<img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black">
-<img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white">
-<img src="https://img.shields.io/badge/html-E34F26?style=for-the-badge&logo=html5&logoColor=white">
-<img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white">
-<img src="https://img.shields.io/static/v1?style=for-the-badge&message=Bootstrap&color=7952B3&logo=Bootstrap&logoColor=FFFFFF&label=">
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
-<img src="https://img.shields.io/badge/linux-FCC624?style=for-the-badge&logo=linux&logoColor=black">
+<img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">
+<img src="https://img.shields.io/badge/GitHub%20Actions-569A31?style=for-the-badge&logo=GitHub%20Actions&logoColor=white">
 <img src="https://img.shields.io/badge/aws-232F3E?style=for-the-badge&logo=aws&logoColor=white">
+     <img src="https://img.shields.io/badge/Amazon%20S3-569A31?style=for-the-badge&logo=Amazon%20S3&logoColor=white">
+          <img src="https://img.shields.io/badge/Redis-DC382D?style=for-the-badge&logo=Redis&logoColor=white">
+<img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
+<img src="https://img.shields.io/badge/spring%20boot-6DB33F?style=for-the-badge&logo=spring%20boot&logoColor=white">
+<img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
 </br>
-<img src="https://img.shields.io/badge/Python-F80000?style=for-the-badge&logo=Python&logoColor=white">
-<img src="https://img.shields.io/badge/Flask-4FC08D?style=for-the-badge&logo=Flask&logoColor=white">
-<img src="https://img.shields.io/badge/Jinja-7952B3?style=for-the-badge&logo=Jinja&logoColor=white">
-<img src="https://img.shields.io/badge/MongoDB-61DAFB?style=for-the-badge&logo=MongoDB&logoColor=white">
+
 
 <br><br>
 <h3 align="center"><b>🎬 Getting Started 🎬</b></h3>
