@@ -16,8 +16,6 @@ public class RedisPublisher {
     //채팅 메세지를 pub할 때 사용
     public void publish(ChannelTopic topic, ChatSendDto chatSendDto){
         //Dto를 해당 토픽으로 보내기
-        System.out.println(topic.getTopic());
-        System.out.println(chatSendDto.getMessage());
         redisTemplate.convertAndSend(topic.getTopic(),chatSendDto);
     }
 
