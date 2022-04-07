@@ -20,7 +20,10 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.cache.CacheManager;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpEntity;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
@@ -71,6 +74,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
     private static final Long AccessTokenValidTime = 60 * 60 * 1000L; // 1 hr
     private static final Long RefreshTokenValidTime = 2 * 10080 * 60 * 1000L; // 2 weeks
+
+    @Autowired
+    CacheManager cacheManager;
 
 
     @Override
@@ -368,6 +374,9 @@ public class SocialLoginServiceImpl implements SocialLoginService {
     @Override
     @Transactional
     public void deleteAccount(String socialaccountId) {
+
+        cacheManager.getCache("user").clear();
+
         Optional<User> user = Optional.ofNullable(userRepository.findBySocialaccountId(socialaccountId)).orElseThrow(UserNotFoundException::new);
         user.get().deleteAccount();
     }
@@ -394,6 +403,14 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         redisServiceImpl.setValues(newRefreshToken, snsId);
 
         return new TokenResponseDto(newAccessToken, newRefreshToken);
+    }
+
+    @Override
+    public void logout(String refreshToken) {
+
+        cacheManager.getCache("user").clear();
+
+        redisServiceImpl.delValues(refreshToken);
     }
 }
 

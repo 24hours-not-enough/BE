@@ -14,6 +14,7 @@ import com.example.trip.service.RedisService;
 import com.example.trip.service.UserService;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cache.annotation.CacheEvict;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -98,7 +99,7 @@ public class UserController {
     // 로그아웃
     @GetMapping("/api/logout")
     public ResponseEntity<ResponseNoData> logout(HttpServletRequest request) {
-        redisService.delValues(request.getHeader("refreshToken"));
+        socialLoginService.logout(request.getHeader("refreshToken"));
         return new ResponseEntity<>(ResponseNoData.builder()
                 .result("success").msg("로그아웃 성공!").build(), HttpStatus.OK);
     }

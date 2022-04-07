@@ -47,4 +47,6 @@ public interface SocialLoginService {
     TokenResponseDto reissueToken(TokenRequestDto requestDto);
 
     User getUser(String socialaccountId);
+
+    void logout(String refreshToken);
 }
