@@ -31,7 +31,7 @@ public class Calendar {
     @JoinColumn(name = "user_id")
     private User user;
 
-    @OneToMany(mappedBy = "calendar")
+    @OneToMany(mappedBy = "calendar", cascade = CascadeType.ALL)
     private final List<CalendarDetails> calendarDetails = new ArrayList<>();
 
     @Builder
