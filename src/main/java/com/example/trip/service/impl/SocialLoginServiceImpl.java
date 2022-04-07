@@ -69,9 +69,8 @@ public class SocialLoginServiceImpl implements SocialLoginService {
 
 
 
-//    private static final Long AccessTokenValidTime = 1000000 * 60 * 1000L; // 1000000분(test)
-    private static final Long AccessTokenValidTime = 10000000 * 60 * 1000L; // 1분(test)
-    private static final Long RefreshTokenValidTime = 10080 * 60 * 1000L; // 일주일
+    private static final Long AccessTokenValidTime = 60 * 60 * 1000L; // 1 hr
+    private static final Long RefreshTokenValidTime = 2 * 10080 * 60 * 1000L; // 2 weeks
 
 
     @Override
@@ -111,7 +110,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         MultiValueMap<String, String> body = new LinkedMultiValueMap<>();
         body.add("grant_type", "authorization_code");
         body.add("client_id", kakao_client_id);
-        body.add("redirect_uri", "http://localhost:3000/api/kakaologin");
+        body.add("redirect_uri", "https://triplan.co.kr/api/kakaologin");
         body.add("code", code);
         body.add("client_secret", kakao_client_secret);
 
@@ -216,7 +215,7 @@ public class SocialLoginServiceImpl implements SocialLoginService {
         body.add("code", code);
         body.add("client_id", google_client_id);
         body.add("client_secret", google_client_secret);
-        body.add("redirect_uri", "http://localhost:3000/api/googlelogin");
+        body.add("redirect_uri", "https://triplan.co.kr/api/googlelogin");
         body.add("grant_type", "authorization_code");
 
         // HTTP 요청 보내기
