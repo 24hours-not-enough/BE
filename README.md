@@ -41,39 +41,6 @@
 
 
 <br><br>
-<h3 align="center"><b>🎬 Getting Started 🎬</b></h3>
-<pre>
-<code>
-~$ cd Team13-NetflixComment
-~$ sudo chmod 755 initail_ec2.sh
-~$ ./initial_ec2.sh
-~$ pip install flask
-~$ pip install mongo
-~$ python3 app.py
-</code>
-</pre>
-
-<br>
-<h3 align="center"><b>📂 Project Directory Structure 📁</b></h3>
-<pre>
-<code>
-/static
-     ├── /bookmark.svg
-     ├── /detail.css
-     ├── /home.css
-     ├── /login.css
-     ├── /Netflix-logo.png
-/templates
-     ├── /detail.html
-     ├── /home.html
-     └── /login.html
-├── /detail.py
-├── /app.py
-└── /home.py
-</code>
-</pre>
-<br>
-<br>
 
 
 ---
@@ -97,77 +64,6 @@
     </tr>
 </table>
 
-
----
-
-
-<br>
-<h4><b>📰 Join Membership Page 📰</b></h4>
-
-<table width="100%">
-    <tr>
-        <td width="50%"><img src="https://user-images.githubusercontent.com/48196352/149292881-26320151-a136-43a1-8a36-763a5ab88b25.JPG" /></td>
-        <td width="50%">
-            <h5>회원가입</h5>
-            <ul>
-                <li>아이디 중복확인 시 아이디 입력여부, 형식, 중복 아이디 체크</li>
-                <li>비밀번호 2번 입력으로 비밀번호 형식, 일치 여부 체크</li>
-            </ul>
-        </td>
-    </tr>
-</table>
-
-
----
-
-
-<br>
-<h4><b>📰 Movie Main Page 📰</b></h4>
-
-<table width="100%">
-    <tr>
-        <td width="50%"><img src="https://user-images.githubusercontent.com/48196352/149292898-a0ac378e-1fb9-4ec1-988b-2602b6c6a39f.JPG" /></td>
-        <td width="50%">
-            <h5>메인 화면</h5>
-            <ul>
-                <li>넷플릭스의 영화 및 드라마 크롤링 하여 Jinja를 이용한 서버 사이드 렌더링으로 구현</li>
-                <li>북마크 클릭 시 해당 컨텐츠 하단에 북마크 영역에 표시</li>
-                <li>컨텐츠 클릭 시 영화 상세 및 리뷰 페이지로 이동</li>
-            </ul>
-        </td>
-    </tr>
-</table>
-
-
----
-
-<br>
-<h4><b>📰 Movie Detail & Reviw Page 📰</b></h4>
-<table width="100%">
-    <tr>
-        <td width="50%"><img src="https://user-images.githubusercontent.com/48196352/149292894-501485ee-5450-45c9-8c5c-1c59c99f81fd.JPG" /></td>
-        <td width="50%">
-            <h5>영화 상세 화면</h5>
-            <ul>
-                <li>넷플릭스의 영화 및 드라마 상세정보를 크롤링 하여 Jinja를 이용한 서버 사이드 렌더링으로 구현 </li>
-            </ul>
-        </td>
-    </tr>
-    <tr>
-        <td width="50%"><img src="https://user-images.githubusercontent.com/48196352/149292893-043d607a-4434-4443-a91c-280c120d3338.JPG" /></td>
-        <td width="50%">
-            <h5>글쓰기 화면</h5>
-            <ul>
-                <li>글 작성 후의 모습</li>
-                <li>조회 버튼 클릭 시, DB에 저장된 리뷰 Jinja를 통한 서버 사이드 렌더링 구현</li>
-                <li>저장 버튼 클릭 시, DB에 해당 리뷰 저장</li>
-                <li>저장 조건 - 모든 입력란을 기입하여야 함</li>
-                <li>댓글 수정, 삭제 기능 - 본인이 작성한 댓글만 수정, 삭제 가능</li>
-            </ul>
-        </td>
-    </tr>
-</table>
-
 <br><br>
 
 ---
@@ -185,7 +81,7 @@
 |즐겨찾기 추가|POST|/api/addfavorite|movie_title|추가된 영화제목|
 |즐겨찾기 삭제|POST|/api/delfavorite|movie_title|삭제된 영화제목|
 
-#### Movie
+#### Plan
 
 |기능|Method|URL|request|response|
 |:--:|:--:|:--:|:--:|:--:|
@@ -194,15 +90,12 @@
 |즐겨찾기 확인|GET|/check_bookmark||
 
 
-#### Review
+#### Feed
 
  기능  |      Method     | URL |  request   |        response       |
 | :-: | :----------: | :----: | :-------------: | :--------------: |
-|  리뷰 리스트  | GET  |  /review   |                 |   "리뷰 조회"     |
-|  리뷰 작성  |  POST |  /review  |review, star, movieTitle | "리뷰 등록 완료"  |
-|  리뷰 수정  |  PUT |  /review|  id, date, review   |  "수정 완료"     |
-|  리뷰 삭제  | DELETE  |  /review |  userid, review, starValue, writeTime   |  "삭제 완료"    |
-| 모든 리뷰 리스트 | GET | /allReview |  | review list |
+|  메인페이지   |  GET |  /api/map  |x좌표 최소, 최댓값, y좌표 최소, 최댓값 | 지역별 피드 조회 정보  |
+|  이미지 업로드  |  PUT |  /api/feed/image |  Multipart 형태의 이미지 파일들 |  "피드 이미지 등록 성공하였습니다."     |
 
 #### Movie Crawling (❗️최초 1회만 실행)
 
