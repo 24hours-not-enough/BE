@@ -69,6 +69,7 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
         planValidation(planId);
         calendarValidation(calendarId);
         userAndPlanValidation(planId,userId);
+        calendarRepository.deleteById(calendarId);
         calendarDetailsRepository.deleteByCalendarId(calendarId);
     }
 
