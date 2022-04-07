@@ -3,6 +3,7 @@ package com.example.trip.config;
 import com.example.trip.jwt.JwtAuthenticationFilter;
 import com.example.trip.jwt.JwtExceptionFilter;
 import com.example.trip.jwt.JwtTokenProvider;
+import com.example.trip.jwt.exceptionhandler.CustomAuthenticationEntryPoint;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -57,7 +58,8 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .anyRequest().authenticated() // 위 antMatchers 이외에는 모든 api 인증 필요
                 .and()
                 .addFilterBefore(new JwtAuthenticationFilter(jwtTokenProvider), UsernamePasswordAuthenticationFilter.class)
-                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class);
+                .addFilterBefore(jwtExceptionFilter, JwtAuthenticationFilter.class)
+                .exceptionHandling().authenticationEntryPoint(new CustomAuthenticationEntryPoint());
 
 
     }
@@ -65,7 +67,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         final CorsConfiguration configuration = new CorsConfiguration();
-        configuration.setAllowedOrigins(Arrays.asList("http://localhost:3000"));
+        configuration.setAllowedOrigins(Arrays.asList("https://triplan.co.kr"));
         configuration.addAllowedHeader("*");
         configuration.addAllowedMethod("*");
         configuration.setAllowCredentials(true);
