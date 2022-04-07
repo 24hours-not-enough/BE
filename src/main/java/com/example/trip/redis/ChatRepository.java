@@ -98,7 +98,6 @@ public class ChatRepository {
     }
 
     public ChannelTopic getTopic(Long planId) {
-        System.out.println(topics.get("CHAT"+planId));
         return topics.get("CHAT"+planId);
     }
 }
