@@ -3,6 +3,7 @@ package com.example.trip.service.impl;
 import com.example.trip.advice.exception.AuthPlanNotFoundException;
 import com.example.trip.advice.exception.CalendarModifyException;
 import com.example.trip.advice.exception.PlanNotFoundException;
+import com.example.trip.config.security.UserDetailsImpl;
 import com.example.trip.domain.Calendar;
 import com.example.trip.domain.Plan;
 import com.example.trip.domain.User;
@@ -91,6 +92,14 @@ public class CalendarServiceImpl implements CalendarService {
         findPlan.forEach((list)->{
             list.CalendarUnLock(findUser.get());
         });
+    }
+
+    @Override
+    @Transactional
+    public void removeDays(Long userId, Long planId, Long calendarId) {
+        planValidation(planId);
+        authPlanValidation(planId, userId);
+        calendarRepository.deleteById(calendarId);
     }
 
     private void authPlanValidation(Long planId, Long userId) {

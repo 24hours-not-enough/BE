@@ -29,6 +29,17 @@ public class CalendarController {
                 .build(),HttpStatus.OK);
     }
 
+    @DeleteMapping("/plan/{planId}/{calendarId}")
+    public ResponseEntity<PlanResponseDto.ResponseNodata> daysRemove(@AuthenticationPrincipal UserDetailsImpl userDetails,
+                                                                     @PathVariable Long planId,
+                                                                     @PathVariable Long calendarId){
+        calendarService.removeDays(userDetails.getUser().getId(), planId, calendarId);
+        return new ResponseEntity<>(PlanResponseDto.ResponseNodata.builder()
+                .msg("일차 삭제 완료")
+                .result("success")
+                .build(),HttpStatus.OK);
+    }
+
 
     @ApiOperation(value = "일정 및 상세계획 잠금", notes = "계획이 존재해야만 잠금 가능 하며 잠금 여부 표시")
     @PutMapping("/plan/{planId}/days/lock")
