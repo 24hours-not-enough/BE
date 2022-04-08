@@ -46,7 +46,7 @@
 ---
 
 
-<br>
+<!-- <br>
 <h3 align="center"><b>📢 Main function 📢</b></h3>
 <br>
 <h4><b>📰 Login Page 📰</b></h4>
@@ -65,8 +65,8 @@
 </table>
 
 <br><br>
-
----
+ -->
+<!-- --- -->
 
 <br><br>
 
