@@ -112,7 +112,8 @@ public class MemberServiceImpl implements MemberService {
                             .user(findUser.get())
                             .room_rep(false)
                             .plan(findPlan.get())
-                            .active(false)
+                            //서비스 알림 기능 없으므로 임시로 모두 활성화 처리
+                            .active(true)
                             .build();
                     memberRepository.save(member);
                 }
