@@ -106,7 +106,14 @@ public class CalendarDetailsServiceImpl implements CalendarDetailsService {
             calendarDetailsRepository.deleteByCalendarId(detailList.getCalendarId());
             calendarValidation(detailList.getCalendarId());
         });
-
+        User findUser = userRepository.findById(userId).get();
+        planValidation(planId);
+        List<Calendar> byPlan = calendarRepository.findByPlan(planId);
+        final int[] i = {0};
+        byPlan.forEach((planList -> {
+            planList.CalendarUnLock(findUser);
+            i[0] +=1;
+        }));
         userAndPlanValidation(planId,userId);
         setCalendarDetailsList(dto);
     }
