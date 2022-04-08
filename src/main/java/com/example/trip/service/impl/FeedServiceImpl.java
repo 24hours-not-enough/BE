@@ -183,6 +183,117 @@ public class FeedServiceImpl implements FeedService {
                         .flatMap(List<FeedDetailLocImg>::stream)
                         .collect(Collectors.toList()).get(feedDetailLocImgs.indexOf(x))
         ));
+
+        upsert(feed, feedRequestModifyDto);
+
+    }
+
+    public void upsert(Feed feed, FeedRequestDto.FeedRequestModifyDto feedRequestModifyDto){
+
+// feed detail 추가로 삽입
+        //기존의 데이터
+        List<FeedDetail> beforeFeedDetails = feed.getFeedDetail();
+
+        feedRequestModifyDto.getFeedDetail().stream()
+                .forEach(x -> x.setFeed(feed));
+
+        //추가가하려고 하는 피드 디테일 데이터
+        List<FeedDetail> afterFeedDetails = feedRequestModifyDto.getFeedDetail();
+
+        int beforeSize = beforeFeedDetails.size();
+        int afterSize = afterFeedDetails.size();
+
+        if(beforeSize < afterSize){
+            for(int i = beforeSize ; i < afterSize; i++){
+                feedDetailRepository.save(afterFeedDetails.get(i));
+            }
+
+        }
+
+
+// feed detail loc 추가로 삽입
+        //기존의 데이터
+        List<FeedDetailLoc> beforeFeedDetailLocs = beforeFeedDetails.stream()
+                .map(FeedDetail::getFeedDetailLoc)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        feedRequestModifyDto.getFeedDetail().stream().
+                forEach(x -> x.getFeedDetailLoc().forEach(y -> y.setFeedDetail(x)));
+
+
+        //추가하려고 하는 피드 디테일 데이터
+        List<FeedDetailLoc> afterFeedDetailLocs = feedRequestModifyDto.getFeedDetail().stream()
+                .map(FeedDetail::getFeedDetailLoc)
+                .flatMap(List<FeedDetailLoc>::stream)
+                .collect(Collectors.toList());
+
+        int beforeFDLSize = beforeFeedDetailLocs.size();
+        int afterFDLSize = afterFeedDetailLocs.size();
+
+        if(beforeFDLSize < afterFDLSize){
+            for(int i = beforeFDLSize ; i < afterFDLSize; i++){
+                feedDetailLocRepository.save(afterFeedDetailLocs.get(i));
+            }
+
+        }
+
+// feed location 추가로 삽입
+
+        //기존의 데이터
+        List<FeedLocation> beforeFeedLocations = beforeFeedDetailLocs.stream()
+                .map(FeedDetailLoc::getFeedLocation)
+                .collect(Collectors.toList());
+
+
+
+        //추가하려고 하는 피드 디테일 데이터
+        List<FeedLocation> afterFeedLocations = feedRequestModifyDto.getFeedDetail().stream()
+                .map(FeedDetail::getFeedDetailLoc)
+                .flatMap(List<FeedDetailLoc>::stream)
+                .map(FeedDetailLoc::getFeedLocation)
+                .collect(Collectors.toList());
+
+        int beforeFLSize = beforeFeedLocations.size();
+        int afterFLSize = afterFeedLocations.size();
+
+        if(beforeFLSize < afterFLSize){
+            for(int i = beforeFLSize ; i < afterFLSize; i++){
+                feedLocationRepository.save(afterFeedLocations.get(i));
+            }
+
+        }
+
+
+// feed detail loc img 추가로 삽입
+//기존의 데이터
+        List<FeedDetailLocImg> beforeFeedDetailLocImg = beforeFeedDetailLocs.stream()
+                .map(FeedDetailLoc::getFeedDetailLocImg)
+                .flatMap(List<FeedDetailLocImg>::stream)
+                .collect(Collectors.toList());
+
+
+
+        //추가하려고 하는 피드 디테일 데이터
+        feedRequestModifyDto.getFeedDetail().stream().
+                forEach(x -> x.getFeedDetailLoc().forEach(y -> y.getFeedDetailLocImg().forEach(z -> z.setFeedDetailLoc(y))));
+
+        List<FeedDetailLocImg> afterFeedDetailLocImg = feedRequestModifyDto.getFeedDetail().stream()
+                .map(FeedDetail::getFeedDetailLoc)
+                .flatMap(List<FeedDetailLoc>::stream)
+                .map(FeedDetailLoc::getFeedDetailLocImg)
+                .flatMap(List<FeedDetailLocImg>::stream)
+                .collect(Collectors.toList());
+
+        int beforeFDLISize = beforeFeedDetailLocImg.size();
+        int afterFDLISize = afterFeedDetailLocImg.size();
+
+        if(beforeFDLISize < afterFDLISize){
+            for(int i = beforeFDLISize ; i < afterFDLISize; i++){
+                feedDetailLocImgRepository.save(afterFeedDetailLocImg.get(i));
+            }
+
+        }
     }
 
 
