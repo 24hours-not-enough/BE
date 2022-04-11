@@ -19,9 +19,9 @@
 - 함께하는 여행, 계획과 기록도 한 번에 같이 !
 <br><br> 
 
-<!-- <h3><b>🎞 프로젝트 시연영상 🎞</b></h3>
+<h3><b>🎞 프로젝트 시연영상 🎞</b></h3>
 
-[![Video Label]()]() -->
+[보러 가기](https://www.youtube.com/watch?v=y6FG8p_Geyc)
 
 ---
 
