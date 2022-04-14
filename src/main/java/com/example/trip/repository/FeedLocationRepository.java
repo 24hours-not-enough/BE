@@ -11,6 +11,6 @@ public interface FeedLocationRepository extends JpaRepository<FeedLocation, Long
     List<FeedLocation> findFeedLocationByBookMarkByUser(Long userId);
 
     @Query("SELECT L FROM FeedLocation L WHERE L.latitude >= ?1 and L.latitude <= ?2 and L.longitude >= ?3 and L.longitude <= ?4")
-    List<FeedLocation> findLocations(Long x1, Long x2, Long y1, Long y2);
+    List<FeedLocation> findLocations(double x1, double x2, double y1, double y2);
 
 }

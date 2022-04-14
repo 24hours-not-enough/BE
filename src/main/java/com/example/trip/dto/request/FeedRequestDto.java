@@ -66,16 +66,16 @@ public class FeedRequestDto {
     @Getter
     public static class FeedRequestMainGetDto {
         @NotBlank
-        private Long leftX;
+        private double leftX;
 
         @NotBlank
-        private Long rightX;
+        private double rightX;
 
         @NotBlank
-        private Long topY;
+        private double topY;
 
         @NotBlank
-        private Long bottomY;
+        private double bottomY;
 
     }
 }
