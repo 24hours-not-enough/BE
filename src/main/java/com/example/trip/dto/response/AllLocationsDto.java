@@ -21,10 +21,10 @@ public class AllLocationsDto {
     private String locationName;
 
     //위도
-    private Long latitude;
+    private double latitude;
 
     //경도
-    private Long longitude;
+    private double longitude;
 
     //각 지역마다의 피드 정보들
     private List<FeedPerLocationDto> feedPerLocations;
