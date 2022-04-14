@@ -46,9 +46,7 @@ public class S3UploaderServiceImpl implements S3UploaderService {
             e.printStackTrace();
         }
         String url = amazonS3Client.getUrl(bucket, multipartFile.getOriginalFilename()).toString();
-
         nameUrl.put(multipartFile.getOriginalFilename(), url);
-
         return nameUrl;
     }
 
@@ -72,7 +70,7 @@ public class S3UploaderServiceImpl implements S3UploaderService {
                 throw new ResponseStatusException(HttpStatus.INTERNAL_SERVER_ERROR, "파일 업로드에 실패했습니다.");
             }
             //Url을 담아준다.
-            String url = amazonS3Client.getUrl(bucket, file.getOriginalFilename()).toString();
+            String url = amazonS3Client.getUrl(bucket, fileName).toString();
             //파일 네임과 url을 담아준다.
             nameAndUrl.put(fileName,url);
         });
