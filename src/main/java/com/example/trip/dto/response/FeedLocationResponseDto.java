@@ -15,8 +15,8 @@ public class FeedLocationResponseDto {
         private Long placeId;
         private String placeName;
         private String placeAddress;
-        private Long latitude;
-        private Long longitude;
+        private double latitude;
+        private double longitude;
         private List<FeedDetailLocResponseDto.GetFeedDetailLoc> feedDetailLoc;
 
 
