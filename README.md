@@ -111,11 +111,22 @@
 
 #### Plan
 
-|기능|Method|URL|request|response|
-|:--:|:--:|:--:|:--:|:--:|
-|컨텐츠 전체 조회|GET|/movies||전체 컨텐츠 리스트|
-|특정 컨텐츠 상세 조회|GET|/detail/:category/:movie_name||특정 컨텐츠|
-|즐겨찾기 확인|GET|/check_bookmark||
+기능  |      Method     | URL |  request   |        response       |
+| :-: | :----------: | :----: | :-------------: | :--------------: |
+| 계획 전체 조회 | GET | /api/plan/planDetails | 없음 | 계획 상세 정보 |
+| 계획등록 | POST | /api/plan | 없음 | 계획 상세 정보 |
+| 계획수정 | PUT | /api/plan/{planId} | 없음 | 계획 상세 정보 |
+| 계획임시삭제 | PUT | /api/plan/{planId}/storage | 없음 | 계획 상세 정보 |
+| 계획복구 | PUT | /api/plan/{planId}/storage | 없음 | 계획 상세 정보 |
+| 계획영구삭제 | DELETE | /api/plan/{planId}/storage | 없음 | 계획 상세 정보 |
+| 계획초대 (url) | POST | /api/member/plan/room/{roomId} | 없음 | 계획 상세 정보 |
+| 일정등록 | POST | /api/plan/{planId}/days | 없음 | 계획 상세 정보 |
+| 가고싶은장소 | POST | /api/plan/{planId}/location | 없음 | 계획 상세 정보 |
+| 일정상세등록 | POST | /api/plan/{planId}/days/calendar | 없음 | 계획 상세 정보 |
+| 체크리스트 등록 및 수정 | POST | /api/plan/{planId}/checkLists | 없음 | 계획 상세 정보 |
+| 여행계획나가기 | DELETE | /api/plan/{planId}/member | 없음 | 계획 상세 정보 |
+| 마이페이지 초대 수락 | POST | /api/member/plan/{planId}/active | 없음 | 계획 상세 정보 |
+| 체크리스트 잠금 | POST | /api/plan/{planId}/checkLists | 없음 | 계획 상세 정보 |
 
 
 #### Feed
