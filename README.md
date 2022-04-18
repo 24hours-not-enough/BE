@@ -1,4 +1,5 @@
 # triPlan
+<div>
 <img src="https://img.shields.io/badge/github-181717?style=for-the-badge&logo=github&logoColor=white">
 <img src="https://img.shields.io/badge/Slack-4A154B?style=for-the-badge&logo=Slack&logoColor=white">
 <img src="https://img.shields.io/badge/GitHub%20Actions-569A31?style=for-the-badge&logo=GitHub%20Actions&logoColor=white">
@@ -8,7 +9,7 @@
 <img src="https://img.shields.io/badge/JAVA-007396?style=for-the-badge&logo=java&logoColor=white">
 <img src="https://img.shields.io/badge/spring%20boot-6DB33F?style=for-the-badge&logo=spring%20boot&logoColor=white">
 <img src="https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge&logo=MySQL&logoColor=white">
-
+</div>
 <br>
 
 ### ❓ 여행 계획 좀 더 잘 짤 수는 없을까?
