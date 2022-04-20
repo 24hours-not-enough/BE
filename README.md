@@ -23,12 +23,12 @@
 
 |[팀원] 손성진|[팀원] 김효신|[팀원] 김윤민|
 |:-----:|:----:|:----:|
-| <img src="https://github.com/ssj9398" alt="avatar" height="150px" width="150px" /> | <img src="https://github.com/Shinnybest" alt="avatar" height="150px" width="150px" /> | <img src="https://github.com/JerryAllMighty" alt="avatar" height="150px" width="150px" /> |
+| <img src="https://avatars.githubusercontent.com/u/48196352?v=4" alt="avatar" height="150px" width="150px" /> | <img src="https://avatars.githubusercontent.com/u/96279734?v=4" alt="avatar" height="150px" width="150px" /> | <img src="https://avatars.githubusercontent.com/u/66665210?v=4" alt="avatar" height="150px" width="150px" /> |
 |[ssj9398](https://github.com/ssj9398)|[Shinnybest](https://github.com/Shinnybest)|[JerryAllMighty](https://github.com/JerryAllMighty)|
 
 <br>
 
-## 프로젝트 구성
+## 💟 프로젝트 구성
 
 ### 프로젝트 시연영상
 [보러 가기](https://www.youtube.com/watch?v=y6FG8p_Geyc)
@@ -37,13 +37,13 @@
 ![triplan_backend_arc](https://user-images.githubusercontent.com/96279734/163741060-bd670a1c-a2e3-47a0-84e7-d6e42a90852f.png)
 
 
-### 문제해결방식
-#### 로그인, 왜 JWT로 관리할까? - <a href="https://github.com/24hours-not-enough/BE/wiki/%EB%A1%9C%EA%B7%B8%EC%9D%B8,-%EC%99%9C-JWT%EB%A1%9C-%EA%B4%80%EB%A6%AC%ED%95%A0%EA%B9%8C%3F">WIKI</a>
-#### Web Socket, 보완해야할 점은 무엇인가? - <a href="https://github.com/24hours-not-enough/BE/wiki/Web-Socket,-%EB%B3%B4%EC%99%84%ED%95%B4%EC%95%BC%ED%95%A0-%EC%A0%90%EC%9D%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80%3F%3F">WIKI</a>
-#### Redis 데이터 유실, 어떻게 관리할까? - <a href="https://github.com/24hours-not-enough/BE/wiki/Redis-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9C%A0%EC%8B%A4,-%EC%96%B4%EB%96%BB%EA%B2%8C-%EA%B4%80%EB%A6%AC%ED%95%A0%EA%B9%8C%3F%3F">WIKI</a>
-#### 캐싱, 성능개선을 위해 반드시 필요할까? - <a href="https://github.com/24hours-not-enough/BE/wiki/%EC%BA%90%EC%8B%B1,-%EC%84%B1%EB%8A%A5%EA%B0%9C%EC%84%A0%EC%9D%84-%EC%9C%84%ED%95%B4-%EB%B0%98%EB%93%9C%EC%8B%9C-%ED%95%84%EC%9A%94%ED%95%A0%EA%B9%8C%3F">WIKI</a>
-#### 쿼리성능최적화, 항상 같은 방법으로 가능한 것은 아니야! - <a href="https://github.com/24hours-not-enough/BE/wiki/%EC%BF%BC%EB%A6%AC%EC%84%B1%EB%8A%A5%EC%B5%9C%EC%A0%81%ED%99%94,-%ED%95%AD%EC%83%81-%EA%B0%99%EC%9D%80-%EB%B0%A9%EB%B2%95%EC%9C%BC%EB%A1%9C-%EA%B0%80%EB%8A%A5%ED%95%9C-%EA%B2%83%EC%9D%80-%EC%95%84%EB%8B%88%EC%95%BC!">WIKI</a>
-#### 동시성 제어 - <a href="">WIKI</a>
+### ⭐ 문제해결방식
+#### - 로그인, 왜 JWT로 관리할까? - <a href="https://github.com/24hours-not-enough/BE/wiki/%EB%A1%9C%EA%B7%B8%EC%9D%B8,-%EC%99%9C-JWT%EB%A1%9C-%EA%B4%80%EB%A6%AC%ED%95%A0%EA%B9%8C%3F">WIKI</a>
+#### - Web Socket, 보완해야할 점은 무엇인가? - <a href="https://github.com/24hours-not-enough/BE/wiki/Web-Socket,-%EB%B3%B4%EC%99%84%ED%95%B4%EC%95%BC%ED%95%A0-%EC%A0%90%EC%9D%80-%EB%AC%B4%EC%97%87%EC%9D%B8%EA%B0%80%3F%3F">WIKI</a>
+#### - Redis 데이터 유실, 어떻게 관리할까? - <a href="https://github.com/24hours-not-enough/BE/wiki/Redis-%EB%8D%B0%EC%9D%B4%ED%84%B0-%EC%9C%A0%EC%8B%A4,-%EC%96%B4%EB%96%BB%EA%B2%8C-%EA%B4%80%EB%A6%AC%ED%95%A0%EA%B9%8C%3F%3F">WIKI</a>
+#### - 캐싱, 성능개선을 위해 반드시 필요할까? - <a href="https://github.com/24hours-not-enough/BE/wiki/%EC%BA%90%EC%8B%B1,-%EC%84%B1%EB%8A%A5%EA%B0%9C%EC%84%A0%EC%9D%84-%EC%9C%84%ED%95%B4-%EB%B0%98%EB%93%9C%EC%8B%9C-%ED%95%84%EC%9A%94%ED%95%A0%EA%B9%8C%3F">WIKI</a>
+#### - 쿼리성능최적화, 항상 같은 방법으로 가능한 것은 아니야! - <a href="https://github.com/24hours-not-enough/BE/wiki/%EC%BF%BC%EB%A6%AC%EC%84%B1%EB%8A%A5%EC%B5%9C%EC%A0%81%ED%99%94,-%ED%95%AD%EC%83%81-%EA%B0%99%EC%9D%80-%EB%B0%A9%EB%B2%95%EC%9C%BC%EB%A1%9C-%EA%B0%80%EB%8A%A5%ED%95%9C-%EA%B2%83%EC%9D%80-%EC%95%84%EB%8B%88%EC%95%BC!">WIKI</a>
+#### - 동시성 제어 - <a href="">WIKI</a>
 <details>
     <summary>
         <b>동시성 제어 : 계획을 여러명이 동시에 수정한다면, 먼저 수정하고 있던 사람의 데이터가 유실되는 경우가 발생 </b>
@@ -51,7 +51,7 @@
     <br>해결 : 누군가가 수정하고 있는 계획이라면 잠금 처리하여, 다른 사람이 수정하지 못 하게 조치.
 </details>
 
-### API 설계
+### 💡 API 설계
 
 #### User
 기능  |      Method     | URL |  request   |        response       |
