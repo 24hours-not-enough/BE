@@ -2,6 +2,9 @@ server:
   port: 8081
 
 spring:
+  config:
+    activate:
+      on-profile: real2
   servlet:
     multipart:
       maxFileSize: 100MB
