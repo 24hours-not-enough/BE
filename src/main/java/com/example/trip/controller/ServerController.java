@@ -14,7 +14,7 @@ public class ServerController {
 
     private final Environment env;
 
-    @GetMapping("/")
+    @GetMapping("/profile")
     public String Nginx() {
         List<String> profile = Arrays.asList(env.getActiveProfiles());
         List<String> realProfiles = Arrays.asList("real1", "real2");

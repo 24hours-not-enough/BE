@@ -51,7 +51,7 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
 
         http
                 .authorizeRequests()
-                .antMatchers("/api/kakaologin", "/api/googlelogin", "/", "/api/map").permitAll()
+                .antMatchers("/api/kakaologin", "/api/googlelogin","/profile", "/", "/api/map").permitAll()
                 .antMatchers(HttpMethod.POST, "/api/token").permitAll()
                 .antMatchers("/alarmpoint/**","/endpoint/**", "/webjars/sockjs-client/sockjs.min.js", "/webjars/stomp-websocket/stomp.min.js", "/index.html","/app.js").permitAll()
 //                .antMatchers("**").permitAll()
