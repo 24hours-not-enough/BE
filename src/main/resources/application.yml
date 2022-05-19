@@ -1,0 +1,69 @@
+server:
+  port: 8081
+
+spring:
+  servlet:
+    multipart:
+      maxFileSize: 100MB
+      maxRequestSize: 100MB
+  redis:
+    host: localhost
+    port: 6379
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # DB Source
+    url: ${{ secrets.RDS_HOST }}
+    # DB username
+    username: ${{ secrets.RDS_USERNAME }}
+    # DB password
+    password: ${{ secrets.RDS_PASSWORD }}
+  security:
+    oauth2:
+      client:
+        registration:
+          kakao:
+            client-id: ${{ secrets.KAKAO_CLIENT_ID}}
+            client-name: Kakao
+            secret-key: ${{ secrets.KAKAO_CLIENT_SECRET}}
+            redirect-uri: 'https://triplan.co.kr/api/kakaologin'
+            scope: account_email
+            authorization-grant-type: authorization_code
+            client-authentication-method: POST
+          google:
+            client-id: ${{ secrets.GOOGLE_CLIENT_ID}}
+            client-secret: ${{ secrets.GOOGLE_CLIENT_SECRET}}
+            scope: email
+          provider:
+            kakao:
+              authorization_uri: https://kauth.kakao.com/oauth/authorize
+              token_uri: https://kauth.kakao.com/oauth/token
+              user-info-uri: https://kapi.kakao.com/v2/user/me
+              user_name_attribute: id
+
+  jpa:
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+        default_batch_fetch_size: 100
+        dialect: org.hibernate.dialect.MySQL8Dialect
+
+logging.level:
+  org.hibernate.SQL: debug
+
+decorator:
+  datasource:
+    p6spy:
+      enable-logging: true
+
+cloud:
+  aws:
+    s3:
+      bucket: ${{ secrets.AWS_S3_BUCKET_NAME }}
+      region: ${{ secrets.AWS_REGION }}
+      stack:
+        auto: false
+    credentials:
+      accessKey: ${{ secrets.AWS_S3_ACCESS_KEY }}
+      secretKey: ${{ secrets.AWS_S3_SECRET_KEY }}
